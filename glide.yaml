@@ -1,0 +1,6 @@
+package: github.com/kubedev
+import:
+  - package: github.com/gin-gonic/gin
+    version: ~1.3.0
+  - package: k8s.io/client-go
+    version: v10.0.0 # replace v9.0.0 with the required version
