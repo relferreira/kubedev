@@ -7,3 +7,6 @@ dist/
 .DS_Store
 .idea
 vendor/
+
+ui/node_modules
+ui/.cache
