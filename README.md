@@ -4,8 +4,28 @@ Kubernetes Dashboard that helps developers in their everyday usage
 
 ## Server
 
-`glide up`
+Install dependencies
+
+```
+glide up
+```
+
+Run Server
+
+```
+go run main.go
+```
 
 ## UI
 
-Work in progress...
+Install dependencies
+
+```
+yarn
+```
+
+Run app
+
+```
+yarn start
+```

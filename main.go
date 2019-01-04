@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
+	cors "github.com/rs/cors/wrapper/gin"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -22,6 +23,7 @@ func main() {
 
 	clientset, err := kubernetes.NewForConfig(config)
 
+	r.Use(cors.Default())
 	r.GET("/deploy", func(c *gin.Context) {
 		namespace := getNamespaceQueryParam(c)
 
@@ -44,6 +46,10 @@ func main() {
 
 		c.JSON(200, pods)
 	})
+
+	// corsConfig := cors.DefaultConfig()
+	// corsConfig.AllowOrigins = []string{"http://localhost:1234"}
+	// r.Use(cors.New(corsConfig))
 
 	r.Run() // listen and serve on 0.0.0.0:8080
 }

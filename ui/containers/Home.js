@@ -1,9 +1,14 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class Home extends Component {
-  render() {
-    return <h1>home</h1>;
-  }
+function Home() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>Click me</button>
+    </div>
+  );
 }
 
 export default Home;

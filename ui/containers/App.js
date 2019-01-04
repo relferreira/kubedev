@@ -1,27 +1,37 @@
 import React, { Component } from 'react';
 import { Link, Router } from '@reach/router';
+import { Global, css } from '@emotion/core';
 import styled from '@emotion/styled';
 
 import Home from './Home';
-import Namespaces from './Namespaces';
-
-const Button = styled.button`
-  color: hotpink;
-`;
+import Pods from './Pods';
+import Sidebar from '../components/Sidebar';
+import Header from '../components/Header';
+import AppContainer from '../components/AppContainer';
+import CustomRouter from '../components/CustomRouter';
 
 class App extends Component {
   render() {
     return (
       <div>
-        <div className="header">
-          <Link to="/">Home</Link>
-          <Link to="/namespaces">Namespaces</Link>
-        </div>
-        <Button>teste4</Button>
-        <Router>
-          <Home path="/" />
-          <Namespaces path="/namespaces" />
-        </Router>
+        <Global
+          styles={css`
+            * {
+              padding: 0 0;
+              margin: 0 0;
+              box-sizing: border-box;
+              font-family: 'Roboto Mono', monospace;
+            }
+          `}
+        />
+        <Header />
+        <AppContainer>
+          <Sidebar />
+          <CustomRouter>
+            <Home path="/" />
+            <Pods path="/pods" />
+          </CustomRouter>
+        </AppContainer>
       </div>
     );
   }
