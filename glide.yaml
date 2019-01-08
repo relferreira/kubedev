@@ -8,3 +8,4 @@ import:
   version: ^1.6.0
   subpackages:
   - wrapper/gin
+- package: github.com/relferreira/sse

@@ -1,5 +1,5 @@
-hash: 9aade5dea3643a07b939c7d984f43e0e9989584db50c49f086e7df0abfb7f0e6
-updated: 2019-01-03T23:21:44.376717-02:00
+hash: b61cc98f3585dfe3645a67f5240d1fd4feab8d8c4576211fa40c0ac10005b83b
+updated: 2019-01-08T00:01:37.420173-02:00
 imports:
 - name: github.com/gin-contrib/sse
   version: 22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae
@@ -48,6 +48,8 @@ imports:
   version: 94122c33edd36123c84d5368cfb2b69df93a0ec8
 - name: github.com/peterbourgon/diskv
   version: 5f041e8faa004a95c88a202771f4cc3e991971e6
+- name: github.com/relferreira/sse
+  version: c4d94cffb78c358a1c79400a5a4e125da7e1d05e
 - name: github.com/rs/cors
   version: 9a47f48565a795472d43519dd49aac781f3034fb
   subpackages:
@@ -66,13 +68,10 @@ imports:
   version: 0ed95abb35c445290478a5348a7b38bb154135fd
   subpackages:
   - context
-  - html
-  - html/atom
   - http2
   - http2/hpack
   - idna
   - lex/httplex
-  - websocket
 - name: golang.org/x/oauth2
   version: a6bd8cefa1811bd24b86f8902872e4e8225f74c4
   subpackages:
@@ -151,9 +150,14 @@ imports:
 - name: k8s.io/apimachinery
   version: 2b1284ed4c93a43499e781493253e2ac5959c4fd
   subpackages:
+  - pkg/api/apitesting
+  - pkg/api/apitesting/fuzzer
+  - pkg/api/apitesting/roundtrip
+  - pkg/api/equality
   - pkg/api/errors
   - pkg/api/meta
   - pkg/api/resource
+  - pkg/apis/meta/fuzzer
   - pkg/apis/meta/v1
   - pkg/apis/meta/v1/unstructured
   - pkg/apis/meta/v1beta1
@@ -172,6 +176,7 @@ imports:
   - pkg/selection
   - pkg/types
   - pkg/util/clock
+  - pkg/util/diff
   - pkg/util/errors
   - pkg/util/framer
   - pkg/util/intstr

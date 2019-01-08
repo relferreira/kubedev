@@ -7,6 +7,7 @@ import bug from '../assets/bug.svg';
 import logs from '../assets/logs.svg';
 import info from '../assets/info.svg';
 import { fontColor, successColor } from '../util/colors';
+import { Link } from '@reach/router';
 
 const CustomCard = styled(Card)`
   display: flex;
@@ -45,6 +46,7 @@ const PodButtons = styled.div`
   img {
     margin-left: 16px;
     color: ${fontColor};
+    cursor: pointer;
   }
 `;
 
@@ -63,7 +65,9 @@ const PodCard = ({ name, state, containers, runningContainers, age }) => (
     <PodButtons>
       <img src={info} />
       <img src={bug} />
-      <img src={logs} />
+      <Link to={`${name}/logs`}>
+        <img src={logs} />
+      </Link>
     </PodButtons>
   </CustomCard>
 );

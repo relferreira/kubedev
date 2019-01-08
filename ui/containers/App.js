@@ -9,6 +9,7 @@ import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import AppContainer from '../components/AppContainer';
 import CustomRouter from '../components/CustomRouter';
+import Logs from './Logs';
 
 class App extends Component {
   render() {
@@ -30,6 +31,7 @@ class App extends Component {
           <CustomRouter>
             <Home path="/" />
             <Pods path="/pods" />
+            <Logs path="/pods/:name/logs" />
           </CustomRouter>
         </AppContainer>
       </div>

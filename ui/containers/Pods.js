@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import useAxios from '@use-hooks/axios';
 import PodCard from '../components/PodCard';
 
-function Pods() {
+export default function Pods() {
   const { response, loading, error, query } = useAxios({
     url: `http://localhost:8080/pods`,
     method: 'GET',
@@ -30,5 +30,3 @@ function Pods() {
     </div>
   );
 }
-
-export default Pods;
