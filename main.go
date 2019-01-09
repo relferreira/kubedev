@@ -31,8 +31,8 @@ func main() {
 	clientset, err := kubernetes.NewForConfig(config)
 
 	r.Use(cors.Default())
-	r.GET("/deploy", func(c *gin.Context) {
-		namespace := getNamespaceQueryParam(c)
+	r.GET("/:namespace/deploy", func(c *gin.Context) {
+		namespace := c.Param("namespace")
 
 		deployments, err := clientset.AppsV1beta2().Deployments(namespace).List(metav1.ListOptions{})
 
@@ -43,8 +43,8 @@ func main() {
 		c.JSON(200, deployments)
 	})
 
-	r.GET("/pods", func(c *gin.Context) {
-		namespace := getNamespaceQueryParam(c)
+	r.GET("/:namespace/pods", func(c *gin.Context) {
+		namespace := c.Param("namespace")
 
 		pods, err := clientset.CoreV1().Pods(namespace).List(metav1.ListOptions{})
 		if err != nil {
@@ -54,8 +54,20 @@ func main() {
 		c.JSON(200, pods)
 	})
 
-	r.GET("/pods/:name/logs", func(c *gin.Context) {
-		namespace := getNamespaceQueryParam(c)
+	r.GET("/:namespace/pods/:name", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+		name := c.Param("name")
+
+		pod, err := clientset.CoreV1().Pods(namespace).Get(name, metav1.GetOptions{})
+		if err != nil {
+			panic(err.Error())
+		}
+
+		c.JSON(200, pod)
+	})
+
+	r.GET("/:namespace/pods/:name/:container/logs", func(c *gin.Context) {
+		namespace := c.Param("namespace")
 		name := c.Param("name")
 		logOptions := v1.PodLogOptions{}
 		req := clientset.CoreV1().Pods(namespace).GetLogs(name, &logOptions)
@@ -76,11 +88,13 @@ func main() {
 		})
 	})
 
-	r.GET("/pods/:name/logs/stream", func(c *gin.Context) {
-		namespace := getNamespaceQueryParam(c)
+	r.GET("/:namespace/pods/:name/:container/logs/stream", func(c *gin.Context) {
+		namespace := c.Param("namespace")
 		name := c.Param("name")
+		container := c.Param("container")
 		logOptions := v1.PodLogOptions{
-			Follow: true,
+			Container: container,
+			Follow:    true,
 		}
 		req := clientset.CoreV1().Pods(namespace).GetLogs(name, &logOptions)
 		podLogs, err := req.Stream()
@@ -114,13 +128,4 @@ func main() {
 	})
 
 	r.Run() // listen and serve on 0.0.0.0:8080
-}
-
-func getNamespaceQueryParam(c *gin.Context) string {
-	namespace, exists := c.GetQuery("namespace")
-	if !exists {
-		panic("Namespace is required")
-	}
-
-	return namespace
 }

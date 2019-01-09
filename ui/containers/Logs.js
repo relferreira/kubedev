@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
+import useAxios from '@use-hooks/axios';
 import { LazyLog, ScrollFollow } from 'react-lazylog';
 
 import LogsControl from '../components/LogsControl';
@@ -13,13 +14,33 @@ const LogsContainer = styled.div`
 `;
 
 export default function Logs({ name }) {
+  const [selectedContainer, setSelectedContainer] = useState(0);
+  const { response, loading, error, query } = useAxios({
+    url: `http://localhost:8080/workers/pods/${name}`,
+    method: 'GET',
+    trigger: null
+  });
+
+  const { data: pod } = response || {};
+
+  if (loading) return <div>Loading...</div>;
+
+  if (error) return <div>error</div>;
+
+  if (!pod) return null;
+
+  const {
+    spec: { containers }
+  } = pod;
+  let container = containers[selectedContainer].name;
+
   return (
     <LogsContainer>
       <ScrollFollow
         startFollowing={true}
         render={({ follow, onScroll }) => (
           <LazyLog
-            url={`http://localhost:8080/pods/${name}/logs/stream?namespace=workers`}
+            url={`http://localhost:8080/workers/pods/${name}/${container}/logs/stream`}
             stream
             formatPart={e => {
               let response = JSON.parse(e.replace('data:', ''));
@@ -32,7 +53,16 @@ export default function Logs({ name }) {
           />
         )}
       />
-      <LogsControl name={name} />
+      <LogsControl
+        containers={containers.map(container => container.name)}
+        onSelect={selectedContainer =>
+          setSelectedContainer(
+            containers.findIndex(
+              container => container.name === selectedContainer
+            )
+          )
+        }
+      />
     </LogsContainer>
   );
 }

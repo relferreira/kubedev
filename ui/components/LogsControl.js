@@ -42,8 +42,13 @@ const LogRefresh = styled.img`
   cursor: pointer;
 `;
 
-const LogsControl = ({ name, onRefresh }) => (
+const LogsControl = ({ containers, onSelect, onRefresh }) => (
   <CustomCard>
+    <select onChange={event => onSelect(event.target.value)}>
+      {containers.map(container => (
+        <option key={container}>{container}</option>
+      ))}
+    </select>
     <LogName>{name}</LogName>
     <LogIndicator />
     <LogTime>Real-time</LogTime>
@@ -52,7 +57,8 @@ const LogsControl = ({ name, onRefresh }) => (
 );
 
 LogsControl.propTypes = {
-  name: PropTypes.string.isRequired,
+  containers: PropTypes.array.isRequired,
+  onSelect: PropTypes.func,
   onRefresh: PropTypes.func
 };
 
