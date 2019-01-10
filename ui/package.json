@@ -27,7 +27,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn build && cd ../ && git add"
+      "pre-commit": "yarn build && cd ../ && git add ."
     }
   }
 }
