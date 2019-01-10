@@ -54,6 +54,7 @@ const LogsControl = ({ containers, onSelect, onRefresh }) => (
     <LogName>{name}</LogName>
     <LogIndicator />
     <LogTime>Real-time</LogTime>
+    {/* //TODO */}
     {/* <LogRefresh src={refresh} onClick={onRefresh} /> */}
   </CustomCard>
 );
