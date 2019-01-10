@@ -6,6 +6,7 @@ import (
 	"flag"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -31,7 +32,7 @@ func main() {
 	clientset, err := kubernetes.NewForConfig(config)
 
 	r.Use(cors.Default())
-	r.Static("/ui", "./dist")
+	r.StaticFS("/ui", http.Dir("./dist"))
 	r.GET("/api/:namespace/deploy", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 
