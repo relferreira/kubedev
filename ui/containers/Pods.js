@@ -12,7 +12,7 @@ const PodsContainer = styled.div`
 
 export default function Pods() {
   const { response, loading, error, query } = useAxios({
-    url: `http://localhost:8080/workers/pods`,
+    url: `${process.env.API}/workers/pods`,
     method: 'GET',
     trigger: null
   });

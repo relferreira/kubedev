@@ -31,7 +31,8 @@ func main() {
 	clientset, err := kubernetes.NewForConfig(config)
 
 	r.Use(cors.Default())
-	r.GET("/:namespace/deploy", func(c *gin.Context) {
+	r.Static("/ui", "./dist")
+	r.GET("/api/:namespace/deploy", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 
 		deployments, err := clientset.AppsV1beta2().Deployments(namespace).List(metav1.ListOptions{})
@@ -43,7 +44,7 @@ func main() {
 		c.JSON(200, deployments)
 	})
 
-	r.GET("/:namespace/pods", func(c *gin.Context) {
+	r.GET("/api/:namespace/pods", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 
 		pods, err := clientset.CoreV1().Pods(namespace).List(metav1.ListOptions{})
@@ -54,7 +55,7 @@ func main() {
 		c.JSON(200, pods)
 	})
 
-	r.GET("/:namespace/pods/:name", func(c *gin.Context) {
+	r.GET("/api/:namespace/pods/:name", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 		name := c.Param("name")
 
@@ -66,7 +67,7 @@ func main() {
 		c.JSON(200, pod)
 	})
 
-	r.GET("/:namespace/pods/:name/:container/logs", func(c *gin.Context) {
+	r.GET("/api/:namespace/pods/:name/:container/logs", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 		name := c.Param("name")
 		logOptions := v1.PodLogOptions{}
@@ -88,7 +89,7 @@ func main() {
 		})
 	})
 
-	r.GET("/:namespace/pods/:name/:container/logs/stream", func(c *gin.Context) {
+	r.GET("/api/:namespace/pods/:name/:container/logs/stream", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 		name := c.Param("name")
 		container := c.Param("container")

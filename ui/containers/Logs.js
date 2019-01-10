@@ -16,7 +16,7 @@ const LogsContainer = styled.div`
 export default function Logs({ name }) {
   const [selectedContainer, setSelectedContainer] = useState(0);
   const { response, loading, error, query } = useAxios({
-    url: `http://localhost:8080/workers/pods/${name}`,
+    url: `${process.env.API}/workers/pods/${name}`,
     method: 'GET',
     trigger: null
   });
@@ -40,7 +40,9 @@ export default function Logs({ name }) {
         startFollowing={true}
         render={({ follow, onScroll }) => (
           <LazyLog
-            url={`http://localhost:8080/workers/pods/${name}/${container}/logs/stream`}
+            url={`${
+              process.env.API
+            }/workers/pods/${name}/${container}/logs/stream`}
             stream
             formatPart={e => {
               let response = JSON.parse(e.replace('data:', ''));

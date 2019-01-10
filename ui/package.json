@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "BABEL_ENV=development parcel index.html",
-    "build": "NODE_ENV=production parcel build index.html",
+    "start": "parcel index.html",
+    "build": "NODE_ENV=production parcel build index.html -d ../dist --public-url /ui",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^7.0.0-0",
+    "husky": "^1.3.1",
     "parcel-bundler": "^1.11.0"
   },
   "dependencies": {
@@ -22,5 +23,10 @@
     "react": "16.7.0-alpha.2",
     "react-dom": "16.7.0-alpha.2",
     "react-lazylog": "^3.2.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run build"
+    }
   }
 }
