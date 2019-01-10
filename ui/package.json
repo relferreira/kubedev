@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel index.html",
-    "build": "NODE_ENV=production parcel build index.html -d ../dist --public-url /ui",
+    "build": "rimraf ../dist && NODE_ENV=production parcel build index.html -d ../dist --public-url /ui",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,7 +13,8 @@
   "devDependencies": {
     "babel-core": "^7.0.0-0",
     "husky": "^1.3.1",
-    "parcel-bundler": "^1.11.0"
+    "parcel-bundler": "^1.11.0",
+    "rimraf": "^2.6.3"
   },
   "dependencies": {
     "@emotion/core": "^10.0.5",
@@ -26,7 +27,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn build"
+      "pre-commit": "yarn build && cd ../ && git add"
     }
   }
 }

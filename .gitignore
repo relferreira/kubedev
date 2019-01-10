@@ -3,10 +3,10 @@ glide.exe
 *.a
 *.sublime-project
 *.sublime-workspace
-dist/
 .DS_Store
 .idea
 vendor/
 
 ui/node_modules
 ui/.cache
+ui/dist
