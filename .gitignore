@@ -10,3 +10,4 @@ vendor/
 ui/node_modules
 ui/.cache
 ui/dist
+kubedev_*

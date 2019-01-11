@@ -29,3 +29,17 @@ Run app
 ```
 yarn start
 ```
+
+## Packaging
+
+Package UI
+
+```
+yarn build
+```
+
+Package Server
+
+```
+gox
+```
