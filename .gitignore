@@ -6,6 +6,7 @@ glide.exe
 .DS_Store
 .idea
 vendor/
+dist/
 
 ui/node_modules
 ui/.cache
