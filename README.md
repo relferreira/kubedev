@@ -1,8 +1,14 @@
-# KubeDev
+![alt text](https://raw.githubusercontent.com/relferreira/kubedev/master/ui/assets/kubedev-logo.png)
 
 Kubernetes Dashboard that helps developers in their everyday usage
 
-## Server
+## Installation
+
+Download the binary files in the relase page
+
+## Development
+
+### Server
 
 Install dependencies
 
@@ -16,7 +22,7 @@ Run Server
 go run main.go
 ```
 
-## UI
+### UI
 
 Install dependencies
 
