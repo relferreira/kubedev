@@ -1,5 +1,5 @@
-hash: b61cc98f3585dfe3645a67f5240d1fd4feab8d8c4576211fa40c0ac10005b83b
-updated: 2019-01-08T00:01:37.420173-02:00
+hash: 33a793e160d6fed20456bd870a30393a1edf622b5e71ed2f746525275ed201e9
+updated: 2019-01-11T20:44:35.579855-02:00
 imports:
 - name: github.com/gin-contrib/sse
   version: 22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae
@@ -9,6 +9,8 @@ imports:
   - binding
   - json
   - render
+- name: github.com/gobuffalo/packr
+  version: f67b7b693537da3864afdb867ecb7458f17db30e
 - name: github.com/gogo/protobuf
   version: 342cbe0a04158f6dcb03ca0079991a51a4248c02
   subpackages:
@@ -49,7 +51,7 @@ imports:
 - name: github.com/peterbourgon/diskv
   version: 5f041e8faa004a95c88a202771f4cc3e991971e6
 - name: github.com/relferreira/sse
-  version: c4d94cffb78c358a1c79400a5a4e125da7e1d05e
+  version: aea224f591de9cc1188b4d7e67799cf76f792672
 - name: github.com/rs/cors
   version: 9a47f48565a795472d43519dd49aac781f3034fb
   subpackages:

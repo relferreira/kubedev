@@ -41,5 +41,6 @@ yarn build
 Package Server
 
 ```
-gox
+go get -u github.com/gobuffalo/packr/packr
+make build
 ```
