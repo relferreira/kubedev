@@ -1,3 +1,7 @@
+<p align="center">
+    :construction: Work in Progress! :construction:
+</p>
+
 ![alt text](https://raw.githubusercontent.com/relferreira/kubedev/master/ui/assets/kubedev-logo.png)
 
 Kubernetes Dashboard that helps developers in their everyday usage
