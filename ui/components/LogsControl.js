@@ -44,9 +44,12 @@ const LogSelect = styled.select`
   padding: 5px;
 `;
 
-const LogsControl = ({ containers, onSelect, onRefresh }) => (
+const LogsControl = ({ selected, containers, onSelect, onRefresh }) => (
   <CustomCard>
-    <LogSelect onChange={event => onSelect(event.target.value)}>
+    <LogSelect
+      value={selected}
+      onChange={event => onSelect(event.target.value)}
+    >
       {containers.map(container => (
         <option key={container}>{container}</option>
       ))}

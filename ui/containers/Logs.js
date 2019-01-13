@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import useAxios from '@use-hooks/axios';
 import { LazyLog, ScrollFollow } from 'react-lazylog';
 
 import LogsControl from '../components/LogsControl';
+import { navigate } from '@reach/router';
 
 const LogsContainer = styled.div`
   position: relative;
@@ -13,13 +14,18 @@ const LogsContainer = styled.div`
   background: #222222;
 `;
 
-export default function Logs({ name }) {
-  const [selectedContainer, setSelectedContainer] = useState(0);
+export default function Logs({ name, selectedContainer = 0, onLogInit }) {
   const { response, loading, error, query } = useAxios({
     url: `${process.env.API}/workers/pods/${name}`,
     method: 'GET',
-    trigger: null
+    trigger: name
   });
+
+  useEffect(() => {
+    onLogInit({ type: 'logs', resource: 'pods', name });
+
+    return () => console.log('end');
+  }, []);
 
   const { data: pod } = response || {};
 
@@ -32,7 +38,10 @@ export default function Logs({ name }) {
   const {
     spec: { containers }
   } = pod;
-  let container = containers[selectedContainer].name;
+  let container =
+    containers[selectedContainer] && containers[selectedContainer].name;
+
+  if (!container) return null;
 
   return (
     <LogsContainer>
@@ -56,12 +65,13 @@ export default function Logs({ name }) {
         )}
       />
       <LogsControl
+        selected={container}
         containers={containers.map(container => container.name)}
         onSelect={selectedContainer =>
-          setSelectedContainer(
-            containers.findIndex(
+          navigate(
+            `${containers.findIndex(
               container => container.name === selectedContainer
-            )
+            )}`
           )
         }
       />

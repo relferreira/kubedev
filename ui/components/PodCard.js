@@ -92,7 +92,7 @@ const PodCard = ({ name, state, containers, runningContainers, age }) => (
     <PodButtons>
       <img src={info} />
       <img src={bug} />
-      <Link to={`${name}/logs`}>
+      <Link to={`${name}/logs/container/0`}>
         <img src={logs} />
       </Link>
     </PodButtons>
