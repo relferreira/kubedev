@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
 import Card from './Card';
-import { successColor } from '../util/colors';
+import { successColor, errorColor } from '../util/colors';
 import Select from './Select';
 
 const CustomCard = styled(Card)`
@@ -25,11 +25,19 @@ const LogName = styled.span`
   flex: 1;
 `;
 
+const LogActions = styled.a`
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: flex-end;
+  cursor: pointer;
+`;
+
 const LogIndicator = styled.span`
   flex: 0 0 10px;
   height: 10px;
   border-radius: 50%;
-  background: ${successColor};
+  background: ${props => (props.following ? successColor : errorColor)};
 `;
 
 const LogTime = styled.span`
@@ -37,7 +45,13 @@ const LogTime = styled.span`
   font-size: 12px;
 `;
 
-const LogsControl = ({ selected, containers, onSelect, onRefresh }) => (
+const LogsControl = ({
+  selected,
+  containers,
+  following,
+  onSelect,
+  onFollow
+}) => (
   <CustomCard>
     <Select value={selected} onChange={event => onSelect(event.target.value)}>
       {containers.map(container => (
@@ -45,8 +59,10 @@ const LogsControl = ({ selected, containers, onSelect, onRefresh }) => (
       ))}
     </Select>
     <LogName>{name}</LogName>
-    <LogIndicator />
-    <LogTime>Real-time</LogTime>
+    <LogActions onClick={onFollow}>
+      <LogIndicator following={following} />
+      <LogTime>{following ? 'Stop following' : 'Click to follow'}</LogTime>
+    </LogActions>
     {/* //TODO */}
     {/* <LogRefresh src={refresh} onClick={onRefresh} /> */}
   </CustomCard>

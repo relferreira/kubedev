@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import useAxios from '@use-hooks/axios';
 import { LazyLog, ScrollFollow } from 'react-lazylog';
@@ -20,6 +20,7 @@ export default function Logs({
   selectedContainer = 0,
   onLogInit
 }) {
+  const [following, setFollowing] = useState(false);
   const { response, loading, error, query } = useAxios({
     url: `${process.env.API}/${namespace}/pods/${name}`,
     method: 'GET',
@@ -61,8 +62,7 @@ export default function Logs({
               return response.content;
             }}
             selectableLines={true}
-            // follow={follow}
-            // onScroll={onScroll}
+            follow={following}
             extraLines={5}
           />
         )}
@@ -70,6 +70,8 @@ export default function Logs({
       <LogsControl
         selected={container}
         containers={containers.map(container => container.name)}
+        following={following}
+        onFollow={() => setFollowing(following => !following)}
         onSelect={selectedContainer =>
           navigate(
             `${containers.findIndex(
