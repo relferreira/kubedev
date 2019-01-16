@@ -35,6 +35,17 @@ func main() {
 
 	box := packr.NewBox("./dist")
 	r.StaticFS("/ui", box)
+
+	r.GET("/api", func(c *gin.Context) {
+		namespaces, err := clientset.CoreV1().Namespaces().List(metav1.ListOptions{})
+
+		if err != nil {
+			panic(err.Error())
+		}
+
+		c.JSON(200, namespaces)
+	})
+
 	r.GET("/api/:namespace/deploy", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 

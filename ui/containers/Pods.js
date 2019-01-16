@@ -10,11 +10,11 @@ const PodsContainer = styled.div`
   // grid-template-rows: 40px 100px 40px;
 `;
 
-export default function Pods() {
+export default function Pods({ namespace }) {
   const { response, loading, error, query } = useAxios({
-    url: `${process.env.API}/workers/pods`,
+    url: `${process.env.API}/${namespace}/pods`,
     method: 'GET',
-    trigger: null
+    trigger: namespace
   });
 
   const { data } = response || {};

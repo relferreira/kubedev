@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { primaryLight, fontColor, primaryDark, primary } from '../util/colors';
-import { Link } from '@reach/router';
+import { Link, Location, navigate } from '@reach/router';
+import Select from './Select';
 
 const SidebarContainer = styled.div`
   display: flex;
@@ -28,7 +29,7 @@ const HistoryContainer = styled.div`
   flex-direction: column;
 `;
 
-const HistoryTitle = styled.div`
+const SidebarTitle = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
@@ -64,36 +65,64 @@ const HistoryLink = styled(NavLink)`
   text-overflow: ellipsis;
 `;
 
-const FavoriteLink = favorite => (
-  <NavLink key={`${favorite.type}${favorite.name}`} to="/nodes">
-    {favorite.name}
-  </NavLink>
-);
+const NamespaceSelect = styled(Select)`
+  margin: 0px 10px;
+  background: #fff;
+`;
 
-const Sidebar = ({ links }) => (
-  <SidebarContainer>
-    <NavLink to="/">Home</NavLink>
-    <NavLink to="/namespaces">Namespaces</NavLink>
-    <NavLink to="/services">Services</NavLink>
-    <NavLink to="/deployments">Deployments</NavLink>
-    <NavLink to="/pods">Pods</NavLink>
-    <NavLink to="/nodes">Nodes</NavLink>
-    <HistoryContainer>
-      <HistoryTitle>
-        <p>History</p>
-        <hr />
-      </HistoryTitle>
-      {links.map(link => (
-        <HistoryLink
-          key={`${link.type}${link.name}`}
-          to={`/pods/${link.name}/logs/container/0`}
-          replace
-        >
-          {link.name}
-        </HistoryLink>
-      ))}
-    </HistoryContainer>
-  </SidebarContainer>
+const getSelectedNamespace = location => {
+  let matches = location.pathname.split('/');
+  if (matches && matches.length > 1) return matches[1];
+  return '';
+};
+
+const Sidebar = ({ namespaces, links }) => (
+  <Location>
+    {({ location }) => {
+      let namespace = getSelectedNamespace(location);
+      return (
+        <SidebarContainer>
+          <SidebarTitle>
+            <p>Namespaces</p>
+            <hr />
+          </SidebarTitle>
+          <NamespaceSelect
+            value={namespace}
+            onChange={event => navigate(`/${event.target.value}`)}
+          >
+            {namespaces.map(namespace => (
+              <option key={namespace}>{namespace}</option>
+            ))}
+          </NamespaceSelect>
+          <SidebarTitle>
+            <p>Resources</p>
+            <hr />
+          </SidebarTitle>
+          <NavLink to="/">Home</NavLink>
+          <NavLink to="/namespaces">Namespaces</NavLink>
+          <NavLink to="/services">Services</NavLink>
+          <NavLink to="/deployments">Deployments</NavLink>
+          <NavLink to={`/${namespace}/pods`}>Pods</NavLink>
+          <NavLink to="/nodes">Nodes</NavLink>
+          <HistoryContainer>
+            <SidebarTitle>
+              <p>History</p>
+              <hr />
+            </SidebarTitle>
+            {links.map(({ type, namespace, name }) => (
+              <HistoryLink
+                key={`${type}${namespace}${name}`}
+                to={`${namespace}/pods/${name}/logs/container/0`}
+                replace
+              >
+                {name}
+              </HistoryLink>
+            ))}
+          </HistoryContainer>
+        </SidebarContainer>
+      );
+    }}
+  </Location>
 );
 
 export default Sidebar;

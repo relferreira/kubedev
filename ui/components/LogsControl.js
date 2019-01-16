@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 
 import Card from './Card';
 import { successColor } from '../util/colors';
+import Select from './Select';
 
 const CustomCard = styled(Card)`
   display: flex;
@@ -36,24 +37,13 @@ const LogTime = styled.span`
   font-size: 12px;
 `;
 
-const LogSelect = styled.select`
-  background: none;
-  border: none;
-  min-width: 200px;
-  height: 30px;
-  padding: 5px;
-`;
-
 const LogsControl = ({ selected, containers, onSelect, onRefresh }) => (
   <CustomCard>
-    <LogSelect
-      value={selected}
-      onChange={event => onSelect(event.target.value)}
-    >
+    <Select value={selected} onChange={event => onSelect(event.target.value)}>
       {containers.map(container => (
         <option key={container}>{container}</option>
       ))}
-    </LogSelect>
+    </Select>
     <LogName>{name}</LogName>
     <LogIndicator />
     <LogTime>Real-time</LogTime>

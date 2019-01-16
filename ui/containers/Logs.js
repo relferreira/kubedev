@@ -14,17 +14,20 @@ const LogsContainer = styled.div`
   background: #222222;
 `;
 
-export default function Logs({ name, selectedContainer = 0, onLogInit }) {
+export default function Logs({
+  namespace,
+  name,
+  selectedContainer = 0,
+  onLogInit
+}) {
   const { response, loading, error, query } = useAxios({
-    url: `${process.env.API}/workers/pods/${name}`,
+    url: `${process.env.API}/${namespace}/pods/${name}`,
     method: 'GET',
     trigger: name
   });
 
   useEffect(() => {
-    onLogInit({ type: 'logs', resource: 'pods', name });
-
-    return () => console.log('end');
+    onLogInit({ type: 'logs', namespace, resource: 'pods', name });
   }, []);
 
   const { data: pod } = response || {};
@@ -51,7 +54,7 @@ export default function Logs({ name, selectedContainer = 0, onLogInit }) {
           <LazyLog
             url={`${
               process.env.API
-            }/workers/pods/${name}/${container}/logs/stream`}
+            }/${namespace}/pods/${name}/${container}/logs/stream`}
             stream
             formatPart={e => {
               let response = JSON.parse(e.replace('data:', ''));

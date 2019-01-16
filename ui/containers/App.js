@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Link, Router } from '@reach/router';
+import { Redirect } from '@reach/router';
 import { Global, css } from '@emotion/core';
-import styled from '@emotion/styled';
+import useAxios from '@use-hooks/axios';
 
 import Home from './Home';
 import Pods from './Pods';
@@ -13,6 +13,18 @@ import Logs from './Logs';
 
 function App() {
   const [links, setLinks] = useState([]);
+  const { response } = useAxios({
+    url: `${process.env.API}`,
+    method: 'GET',
+    trigger: null
+  });
+
+  const { data } = response || {};
+  let namespaces = [];
+  if (data) {
+    namespaces = data.items.map(({ metadata }) => metadata.name);
+  }
+
   const handleSidebarChange = newLink => {
     if (
       !links.find(
@@ -36,12 +48,13 @@ function App() {
       />
       <Header />
       <AppContainer>
-        <Sidebar links={links} />
+        <Sidebar namespaces={namespaces} links={links} />
         <CustomRouter>
-          <Home path="/" />
-          <Pods path="/pods" />
+          <Redirect from="/" to="/default" noThrow />
+          <Home path="/:namespace" />
+          <Pods path="/:namespace/pods" />
           <Logs
-            path="/pods/:name/logs/container/:selectedContainer"
+            path="/:namespace/pods/:name/logs/container/:selectedContainer"
             onLogInit={handleSidebarChange}
           />
         </CustomRouter>
