@@ -4,5 +4,5 @@ export const primaryDark = '#2286C3';
 export const fontColor = '#595959';
 export const successColor = '#4caf50';
 export const errorColor = '#f44336';
-export const warningColor = 'yellow';
+export const warningColor = '#ffc107';
 export const neutralColor = '#595959';

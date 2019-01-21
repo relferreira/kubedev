@@ -35,8 +35,6 @@ const PodStatus = styled.div`
   border-radius: 50%;
   background: ${props => {
     switch (props.state) {
-      case 'Pending':
-        return;
       case 'Running' || 'Succeeded':
         return successColor;
       case 'Failed':

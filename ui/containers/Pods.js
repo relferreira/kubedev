@@ -7,7 +7,6 @@ import PodCard from '../components/PodCard';
 const PodsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  // grid-template-rows: 40px 100px 40px;
 `;
 
 export default function Pods({ namespace }) {
