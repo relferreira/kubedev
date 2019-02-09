@@ -10,6 +10,7 @@ import Header from '../components/Header';
 import AppContainer from '../components/AppContainer';
 import CustomRouter from '../components/CustomRouter';
 import Logs from './Logs';
+import PodInfo from './PodInfo';
 
 function App() {
   const [links, setLinks] = useState([]);
@@ -53,6 +54,7 @@ function App() {
           <Redirect from="/" to="/default" noThrow />
           <Home path="/:namespace" />
           <Pods path="/:namespace/pods" />
+          <PodInfo path="/:namespace/pods/:name/info" />
           <Logs
             path="/:namespace/pods/:name/logs/container/:selectedContainer"
             onLogInit={handleSidebarChange}

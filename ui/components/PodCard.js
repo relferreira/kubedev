@@ -3,17 +3,11 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
 import Card from './Card';
-import bug from '../assets/bug.svg';
 import logs from '../assets/logs.svg';
 import info from '../assets/info.svg';
-import {
-  fontColor,
-  successColor,
-  errorColor,
-  warningColor,
-  neutralColor
-} from '../util/colors';
+import { fontColor } from '../util/colors';
 import { Link } from '@reach/router';
+import PodStatus from './PodStatus';
 
 const CustomCard = styled(Card)`
   display: flex;
@@ -27,26 +21,6 @@ const CustomCard = styled(Card)`
     grid-column: span 6;
     margin: 16px;
   }
-`;
-
-const PodStatus = styled.div`
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background: ${props => {
-    switch (props.state) {
-      case 'Running' || 'Succeeded':
-        return successColor;
-      case 'Failed':
-        return errorColor;
-      case 'Pending':
-        return warningColor;
-      case 'Unknown':
-        return neutralColor;
-      default:
-        return successColor;
-    }
-  }};
 `;
 
 const PodTextContainer = styled.div`
@@ -75,7 +49,7 @@ const PodButtons = styled.div`
   }
 `;
 
-const PodCard = ({ name, state, containers, runningContainers, age }) => (
+const PodCard = ({ name, state }) => (
   <CustomCard>
     <PodStatus state={state} />
     <PodTextContainer>
@@ -88,7 +62,9 @@ const PodCard = ({ name, state, containers, runningContainers, age }) => (
       </PodInfo>
     </PodTextContainer>
     <PodButtons>
-      {/* <img src={info} /> */}
+      <Link to={`${name}/info`}>
+        <img src={info} />
+      </Link>
       {/* <img src={bug} /> */}
       <Link to={`${name}/logs/container/0`}>
         <img src={logs} />
