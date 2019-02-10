@@ -46,7 +46,19 @@ func main() {
 		c.JSON(200, namespaces)
 	})
 
-	r.GET("/api/:namespace/deploy", func(c *gin.Context) {
+	r.GET("/api/:namespace/services", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+
+		services, err := clientset.CoreV1().Services(namespace).List(metav1.ListOptions{})
+
+		if err != nil {
+			panic(err.Error())
+		}
+
+		c.JSON(200, services)
+	})
+
+	r.GET("/api/:namespace/deployments", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 
 		deployments, err := clientset.AppsV1beta2().Deployments(namespace).List(metav1.ListOptions{})

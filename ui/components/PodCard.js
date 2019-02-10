@@ -2,26 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
-import Card from './Card';
-import logs from '../assets/logs.svg';
-import info from '../assets/info.svg';
-import { fontColor } from '../util/colors';
 import { Link } from '@reach/router';
 import PodStatus from './PodStatus';
-
-const CustomCard = styled(Card)`
-  display: flex;
-  align-items: center;
-  // height: 74px;
-  padding: 16px;
-  margin-bottom: 16px;
-
-  grid-column: span 12;
-  @media screen and (min-width: 720px) {
-    grid-column: span 6;
-    margin: 16px;
-  }
-`;
+import GridCard from './GridCard';
+import CardIcon from './CardIcon';
 
 const PodTextContainer = styled.div`
   display: flex;
@@ -43,14 +27,12 @@ const PodButtons = styled.div`
   display: flex;
 `;
 
-const PodIcon = styled.svg`
+const PodIcon = styled(CardIcon)`
   margin-left: 16px;
-  cursor: pointer;
-  fill: ${props => props.theme.containerFont};
 `;
 
 const PodCard = ({ name, state }) => (
-  <CustomCard>
+  <GridCard>
     <PodStatus state={state} />
     <PodTextContainer>
       <span>{name}</span>
@@ -86,15 +68,15 @@ const PodCard = ({ name, state }) => (
         </PodIcon>
       </Link>
     </PodButtons>
-  </CustomCard>
+  </GridCard>
 );
 
 PodCard.propTypes = {
   name: PropTypes.string.isRequired,
   state: PropTypes.string.isRequired,
-  runningContainers: PropTypes.number.isRequired,
-  containers: PropTypes.number.isRequired,
-  age: PropTypes.string.isRequired
+  runningContainers: PropTypes.number,
+  containers: PropTypes.number,
+  age: PropTypes.string
 };
 
 export default PodCard;

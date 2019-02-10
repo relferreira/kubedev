@@ -11,7 +11,7 @@ const DeployGrid = styled.div`
 
 export default function Deployments({ namespace }) {
   const { response, loading, error, query } = useAxios({
-    url: `${process.env.API}/${namespace}/deploy`,
+    url: `${process.env.API}/${namespace}/deployments`,
     method: 'GET',
     trigger: namespace
   });
@@ -28,7 +28,6 @@ export default function Deployments({ namespace }) {
     <div>
       <h1>Deployments</h1>
       <DeployGrid>
-        {/* <p>{JSON.stringify(items)}</p> */}
         {items &&
           items.map(({ metadata, status }) => (
             <DeployCard
