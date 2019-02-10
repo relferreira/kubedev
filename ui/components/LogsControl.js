@@ -16,7 +16,7 @@ const CustomCard = styled(Card)`
   left: 50%;
   margin-left: -35%;
   padding: 16px;
-  color: black;
+  color: ${props => props.theme.containerFont};
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
 `;

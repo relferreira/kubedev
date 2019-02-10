@@ -6,9 +6,10 @@ const Table = styled.table`
   display: table;
   border-collapse: collapse;
   border-spacing: 0;
+  color: ${props => props.theme.containerFont};
 
   tr {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    border-bottom: 1px solid ${props => props.theme.tableBorder};
   }
 
   td,

@@ -8,20 +8,8 @@ const SidebarContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 0 0 200px;
-  background: ${primaryLight};
-  color: ${fontColor};
-`;
-
-const CustomLink = styled(Link)`
-  padding: 10px 16px;
-  color: ${fontColor};
-  text-decoration: none;
-  font-size: 18px;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
+  background: ${props => props.theme.sidebarBackground};
+  color: ${props => props.theme.sidebarFontColor};
 `;
 
 const HistoryContainer = styled.div`
@@ -43,19 +31,44 @@ const SidebarTitle = styled.div`
   }
 `;
 
-const NavLink = props => (
-  <CustomLink
-    {...props}
+const CustomLink = ({ className, ...rest }) => (
+  <Link
+    {...rest}
     getProps={({ isCurrent }) => {
       return {
-        style: {
-          // background: isCurrent ? primary : 'none',
-          color: isCurrent ? primaryDark : fontColor
-        }
+        className: className + (isCurrent ? ' active' : '')
       };
     }}
   />
 );
+
+const NavLink = styled(CustomLink)`
+  padding: 10px 16px;
+  color: ${props => props.theme.sidebarFontColor};
+  text-decoration: none;
+  font-size: 18px;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &.active {
+    font-weight: bold;
+    color: ${primaryDark};
+  }
+`;
+
+const ThemeLink = styled.a`
+  padding: 10px 16px;
+  text-decoration: none;
+  font-size: 18px;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
 
 const HistoryLink = styled(NavLink)`
   width: 200px;
@@ -68,6 +81,7 @@ const HistoryLink = styled(NavLink)`
 const NamespaceSelect = styled(Select)`
   margin: 0px 10px;
   background: #fff;
+  color: ${fontColor};
 `;
 
 const getSelectedNamespace = location => {
@@ -76,7 +90,7 @@ const getSelectedNamespace = location => {
   return '';
 };
 
-const Sidebar = ({ namespaces, links }) => (
+const Sidebar = ({ namespaces, links, onThemeChange }) => (
   <Location>
     {({ location }) => {
       let namespace = getSelectedNamespace(location);
@@ -104,6 +118,7 @@ const Sidebar = ({ namespaces, links }) => (
           <NavLink to="/deployments">Deployments</NavLink>
           <NavLink to={`/${namespace}/pods`}>Pods</NavLink>
           <NavLink to="/nodes">Nodes</NavLink>
+          <ThemeLink onClick={onThemeChange}>Change Theme</ThemeLink>
           <HistoryContainer>
             <SidebarTitle>
               <p>History</p>

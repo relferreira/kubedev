@@ -5,13 +5,18 @@ import { LazyLog, ScrollFollow } from 'react-lazylog';
 
 import LogsControl from '../components/LogsControl';
 import { navigate } from '@reach/router';
+import { darkLight } from '../util/colors';
 
 const LogsContainer = styled.div`
   position: relative;
   height: 100%;
   margin: -16px;
   color: white;
-  background: #222222;
+  background: ${props => props.theme.background};
+`;
+
+const LogText = styled(LazyLog)`
+  background: ${props => props.theme.background};
 `;
 
 export default function Logs({
@@ -51,6 +56,7 @@ export default function Logs({
     <LogsContainer>
       <ScrollFollow
         startFollowing={true}
+        style={{ background: darkLight }}
         render={({ follow, onScroll }) => (
           <LazyLog
             url={`${
@@ -64,6 +70,8 @@ export default function Logs({
             selectableLines={true}
             follow={following}
             extraLines={5}
+            containerStyle={{ background: darkLight }}
+            style={{ background: darkLight }}
           />
         )}
       />

@@ -9,7 +9,7 @@ const Header = styled.div`
   align-items: center;
   height: 70px;
   padding: 16px;
-  background: ${primaryDark};
+  background: ${props => props.theme.header};
   color: white;
 `;
 

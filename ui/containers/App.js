@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect } from '@reach/router';
 import { Global, css } from '@emotion/core';
+import { ThemeProvider } from 'emotion-theming';
 import useAxios from '@use-hooks/axios';
 
 import Home from './Home';
@@ -11,8 +12,46 @@ import AppContainer from '../components/AppContainer';
 import CustomRouter from '../components/CustomRouter';
 import Logs from './Logs';
 import PodInfo from './PodInfo';
+import {
+  primary,
+  primaryDark,
+  darkLight,
+  darkDark,
+  primaryLight,
+  fontColor,
+  fontColorWhite,
+  fontColorDark,
+  cardBackgroundLight,
+  cardBackgroundDark,
+  backgroundLight,
+  tableBorderLight,
+  tableBorderDark
+} from '../util/colors';
+
+const lightTheme = {
+  name: 'light',
+  background: backgroundLight,
+  header: primaryDark,
+  sidebarBackground: primaryLight,
+  sidebarFontColor: fontColor,
+  containerFont: fontColorDark,
+  cardBackground: cardBackgroundLight,
+  tableBorder: tableBorderLight
+};
+
+const darkTheme = {
+  name: 'dark',
+  background: darkLight,
+  header: darkDark,
+  sidebarBackground: darkDark,
+  sidebarFontColor: fontColorWhite,
+  containerFont: fontColorWhite,
+  cardBackground: cardBackgroundDark,
+  tableBorder: tableBorderDark
+};
 
 function App() {
+  const [theme, setTheme] = useState(darkTheme);
   const [links, setLinks] = useState([]);
   const { response } = useAxios({
     url: `${process.env.API}`,
@@ -35,8 +74,12 @@ function App() {
       setLinks(links => links.concat(newLink));
   };
 
+  const handleThemeChange = () => {
+    setTheme(theme => (theme.name === 'light' ? darkTheme : lightTheme));
+  };
+
   return (
-    <div>
+    <ThemeProvider theme={theme}>
       <Global
         styles={css`
           * {
@@ -49,7 +92,11 @@ function App() {
       />
       <Header />
       <AppContainer>
-        <Sidebar namespaces={namespaces} links={links} />
+        <Sidebar
+          namespaces={namespaces}
+          links={links}
+          onThemeChange={handleThemeChange}
+        />
         <CustomRouter>
           <Redirect from="/" to="/default" noThrow />
           <Home path="/:namespace" />
@@ -61,7 +108,7 @@ function App() {
           />
         </CustomRouter>
       </AppContainer>
-    </div>
+    </ThemeProvider>
   );
 }
 

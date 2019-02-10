@@ -7,6 +7,7 @@ const Select = styled.select`
   min-width: 200px;
   height: 30px;
   padding: 5px;
+  color: ${props => props.theme.containerFont};
 `;
 
 export default Select;
