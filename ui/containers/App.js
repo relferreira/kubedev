@@ -27,6 +27,7 @@ import {
   tableBorderLight,
   tableBorderDark
 } from '../util/colors';
+import Deployments from './Deployments';
 
 const lightTheme = {
   name: 'light',
@@ -100,6 +101,7 @@ function App() {
         <CustomRouter>
           <Redirect from="/" to="/default" noThrow />
           <Home path="/:namespace" />
+          <Deployments path="/:namespace/deployments" />
           <Pods path="/:namespace/pods" />
           <PodInfo path="/:namespace/pods/:name/info" />
           <Logs
