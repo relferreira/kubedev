@@ -6,6 +6,7 @@ import { LazyLog, ScrollFollow } from 'react-lazylog';
 import LogsControl from '../components/LogsControl';
 import { navigate } from '@reach/router';
 import { darkLight } from '../util/colors';
+import { getPodInfo } from '../state-management/pods-management';
 
 const LogsContainer = styled.div`
   position: relative;
@@ -26,11 +27,7 @@ export default function Logs({
   onLogInit
 }) {
   const [following, setFollowing] = useState(false);
-  const { response, loading, error, query } = useAxios({
-    url: `${process.env.API}/${namespace}/pods/${name}`,
-    method: 'GET',
-    trigger: name
-  });
+  const { response, loading, error } = getPodInfo(namespace, name);
 
   useEffect(() => {
     onLogInit({ type: 'logs', namespace, resource: 'pods', name });

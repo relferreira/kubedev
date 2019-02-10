@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import useAxios from '@use-hooks/axios';
 
 import DeployCard from '../components/DeployCard';
+import { listDeployments } from '../state-management/deployments-management';
 
 const DeployGrid = styled.div`
   display: grid;
@@ -10,11 +11,7 @@ const DeployGrid = styled.div`
 `;
 
 export default function Deployments({ namespace }) {
-  const { response, loading, error, query } = useAxios({
-    url: `${process.env.API}/${namespace}/deployments`,
-    method: 'GET',
-    trigger: namespace
-  });
+  const { response, loading } = listDeployments(namespace);
 
   if (loading) return <div>Loading...</div>;
 

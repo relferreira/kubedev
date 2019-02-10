@@ -29,6 +29,7 @@ import {
 } from '../util/colors';
 import Deployments from './Deployments';
 import Services from './Services';
+import ServiceInfo from './ServiceInfo';
 
 const lightTheme = {
   name: 'light',
@@ -103,6 +104,7 @@ function App() {
           <Redirect from="/" to="/default" noThrow />
           <Home path="/:namespace" />
           <Services path="/:namespace/services" />
+          <ServiceInfo path="/:namespace/services/:name/info" />
           <Deployments path="/:namespace/deployments" />
           <Pods path="/:namespace/pods" />
           <PodInfo path="/:namespace/pods/:name/info" />

@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import useAxios from '@use-hooks/axios';
 
 import PodCard from '../components/PodCard';
+import { listPods } from '../state-management/pods-management';
 
 const PodsGrid = styled.div`
   display: grid;
@@ -10,11 +11,7 @@ const PodsGrid = styled.div`
 `;
 
 export default function Pods({ namespace }) {
-  const { response, loading, error, query } = useAxios({
-    url: `${process.env.API}/${namespace}/pods`,
-    method: 'GET',
-    trigger: namespace
-  });
+  const { response, loading } = listPods(namespace);
 
   const { data } = response || {};
 

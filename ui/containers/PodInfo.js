@@ -4,6 +4,7 @@ import useAxios from '@use-hooks/axios';
 
 import Table from '../components/Table';
 import PodStatus from '../components/PodStatus';
+import { getPodInfo } from '../state-management/pods-management';
 
 const ContainerHeader = styled.div`
   display: flex;
@@ -24,11 +25,7 @@ const CustomTable = styled(Table)`
 `;
 
 export default function PodInfo({ namespace, name }) {
-  const { response, loading, error, query } = useAxios({
-    url: `${process.env.API}/${namespace}/pods/${name}`,
-    method: 'GET',
-    trigger: namespace
-  });
+  const { response, loading } = getPodInfo(namespace, name);
 
   if (loading) return <div>Loading...</div>;
 
