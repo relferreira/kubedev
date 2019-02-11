@@ -6,3 +6,10 @@ export const listDeployments = namespace =>
     method: 'GET',
     trigger: namespace
   });
+
+export const getDeployment = (namespace, name) =>
+  useAxios({
+    url: `${process.env.API}/${namespace}/deployments/${name}`,
+    method: 'GET',
+    trigger: namespace
+  });

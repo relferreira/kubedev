@@ -30,6 +30,7 @@ import {
 import Deployments from './Deployments';
 import Services from './Services';
 import ServiceInfo from './ServiceInfo';
+import DeploymentInfo from './DeploymentInfo';
 
 const lightTheme = {
   name: 'light',
@@ -106,6 +107,7 @@ function App() {
           <Services path="/:namespace/services" />
           <ServiceInfo path="/:namespace/services/:name/info" />
           <Deployments path="/:namespace/deployments" />
+          <DeploymentInfo path="/:namespace/deployments/:name/info" />
           <Pods path="/:namespace/pods" />
           <PodInfo path="/:namespace/pods/:name/info" />
           <Logs

@@ -49,10 +49,6 @@ const NavLink = styled(CustomLink)`
   font-size: 18px;
   cursor: pointer;
 
-  &:hover {
-    text-decoration: underline;
-  }
-
   &.active {
     font-weight: bold;
     color: ${primaryDark};
@@ -64,10 +60,6 @@ const ThemeLink = styled.a`
   text-decoration: none;
   font-size: 18px;
   cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
 `;
 
 const HistoryLink = styled(NavLink)`
