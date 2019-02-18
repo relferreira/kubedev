@@ -45,8 +45,8 @@ const lightTheme = {
 
 const darkTheme = {
   name: 'dark',
-  background: darkLight,
-  header: darkDark,
+  background: darkDark,
+  header: darkLight,
   sidebarBackground: darkDark,
   sidebarFontColor: fontColorWhite,
   containerFont: fontColorWhite,
