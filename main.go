@@ -20,6 +20,10 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
+type ScaleCommand struct {
+	Scale *int32 `json:"scale"`
+}
+
 func main() {
 	r := gin.Default()
 	var kubeconfig = flag.String("kubeconfig", filepath.Join(os.Getenv("HOME"), ".kube", "config"), "(optional) absolute path to the kubeconfig file")
@@ -92,6 +96,26 @@ func main() {
 		}
 
 		c.JSON(200, deployment)
+	})
+
+	r.POST("/api/:namespace/deployments/:name/scale", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+		name := c.Param("name")
+		var scaleCmd ScaleCommand
+		err := c.BindJSON(&scaleCmd)
+
+		deployment, err := clientset.AppsV1().Deployments(namespace).Get(name, metav1.GetOptions{})
+		if err != nil {
+			panic(err.Error())
+		}
+
+		*deployment.Spec.Replicas = *scaleCmd.Scale
+		newDeployment, newErr := clientset.AppsV1().Deployments(namespace).Update(deployment)
+		if newErr != nil {
+			panic(newErr.Error())
+		}
+
+		c.JSON(200, newDeployment)
 	})
 
 	r.GET("/api/:namespace/pods", func(c *gin.Context) {

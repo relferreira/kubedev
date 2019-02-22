@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 
 const AppContainer = styled.div`
   display: flex;
-  height: calc(100% - 70px);
+  height: calc(100% - 60px);
 `;
 
 export default AppContainer;

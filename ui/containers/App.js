@@ -40,7 +40,10 @@ const lightTheme = {
   sidebarFontColor: fontColor,
   containerFont: fontColorDark,
   cardBackground: cardBackgroundLight,
-  tableBorder: tableBorderLight
+  tableBorder: tableBorderLight,
+  controllerBackground: backgroundLight,
+  controllerColor: fontColor,
+  controllerBorder: fontColor
 };
 
 const darkTheme = {
@@ -51,7 +54,10 @@ const darkTheme = {
   sidebarFontColor: fontColorWhite,
   containerFont: fontColorWhite,
   cardBackground: cardBackgroundDark,
-  tableBorder: tableBorderDark
+  tableBorder: tableBorderDark,
+  controllerBackground: darkLight,
+  controllerColor: fontColorWhite,
+  controllerBorder: tableBorderLight
 };
 
 function App() {

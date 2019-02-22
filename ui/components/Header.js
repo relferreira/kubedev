@@ -7,7 +7,8 @@ import logo from '../assets/logo.svg';
 const Header = styled.div`
   display: flex;
   align-items: center;
-  height: 70px;
+  position: relative;
+  height: 60px;
   padding: 16px;
   background: ${props => props.theme.header};
   color: white;
@@ -18,7 +19,8 @@ const Header = styled.div`
 const LogoContainer = styled.div`
   display: flex;
   align-items: center;
-  width: 204px;
+  // width: 204px;
+  height: 100%;
 `;
 
 const Image = styled.img`
