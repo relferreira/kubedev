@@ -7,15 +7,7 @@ import {
 import Table from '../components/Table';
 import Input from '../components/Input';
 import Button from '../components/Button';
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-
-  h1 {
-    flex: 1;
-  }
-`;
+import PageHeader from '../components/PageHeader';
 
 const CustomInput = styled(Input)`
   font-size: 14px;
@@ -45,10 +37,10 @@ export default function DeploymentInfo({ namespace, name }) {
 
   return (
     <div>
-      <Header>
+      <PageHeader>
         <h1>{metadata.name}</h1>
         <Button onClick={handleScale}>SAVE</Button>
-      </Header>
+      </PageHeader>
       <h3>Status</h3>
       <Table>
         <thead>
