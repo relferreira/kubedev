@@ -27,7 +27,7 @@ export default function DeploymentInfo({ namespace, name }) {
     namespace,
     name,
     (err, response) => {
-      if (response) setScale(response.data.status.replicas);
+      if (response) setScale(response.data.spec.replicas);
     }
   );
 
@@ -54,6 +54,7 @@ export default function DeploymentInfo({ namespace, name }) {
         <thead>
           <tr>
             <th>Replicas</th>
+            <th>Ready Replicas</th>
             <th>Available Replicas</th>
             <th>Updated Replicas</th>
           </tr>
@@ -68,6 +69,7 @@ export default function DeploymentInfo({ namespace, name }) {
                 onChange={event => setScale(+event.target.value)}
               />
             </td>
+            <td>{status.readyReplicas}</td>
             <td>{status.availableReplicas}</td>
             <td>{status.updatedReplicas}</td>
           </tr>
