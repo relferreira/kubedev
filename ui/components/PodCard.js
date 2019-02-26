@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { Link } from '@reach/router';
 import PodStatus from './PodStatus';
 import GridCard from './GridCard';
-import CardIcon from './Icon';
+import Icon from './Icon';
 
 const PodTextContainer = styled.div`
   display: flex;
@@ -27,7 +27,7 @@ const PodButtons = styled.div`
   display: flex;
 `;
 
-const PodIcon = styled(CardIcon)`
+const PodIcon = styled(Icon)`
   margin-left: 16px;
 `;
 
