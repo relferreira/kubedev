@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
-const CardIcon = styled.svg`
+const Icon = styled.svg`
+  width: 24px;
+  height: 24px;
   cursor: pointer;
   fill: ${props => props.theme.containerFont};
 `;
 
-export default CardIcon;
+export default Icon;
