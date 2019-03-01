@@ -118,6 +118,28 @@ func main() {
 		c.JSON(200, newDeployment)
 	})
 
+	r.GET("/api/:namespace/jobs", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+
+		jobs, err := clientset.BatchV1().Jobs(namespace).List(metav1.ListOptions{})
+		if err != nil {
+			panic(err.Error())
+		}
+
+		c.JSON(200, jobs)
+	})
+
+	r.GET("/api/:namespace/cron-jobs", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+
+		cronJobs, err := clientset.BatchV1beta1().CronJobs(namespace).List(metav1.ListOptions{})
+		if err != nil {
+			panic(err.Error())
+		}
+
+		c.JSON(200, cronJobs)
+	})
+
 	r.GET("/api/:namespace/pods", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 

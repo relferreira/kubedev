@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
 import { Link } from '@reach/router';
-import PodStatus from './PodStatus';
+import StatusIcon from './StatusIcon';
 import GridCard from './GridCard';
 import Icon from './Icon';
 
@@ -33,7 +33,7 @@ const PodIcon = styled(Icon)`
 
 const PodCard = ({ name, state }) => (
   <GridCard>
-    <PodStatus state={state} />
+    <StatusIcon state={state} />
     <PodTextContainer>
       <span>{name}</span>
       <PodInfo>

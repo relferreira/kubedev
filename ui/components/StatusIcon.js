@@ -8,7 +8,7 @@ import {
   neutralColor
 } from '../util/colors';
 
-const PodStatus = styled.div`
+const StatusIcon = styled.div`
   width: 25px;
   height: 25px;
   border-radius: 50%;
@@ -28,4 +28,4 @@ const PodStatus = styled.div`
   }};
 `;
 
-export default PodStatus;
+export default StatusIcon;

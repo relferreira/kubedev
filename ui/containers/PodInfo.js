@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import useAxios from '@use-hooks/axios';
 
 import Table from '../components/Table';
-import PodStatus from '../components/PodStatus';
+import PodStatus from '../components/StatusIcon';
 import { getPodInfo } from '../state-management/pods-management';
 
 const ContainerHeader = styled.div`
