@@ -7,6 +7,7 @@ const Select = styled.select`
   min-width: 200px;
   height: 30px;
   padding: 5px;
+  background: ${props => props.theme.controllerBackground};
   color: ${props => props.theme.containerFont};
 `;
 

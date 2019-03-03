@@ -72,8 +72,6 @@ const HistoryLink = styled(NavLink)`
 
 const NamespaceSelect = styled(Select)`
   margin: 0px 10px;
-  background: #fff;
-  color: ${fontColor};
 `;
 
 const getSelectedNamespace = location => {
