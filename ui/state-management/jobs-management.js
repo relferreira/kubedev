@@ -8,6 +8,13 @@ export const listJobs = namespace =>
     trigger: namespace
   });
 
+export const listCronJobs = namespace =>
+  useAxios({
+    url: `${process.env.API}/${namespace}/cron-jobs`,
+    method: 'GET',
+    trigger: namespace
+  });
+
 export const getCondition = status => {
   if (status && status.conditions) return status.conditions[0]['type'];
 

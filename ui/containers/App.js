@@ -32,6 +32,7 @@ import Services from './Services';
 import ServiceInfo from './ServiceInfo';
 import DeploymentInfo from './DeploymentInfo';
 import Jobs from './Jobs';
+import CronJobs from './CronJobs';
 
 const lightTheme = {
   name: 'light',
@@ -116,6 +117,7 @@ function App() {
           <Deployments path="/:namespace/deployments" />
           <DeploymentInfo path="/:namespace/deployments/:name/info" />
           <Jobs path="/:namespace/jobs" />
+          <CronJobs path="/:namespace/cron-jobs" />
           <Pods path="/:namespace/pods" />
           <PodInfo path="/:namespace/pods/:name/info" />
           <Logs
