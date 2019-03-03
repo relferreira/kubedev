@@ -37,8 +37,7 @@ export default function DeploymentInfo({ namespace, name }) {
 
   return (
     <div>
-      <PageHeader>
-        <h1>{metadata.name}</h1>
+      <PageHeader title={metadata.name}>
         <Button onClick={handleScale}>SAVE</Button>
       </PageHeader>
       <h3>Status</h3>

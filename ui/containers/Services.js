@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import styled from '@emotion/styled';
-import useAxios from '@use-hooks/axios';
 
 import ServiceCard from '../components/ServiceCard';
 import {
   getPublicIP,
   listServices
 } from '../state-management/services-management';
+import { filterSearch } from '../state-management/general-managements';
+import PageHeader from '../components/PageHeader';
 
 const ServicesGrid = styled.div`
   display: grid;
@@ -14,19 +15,26 @@ const ServicesGrid = styled.div`
 `;
 
 export default function Services({ namespace }) {
-  const { response, loading } = listServices(namespace);
+  const [search, setSearch] = useState('');
+  const { response, loading, query } = listServices(namespace);
+
+  const { data } = response || {};
+
+  const items = useMemo(() => filterSearch(data, search), [data, search]);
 
   if (loading) return <div>Loading...</div>;
 
   if (!response) return null;
 
-  const {
-    data: { items }
-  } = response || {};
-
   return (
     <div>
-      <h1>Services</h1>
+      <PageHeader
+        title="Services"
+        showSearch={true}
+        search={search}
+        onSearch={text => setSearch(text)}
+        onRefresh={() => query()}
+      />
       <ServicesGrid>
         {items &&
           items.map(({ metadata, spec, status }) => (
