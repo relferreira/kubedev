@@ -8,6 +8,16 @@ export const listJobs = namespace =>
     trigger: namespace
   });
 
+export const getJobInfo = (namespace, name) =>
+  useAxios({
+    url: `${process.env.API}/${namespace}/jobs/${name}`,
+    method: 'GET',
+    trigger: namespace
+  });
+
+export const deleteJob = (namespace, name) =>
+  axios.delete(`${process.env.API}/${namespace}/jobs/${name}`);
+
 export const listCronJobs = namespace =>
   useAxios({
     url: `${process.env.API}/${namespace}/cron-jobs`,

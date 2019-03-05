@@ -1,10 +1,21 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { primary, fontColorWhite } from '../util/colors';
+import { primary, fontColorWhite, errorColor } from '../util/colors';
+
+function getBackground(type) {
+  switch (type) {
+    case 'primary':
+      return primary;
+    case 'error':
+      return errorColor;
+    default:
+      return primary;
+  }
+}
 
 const Button = styled.button`
   padding: 5px 10px;
-  background: ${primary};
+  background: ${props => getBackground(props.type)};
   color: ${fontColorWhite};
   border: none;
   border-radius: 3px;

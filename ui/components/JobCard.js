@@ -4,15 +4,24 @@ import styled from '@emotion/styled';
 
 import StatusIcon from './StatusIcon';
 import GridCard from './GridCard';
+import { Link } from '@reach/router';
 
-const PodTextContainer = styled.div`
+const JobLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+`;
+
+const JobTextContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   margin-left: 16px;
 `;
 
-const PodInfo = styled.div`
+const JobInfo = styled.div`
   display: flex;
   margin-top: 10px;
 
@@ -23,17 +32,19 @@ const PodInfo = styled.div`
 
 const JobCard = ({ name, state, number }) => (
   <GridCard>
-    <StatusIcon state={state} />
-    <PodTextContainer>
-      <span>{name}</span>
-      <PodInfo>
-        {state && number && (
-          <span>
-            {state}: {number}
-          </span>
-        )}
-      </PodInfo>
-    </PodTextContainer>
+    <JobLink to={`${name}`}>
+      <StatusIcon state={state} />
+      <JobTextContainer>
+        <span>{name}</span>
+        <JobInfo>
+          {state && number && (
+            <span>
+              {state}: {number}
+            </span>
+          )}
+        </JobInfo>
+      </JobTextContainer>
+    </JobLink>
   </GridCard>
 );
 

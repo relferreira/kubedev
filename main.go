@@ -35,7 +35,14 @@ func main() {
 
 	clientset, err := kubernetes.NewForConfig(config)
 
-	r.Use(cors.Default())
+	r.Use(cors.New(cors.Options{
+		AllowedOrigins:     []string{"http://localhost:1234"},
+		AllowedMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowedHeaders:     []string{"Authorization", "Accept", "Origin", "Content-Type"},
+		AllowCredentials:   true,
+		OptionsPassthrough: false,
+		Debug:              true,
+	}))
 
 	box := packr.NewBox("./dist")
 	r.StaticFS("/ui", box)
@@ -127,6 +134,31 @@ func main() {
 		}
 
 		c.JSON(200, jobs)
+	})
+
+	r.GET("/api/:namespace/jobs/:name", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+		name := c.Param("name")
+
+		job, err := clientset.BatchV1().Jobs(namespace).Get(name, metav1.GetOptions{})
+		if err != nil {
+			panic(err.Error())
+		}
+
+		c.JSON(200, job)
+	})
+
+	r.DELETE("/api/:namespace/jobs/:name", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+		name := c.Param("name")
+
+		deleteOptions := metav1.DeleteOptions{}
+		err := clientset.BatchV1().Jobs(namespace).Delete(name, &deleteOptions)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		c.Status(200)
 	})
 
 	r.GET("/api/:namespace/cron-jobs", func(c *gin.Context) {
