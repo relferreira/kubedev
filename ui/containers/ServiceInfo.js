@@ -4,15 +4,24 @@ import styled from '@emotion/styled';
 import Table from '../components/Table';
 import {
   getPublicIP,
-  getServiceInfo
+  getServiceInfo,
+  deleteService
 } from '../state-management/services-management';
+import PageHeader from '../components/PageHeader';
+import Button from '../components/Button';
 
 const ServiceType = styled.h3`
   margin-bottom: 16px;
 `;
 
-export default function ServiceInfo({ namespace, name }) {
+export default function ServiceInfo({ namespace, name, navigate }) {
   const { response, loading } = getServiceInfo(namespace, name);
+
+  const handleDelete = () => {
+    deleteService(namespace, name)
+      .then(() => navigate(`/${namespace}/services`))
+      .catch(err => console.error(err));
+  };
 
   if (loading) return <div>Loading...</div>;
 
@@ -24,7 +33,11 @@ export default function ServiceInfo({ namespace, name }) {
 
   return (
     <div>
-      <h1>{metadata.name}</h1>
+      <PageHeader title={metadata.name}>
+        <Button type="error" onClick={handleDelete}>
+          DELETE
+        </Button>
+      </PageHeader>
       <ServiceType>Type: {spec.type}</ServiceType>
       <h3>IPs</h3>
       <Table>

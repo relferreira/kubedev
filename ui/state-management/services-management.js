@@ -1,4 +1,5 @@
 import useAxios from '@use-hooks/axios';
+import axios from 'axios';
 
 export const listServices = namespace =>
   useAxios({
@@ -6,6 +7,9 @@ export const listServices = namespace =>
     method: 'GET',
     trigger: namespace
   });
+
+export const deleteService = (namespace, name) =>
+  axios.delete(`${process.env.API}/${namespace}/services/${name}`);
 
 export const getServiceInfo = (namespace, name) =>
   useAxios({

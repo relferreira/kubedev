@@ -85,6 +85,19 @@ func main() {
 		c.JSON(200, service)
 	})
 
+	r.DELETE("/api/:namespace/services/:name", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+		name := c.Param("name")
+
+		deleteOptions := metav1.DeleteOptions{}
+		err := clientset.CoreV1().Services(namespace).Delete(name, &deleteOptions)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		c.Status(200)
+	})
+
 	r.GET("/api/:namespace/deployments", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 
