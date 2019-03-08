@@ -4,13 +4,15 @@ import useAxios from '@use-hooks/axios';
 
 import Table from '../components/Table';
 import PodStatus from '../components/StatusIcon';
-import { getPodInfo } from '../state-management/pods-management';
+import { getPodInfo, deletePod } from '../state-management/pods-management';
+import Button from '../components/Button';
 
 const ContainerHeader = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 16px;
   h1 {
+    flex: 1;
     margin-left: 16px;
     margin-bottom: 0;
   }
@@ -24,8 +26,14 @@ const CustomTable = styled(Table)`
   margin-top: 5px;
 `;
 
-export default function PodInfo({ namespace, name }) {
+export default function PodInfo({ namespace, name, navigate }) {
   const { response, loading } = getPodInfo(namespace, name);
+
+  const handleDelete = () => {
+    deletePod(namespace, name)
+      .then(() => navigate(`/${namespace}/pods`))
+      .catch(err => console.error(err));
+  };
 
   if (loading) return <div>Loading...</div>;
 
@@ -40,6 +48,9 @@ export default function PodInfo({ namespace, name }) {
       <ContainerHeader>
         <PodStatus state={status.phase} />
         <h1>{metadata.name}</h1>
+        <Button type="error" onClick={handleDelete}>
+          DELETE
+        </Button>
       </ContainerHeader>
       <h3>Containers</h3>
 

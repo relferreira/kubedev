@@ -33,7 +33,7 @@ export const getCronJob = (namespace, name, handler) =>
     customHandler: handler
   });
 
-export const deleteCronJob = (namespace, name, schedule) =>
+export const deleteCronJob = (namespace, name) =>
   axios.delete(`${process.env.API}/${namespace}/cron-jobs/${name}`);
 
 export const scheduleCronJob = (namespace, name, schedule) =>

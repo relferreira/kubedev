@@ -245,6 +245,19 @@ func main() {
 		c.JSON(200, pod)
 	})
 
+	r.DELETE("/api/:namespace/pods/:name", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+		name := c.Param("name")
+
+		deleteOptions := metav1.DeleteOptions{}
+		err := clientset.CoreV1().Pods(namespace).Delete(name, &deleteOptions)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		c.Status(200)
+	})
+
 	r.GET("/api/:namespace/pods/:name/:container/logs", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 		name := c.Param("name")
