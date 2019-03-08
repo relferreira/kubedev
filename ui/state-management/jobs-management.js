@@ -25,6 +25,22 @@ export const listCronJobs = namespace =>
     trigger: namespace
   });
 
+export const getCronJob = (namespace, name, handler) =>
+  useAxios({
+    url: `${process.env.API}/${namespace}/cron-jobs/${name}`,
+    method: 'GET',
+    trigger: namespace,
+    customHandler: handler
+  });
+
+export const deleteCronJob = (namespace, name, schedule) =>
+  axios.delete(`${process.env.API}/${namespace}/cron-jobs/${name}`);
+
+export const scheduleCronJob = (namespace, name, schedule) =>
+  axios.post(`${process.env.API}/${namespace}/cron-jobs/${name}/schedule`, {
+    schedule
+  });
+
 export const getCondition = status => {
   if (status && status.conditions) return status.conditions[0]['type'];
 

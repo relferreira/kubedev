@@ -21,7 +21,7 @@ export default function CronJobs({ namespace }) {
   const items = useMemo(() => filterSearch(data, search), [data, search]);
 
   if (loading) return <div>Loading...</div>;
-  console.log(data);
+
   return (
     <div>
       <PageHeader

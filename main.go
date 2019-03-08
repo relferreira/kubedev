@@ -24,6 +24,10 @@ type ScaleCommand struct {
 	Scale *int32 `json:"scale"`
 }
 
+type ScheduleCommand struct {
+	Schedule *string `json:"schedule"`
+}
+
 func main() {
 	r := gin.Default()
 	var kubeconfig = flag.String("kubeconfig", filepath.Join(os.Getenv("HOME"), ".kube", "config"), "(optional) absolute path to the kubeconfig file")
@@ -170,6 +174,52 @@ func main() {
 		}
 
 		c.JSON(200, cronJobs)
+	})
+
+	r.GET("/api/:namespace/cron-jobs/:name", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+		name := c.Param("name")
+
+		cronJob, err := clientset.BatchV1beta1().CronJobs(namespace).Get(name, metav1.GetOptions{})
+		if err != nil {
+			panic(err.Error())
+		}
+
+		c.JSON(200, cronJob)
+	})
+
+	r.DELETE("/api/:namespace/cron-jobs/:name", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+		name := c.Param("name")
+
+		deleteOptions := metav1.DeleteOptions{}
+		err := clientset.BatchV1beta1().CronJobs(namespace).Delete(name, &deleteOptions)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		c.Status(200)
+	})
+
+	r.POST("/api/:namespace/cron-jobs/:name/schedule", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+		name := c.Param("name")
+
+		var scheduleCmd ScheduleCommand
+		err := c.BindJSON(&scheduleCmd)
+
+		cronJob, err := clientset.BatchV1beta1().CronJobs(namespace).Get(name, metav1.GetOptions{})
+		if err != nil {
+			panic(err.Error())
+		}
+
+		cronJob.Spec.Schedule = *scheduleCmd.Schedule
+		newCronJob, updateErr := clientset.BatchV1beta1().CronJobs(namespace).Update(cronJob)
+		if updateErr != nil {
+			panic(updateErr.Error())
+		}
+
+		c.JSON(200, newCronJob)
 	})
 
 	r.GET("/api/:namespace/pods", func(c *gin.Context) {

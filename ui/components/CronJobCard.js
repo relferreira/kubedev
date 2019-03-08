@@ -3,11 +3,14 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
 import GridCard from './GridCard';
+import { Link } from '@reach/router';
 
-const TextContainer = styled.div`
+const CronJobLink = styled(Link)`
   display: flex;
   flex-direction: column;
   flex: 1;
+  color: inherit;
+  text-decoration: none;
 `;
 
 const Schedule = styled.span`
@@ -16,10 +19,10 @@ const Schedule = styled.span`
 
 const CronJobCard = ({ name, schedule }) => (
   <GridCard>
-    <TextContainer>
+    <CronJobLink to={`${name}`}>
       <span>{name}</span>
       <Schedule>Schedule: {schedule}</Schedule>
-    </TextContainer>
+    </CronJobLink>
   </GridCard>
 );
 

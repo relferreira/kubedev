@@ -12,6 +12,10 @@ const PageHeaderContainer = styled.div`
   h1 {
     flex: 1;
   }
+
+  button {
+    margin-left: 10px;
+  }
 `;
 
 const RefreshIcon = styled(Icon)`
