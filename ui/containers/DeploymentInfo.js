@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import {
   getDeployment,
-  scaleDeployment
+  scaleDeployment,
+  deleteDeployment
 } from '../state-management/deployments-management';
 import Table from '../components/Table';
 import Input from '../components/Input';
@@ -13,7 +14,7 @@ const CustomInput = styled(Input)`
   font-size: 14px;
 `;
 
-export default function DeploymentInfo({ namespace, name }) {
+export default function DeploymentInfo({ namespace, name, navigate }) {
   const [scale, setScale] = useState(0);
   const { response, loading, query } = getDeployment(
     namespace,
@@ -27,6 +28,12 @@ export default function DeploymentInfo({ namespace, name }) {
     scaleDeployment(namespace, name, scale).then(() => query());
   };
 
+  const handleDelete = () => {
+    deleteDeployment(namespace, name)
+      .then(() => navigate(`/${namespace}/deployments`))
+      .catch(err => console.error(err));
+  };
+
   if (loading) return <div>Loading...</div>;
 
   if (!response) return null;
@@ -38,6 +45,9 @@ export default function DeploymentInfo({ namespace, name }) {
   return (
     <div>
       <PageHeader title={metadata.name}>
+        <Button type="error" onClick={handleDelete}>
+          DELETE
+        </Button>
         <Button onClick={handleScale}>SAVE</Button>
       </PageHeader>
       <h3>Status</h3>

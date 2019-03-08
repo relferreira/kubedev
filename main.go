@@ -109,6 +109,19 @@ func main() {
 		c.JSON(200, deployment)
 	})
 
+	r.DELETE("/api/:namespace/deployments/:name", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+		name := c.Param("name")
+
+		deleteOptions := metav1.DeleteOptions{}
+		err := clientset.AppsV1beta2().Deployments(namespace).Delete(name, &deleteOptions)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		c.Status(200)
+	})
+
 	r.POST("/api/:namespace/deployments/:name/scale", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 		name := c.Param("name")

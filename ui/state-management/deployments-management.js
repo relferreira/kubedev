@@ -20,3 +20,6 @@ export const scaleDeployment = (namespace, name, scale) =>
   axios.post(`${process.env.API}/${namespace}/deployments/${name}/scale`, {
     scale
   });
+
+export const deleteDeployment = (namespace, name) =>
+  axios.delete(`${process.env.API}/${namespace}/deployments/${name}`);
