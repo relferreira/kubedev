@@ -7,7 +7,7 @@ import useAxios from '@use-hooks/axios';
 import Home from './Home';
 import Pods from './Pods';
 import Sidebar from '../components/Sidebar';
-import Header from '../components/Header';
+import Header from './Header';
 import AppContainer from '../components/AppContainer';
 import CustomRouter from '../components/CustomRouter';
 import Logs from './Logs';
@@ -112,18 +112,18 @@ function App() {
           onThemeChange={handleThemeChange}
         />
         <CustomRouter>
-          <Redirect from="/" to="/default" noThrow />
-          <Home path="/:namespace" />
+          <Redirect from="/" to="/default/pods" noThrow />
+          {/* <Home path="/:namespace" /> */}
+          <Pods path="/:namespace/pods" />
+          <PodInfo path="/:namespace/pods/:name/info" />
           <Services path="/:namespace/services" />
           <ServiceInfo path="/:namespace/services/:name/info" />
           <Deployments path="/:namespace/deployments" />
           <DeploymentInfo path="/:namespace/deployments/:name/info" />
           <Jobs path="/:namespace/jobs" />
-          <JobInfo path="/:namespace/jobs/:name" />
+          <JobInfo path="/:namespace/jobs/:name/info" />
           <CronJobs path="/:namespace/cron-jobs" />
-          <CronJobInfo path="/:namespace/cron-jobs/:name" />
-          <Pods path="/:namespace/pods" />
-          <PodInfo path="/:namespace/pods/:name/info" />
+          <CronJobInfo path="/:namespace/cron-jobs/:name/info" />
           <Logs
             path="/:namespace/pods/:name/logs/container/:selectedContainer"
             onLogInit={handleSidebarChange}

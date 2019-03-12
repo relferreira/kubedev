@@ -12,7 +12,7 @@ export const getDeployment = (namespace, name, handler) =>
   useAxios({
     url: `${process.env.API}/${namespace}/deployments/${name}`,
     method: 'GET',
-    trigger: namespace,
+    trigger: { namespace, name },
     customHandler: handler
   });
 

@@ -12,7 +12,7 @@ export const getJobInfo = (namespace, name) =>
   useAxios({
     url: `${process.env.API}/${namespace}/jobs/${name}`,
     method: 'GET',
-    trigger: namespace
+    trigger: { namespace, name }
   });
 
 export const deleteJob = (namespace, name) =>
@@ -29,7 +29,7 @@ export const getCronJob = (namespace, name, handler) =>
   useAxios({
     url: `${process.env.API}/${namespace}/cron-jobs/${name}`,
     method: 'GET',
-    trigger: namespace,
+    trigger: { namespace, name },
     customHandler: handler
   });
 

@@ -92,7 +92,7 @@ const Sidebar = ({ namespaces, links, onThemeChange }) => (
           </SidebarTitle>
           <NamespaceSelect
             value={namespace}
-            onChange={event => navigate(`/${event.target.value}`)}
+            onChange={event => navigate(`/${event.target.value}/pods`)}
           >
             {namespaces.map(namespace => (
               <option key={namespace}>{namespace}</option>
@@ -102,7 +102,7 @@ const Sidebar = ({ namespaces, links, onThemeChange }) => (
             <p>Resources</p>
             <hr />
           </SidebarTitle>
-          <NavLink to="/">Home</NavLink>
+          {/* <NavLink to="/">Home</NavLink> */}
           <NavLink to={`/${namespace}/services`}>Services</NavLink>
           <NavLink to={`/${namespace}/deployments`}>Deployments</NavLink>
           <NavLink to={`/${namespace}/jobs`}>Jobs</NavLink>

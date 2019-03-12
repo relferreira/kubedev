@@ -19,7 +19,7 @@ const Schedule = styled.span`
 
 const CronJobCard = ({ name, schedule }) => (
   <GridCard>
-    <CronJobLink to={`${name}`}>
+    <CronJobLink to={`${name}/info`}>
       <span>{name}</span>
       <Schedule>Schedule: {schedule}</Schedule>
     </CronJobLink>

@@ -12,6 +12,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gobuffalo/packr"
+	models "github.com/kubedev/models"
 	"github.com/relferreira/sse"
 	cors "github.com/rs/cors/wrapper/gin"
 	v1 "k8s.io/api/core/v1"
@@ -19,14 +20,6 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 )
-
-type ScaleCommand struct {
-	Scale *int32 `json:"scale"`
-}
-
-type ScheduleCommand struct {
-	Schedule *string `json:"schedule"`
-}
 
 func main() {
 	r := gin.Default()
@@ -59,6 +52,18 @@ func main() {
 		}
 
 		c.JSON(200, namespaces)
+	})
+
+	r.GET("/api/:namespace/search", func(c *gin.Context) {
+
+		services, _ := clientset.CoreV1().Services(metav1.NamespaceAll).List(metav1.ListOptions{})
+		deployments, _ := clientset.AppsV1beta2().Deployments(metav1.NamespaceAll).List(metav1.ListOptions{})
+		pods, _ := clientset.CoreV1().Pods(metav1.NamespaceAll).List(metav1.ListOptions{})
+		cronJobs, _ := clientset.BatchV1beta1().CronJobs(metav1.NamespaceAll).List(metav1.ListOptions{})
+		jobs, _ := clientset.BatchV1().Jobs(metav1.NamespaceAll).List(metav1.ListOptions{})
+
+		response := models.SearchResponse{Services: services, Deployments: deployments, Pods: pods, CronJobs: cronJobs, Jobs: jobs}
+		c.JSON(200, response)
 	})
 
 	r.GET("/api/:namespace/services", func(c *gin.Context) {
@@ -138,7 +143,7 @@ func main() {
 	r.POST("/api/:namespace/deployments/:name/scale", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 		name := c.Param("name")
-		var scaleCmd ScaleCommand
+		var scaleCmd models.ScaleCommand
 		err := c.BindJSON(&scaleCmd)
 
 		deployment, err := clientset.AppsV1().Deployments(namespace).Get(name, metav1.GetOptions{})
@@ -231,7 +236,7 @@ func main() {
 		namespace := c.Param("namespace")
 		name := c.Param("name")
 
-		var scheduleCmd ScheduleCommand
+		var scheduleCmd models.ScheduleCommand
 		err := c.BindJSON(&scheduleCmd)
 
 		cronJob, err := clientset.BatchV1beta1().CronJobs(namespace).Get(name, metav1.GetOptions{})

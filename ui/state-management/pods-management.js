@@ -12,7 +12,7 @@ export const getPodInfo = (namespace, name) =>
   useAxios({
     url: `${process.env.API}/${namespace}/pods/${name}`,
     method: 'GET',
-    trigger: namespace
+    trigger: { namespace, name }
   });
 
 export const deletePod = (namespace, name) =>

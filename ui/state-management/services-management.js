@@ -15,7 +15,7 @@ export const getServiceInfo = (namespace, name) =>
   useAxios({
     url: `${process.env.API}/${namespace}/services/${name}`,
     method: 'GET',
-    trigger: namespace
+    trigger: { namespace, name }
   });
 
 export const getPublicIP = loadBalancer => {
