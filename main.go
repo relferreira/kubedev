@@ -94,7 +94,8 @@ func main() {
 		namespace := c.Param("namespace")
 		name := c.Param("name")
 
-		deleteOptions := metav1.DeleteOptions{}
+		police := metav1.DeletePropagationForeground
+		deleteOptions := metav1.DeleteOptions{PropagationPolicy: &police}
 		err := clientset.CoreV1().Services(namespace).Delete(name, &deleteOptions)
 		if err != nil {
 			panic(err.Error())
@@ -131,7 +132,8 @@ func main() {
 		namespace := c.Param("namespace")
 		name := c.Param("name")
 
-		deleteOptions := metav1.DeleteOptions{}
+		police := metav1.DeletePropagationForeground
+		deleteOptions := metav1.DeleteOptions{PropagationPolicy: &police}
 		err := clientset.AppsV1beta2().Deployments(namespace).Delete(name, &deleteOptions)
 		if err != nil {
 			panic(err.Error())
@@ -187,7 +189,8 @@ func main() {
 		namespace := c.Param("namespace")
 		name := c.Param("name")
 
-		deleteOptions := metav1.DeleteOptions{}
+		police := metav1.DeletePropagationForeground
+		deleteOptions := metav1.DeleteOptions{PropagationPolicy: &police}
 		err := clientset.BatchV1().Jobs(namespace).Delete(name, &deleteOptions)
 		if err != nil {
 			panic(err.Error())
@@ -223,7 +226,8 @@ func main() {
 		namespace := c.Param("namespace")
 		name := c.Param("name")
 
-		deleteOptions := metav1.DeleteOptions{}
+		police := metav1.DeletePropagationForeground
+		deleteOptions := metav1.DeleteOptions{PropagationPolicy: &police}
 		err := clientset.BatchV1beta1().CronJobs(namespace).Delete(name, &deleteOptions)
 		if err != nil {
 			panic(err.Error())
@@ -280,7 +284,8 @@ func main() {
 		namespace := c.Param("namespace")
 		name := c.Param("name")
 
-		deleteOptions := metav1.DeleteOptions{}
+		police := metav1.DeletePropagationForeground
+		deleteOptions := metav1.DeleteOptions{PropagationPolicy: &police}
 		err := clientset.CoreV1().Pods(namespace).Delete(name, &deleteOptions)
 		if err != nil {
 			panic(err.Error())
