@@ -102,9 +102,18 @@ const SearchItem = styled.div`
 const worker = new Worker('../workers/search.js');
 
 export default function Header() {
+  const [searchDate, setSearchDate] = useState(new Date());
   const [focus, setFocus] = useState(false);
+  const { result, error } = useWorker(worker, searchDate);
 
-  const { result, error } = useWorker(worker, 5);
+  const handleFocus = () => {
+    setFocus(true);
+    setSearchDate(new Date());
+  };
+
+  const handleBlur = () => {
+    setFocus(false);
+  };
 
   const items = useMemo(() => formatSearchResponse(result), [result]);
 
@@ -137,7 +146,6 @@ export default function Header() {
         }) => (
           <div>
             <InputContainer focus={focus}>
-              {/* <Label {...getLabelProps()}>Search Resources</Label> */}
               <SearchIcon {...getLabelProps({ 'aria-label': 'search' })}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -152,8 +160,8 @@ export default function Header() {
               <Input
                 {...getInputProps({
                   placeholder: 'Search',
-                  onFocus: () => setFocus(true),
-                  onBlur: () => setFocus(false)
+                  onFocus: handleFocus,
+                  onBlur: handleBlur
                 })}
               />
               {isOpen ? (
