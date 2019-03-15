@@ -16,6 +16,9 @@ const ContainerHeader = styled.div`
     margin-left: 16px;
     margin-bottom: 0;
   }
+  button {
+    margin-left: 10px;
+  }
 `;
 
 const ContainerInfo = styled.div`
@@ -28,6 +31,10 @@ const CustomTable = styled(Table)`
 
 export default function PodInfo({ namespace, name, navigate }) {
   const { response, loading } = getPodInfo(namespace, name);
+
+  const handleLogs = () => {
+    navigate(`/${namespace}/pods/${name}/logs/container/0`);
+  };
 
   const handleDelete = () => {
     deletePod(namespace, name)
@@ -48,6 +55,9 @@ export default function PodInfo({ namespace, name, navigate }) {
       <ContainerHeader>
         <PodStatus state={status.phase} />
         <h1>{metadata.name}</h1>
+        <Button type="primary" onClick={handleLogs}>
+          LOGS
+        </Button>
         <Button type="error" onClick={handleDelete}>
           DELETE
         </Button>

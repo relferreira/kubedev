@@ -114,8 +114,6 @@ function App() {
           onThemeChange={handleThemeChange}
         />
 
-        {/* Better Loading */}
-        {/* <RouterLoading /> */}
         <Suspense fallback={<RouterLoading />}>
           <CustomRouter>
             <Redirect from="/" to="/default/pods" noThrow />
