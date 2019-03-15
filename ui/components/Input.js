@@ -7,6 +7,7 @@ const Input = styled.input`
   background: ${props => props.theme.controllerBackground};
   color: ${props => props.theme.controllerColor};
   border-radius: 5px;
+  font-size: 12px;
 `;
 
 export default Input;

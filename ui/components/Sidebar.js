@@ -92,6 +92,7 @@ const Sidebar = ({ namespaces, links, onThemeChange }) => (
           </SidebarTitle>
           <NamespaceSelect
             value={namespace}
+            aria-label="namespace-selector"
             onChange={event => navigate(`/${event.target.value}/pods`)}
           >
             {namespaces.map(namespace => (

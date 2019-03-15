@@ -14,6 +14,7 @@
     "babel-core": "^7.0.0-0",
     "husky": "^1.3.1",
     "parcel-bundler": "^1.11.0",
+    "parcel-plugin-sw-cache": "^0.2.7",
     "rimraf": "^2.6.3"
   },
   "dependencies": {

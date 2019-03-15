@@ -1,17 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Redirect } from '@reach/router';
 import { Global, css } from '@emotion/core';
 import { ThemeProvider } from 'emotion-theming';
 import useAxios from '@use-hooks/axios';
 
-import Home from './Home';
-import Pods from './Pods';
 import Sidebar from '../components/Sidebar';
 import Header from './Header';
 import AppContainer from '../components/AppContainer';
 import CustomRouter from '../components/CustomRouter';
-import Logs from './Logs';
-import PodInfo from './PodInfo';
 import {
   primary,
   primaryDark,
@@ -27,14 +23,20 @@ import {
   tableBorderLight,
   tableBorderDark
 } from '../util/colors';
-import Deployments from './Deployments';
-import Services from './Services';
-import ServiceInfo from './ServiceInfo';
-import DeploymentInfo from './DeploymentInfo';
-import Jobs from './Jobs';
-import CronJobs from './CronJobs';
-import JobInfo from './JobInfo';
-import CronJobInfo from './CronJobInfo';
+import RouterLoading from '../components/RouterLoading';
+
+const Home = React.lazy(() => import('./Home'));
+const Logs = React.lazy(() => import('./Logs'));
+const PodInfo = React.lazy(() => import('./PodInfo'));
+const Deployments = React.lazy(() => import('./Deployments'));
+const Services = React.lazy(() => import('./Services'));
+const ServiceInfo = React.lazy(() => import('./ServiceInfo'));
+const DeploymentInfo = React.lazy(() => import('./DeploymentInfo'));
+const Jobs = React.lazy(() => import('./Jobs'));
+const CronJobs = React.lazy(() => import('./CronJobs'));
+const JobInfo = React.lazy(() => import('./JobInfo'));
+const CronJobInfo = React.lazy(() => import('./CronJobInfo'));
+const Pods = React.lazy(() => import('./Pods'));
 
 const lightTheme = {
   name: 'light',
@@ -111,24 +113,29 @@ function App() {
           links={links}
           onThemeChange={handleThemeChange}
         />
-        <CustomRouter>
-          <Redirect from="/" to="/default/pods" noThrow />
-          {/* <Home path="/:namespace" /> */}
-          <Pods path="/:namespace/pods" />
-          <PodInfo path="/:namespace/pods/:name/info" />
-          <Services path="/:namespace/services" />
-          <ServiceInfo path="/:namespace/services/:name/info" />
-          <Deployments path="/:namespace/deployments" />
-          <DeploymentInfo path="/:namespace/deployments/:name/info" />
-          <Jobs path="/:namespace/jobs" />
-          <JobInfo path="/:namespace/jobs/:name/info" />
-          <CronJobs path="/:namespace/cron-jobs" />
-          <CronJobInfo path="/:namespace/cron-jobs/:name/info" />
-          <Logs
-            path="/:namespace/pods/:name/logs/container/:selectedContainer"
-            onLogInit={handleSidebarChange}
-          />
-        </CustomRouter>
+
+        {/* Better Loading */}
+        {/* <RouterLoading /> */}
+        <Suspense fallback={<RouterLoading />}>
+          <CustomRouter>
+            <Redirect from="/" to="/default/pods" noThrow />
+            {/* <Home path="/:namespace" /> */}
+            <Pods path="/:namespace/pods" />
+            <PodInfo path="/:namespace/pods/:name/info" />
+            <Services path="/:namespace/services" />
+            <ServiceInfo path="/:namespace/services/:name/info" />
+            <Deployments path="/:namespace/deployments" />
+            <DeploymentInfo path="/:namespace/deployments/:name/info" />
+            <Jobs path="/:namespace/jobs" />
+            <JobInfo path="/:namespace/jobs/:name/info" />
+            <CronJobs path="/:namespace/cron-jobs" />
+            <CronJobInfo path="/:namespace/cron-jobs/:name/info" />
+            <Logs
+              path="/:namespace/pods/:name/logs/container/:selectedContainer"
+              onLogInit={handleSidebarChange}
+            />
+          </CustomRouter>
+        </Suspense>
       </AppContainer>
     </ThemeProvider>
   );

@@ -11,7 +11,6 @@ import { getPodInfo } from '../state-management/pods-management';
 const LogsContainer = styled.div`
   position: relative;
   height: 100%;
-  margin: -16px;
   color: white;
   background: ${props => props.theme.background};
 `;

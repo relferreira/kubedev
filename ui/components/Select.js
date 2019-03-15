@@ -9,6 +9,7 @@ const Select = styled.select`
   padding: 5px;
   background: ${props => props.theme.controllerBackground};
   color: ${props => props.theme.containerFont};
+  font-size: 12px;
 `;
 
 export default Select;
