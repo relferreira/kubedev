@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel index.html",
-    "build": "rimraf ../dist && NODE_ENV=production parcel build index.html -d ../dist --public-url /ui",
+    "build": "rimraf ../dist && NODE_ENV=production parcel build index.html -d ../dist --public-url /",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

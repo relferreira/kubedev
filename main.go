@@ -13,6 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gobuffalo/packr"
 	models "github.com/kubedev/models"
+	"github.com/kubedev/utils"
 	"github.com/relferreira/sse"
 	cors "github.com/rs/cors/wrapper/gin"
 	v1 "k8s.io/api/core/v1"
@@ -42,7 +43,9 @@ func main() {
 	}))
 
 	box := packr.NewBox("./dist")
-	r.StaticFS("/ui", box)
+	// r.StaticFS("/", box)
+	r.Use(utils.Serve("/", box))
+	r.NoRoute(utils.RedirectIndex())
 
 	r.GET("/api", func(c *gin.Context) {
 		namespaces, err := clientset.CoreV1().Namespaces().List(metav1.ListOptions{})
