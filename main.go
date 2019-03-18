@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"flag"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -128,7 +127,18 @@ func main() {
 			panic(err.Error())
 		}
 
-		c.JSON(200, deployment)
+		selector, errSelector := metav1.LabelSelectorAsSelector(deployment.Spec.Selector)
+		if errSelector != nil {
+			panic(errSelector.Error())
+		}
+
+		pods, err := clientset.CoreV1().Pods(namespace).List(metav1.ListOptions{LabelSelector: selector.String()})
+		if err != nil {
+			panic(err.Error())
+		}
+
+		response := models.DeploymentResponse{Deployment: deployment, Pods: pods}
+		c.JSON(200, response)
 	})
 
 	r.DELETE("/api/:namespace/deployments/:name", func(c *gin.Context) {
@@ -268,6 +278,13 @@ func main() {
 			panic(err.Error())
 		}
 
+		// data, err := clientset.RESTClient().Get().AbsPath("apis/metrics.k8s.io/v1beta1/pods").DoRaw()
+		// if err != nil {
+		// 	panic(err.Error())
+		// }
+
+		// log.Println(string(data))
+
 		c.JSON(200, pods)
 	})
 
@@ -340,7 +357,6 @@ func main() {
 			reader := bufio.NewReader(podLogs)
 			for {
 				line, _ := reader.ReadBytes('\n')
-				log.Println(string(line))
 				chanStream <- string(line)
 			}
 		}()
