@@ -37,6 +37,7 @@ const CronJobs = React.lazy(() => import('./CronJobs'));
 const JobInfo = React.lazy(() => import('./JobInfo'));
 const CronJobInfo = React.lazy(() => import('./CronJobInfo'));
 const Pods = React.lazy(() => import('./Pods'));
+const Editor = React.lazy(() => import('./Editor'));
 
 const lightTheme = {
   name: 'light',
@@ -132,6 +133,7 @@ function App() {
               path="/:namespace/pods/:name/logs/container/:selectedContainer"
               onLogInit={handleSidebarChange}
             />
+            <Editor path="/:namespace/new" />
           </CustomRouter>
         </Suspense>
       </AppContainer>

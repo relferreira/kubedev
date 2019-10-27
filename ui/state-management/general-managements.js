@@ -25,3 +25,9 @@ export const formatSearchResponse = data => {
 
   return [];
 };
+
+export const getSelectedNamespace = location => {
+  let matches = location.pathname.split('/');
+  if (matches && matches.length > 1) return matches[1];
+  return '';
+};
