@@ -3,10 +3,13 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"flag"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -106,15 +109,39 @@ func main() {
 		c.Status(200)
 	})
 
-	r.GET("/api/:namespace/deployments", func(c *gin.Context) {
+	r.GET("/api/:namespace/exec", func(c *gin.Context) {
 		namespace := c.Param("namespace")
+		command := strings.Fields(c.Query("command"))
 
-		deployments, err := clientset.AppsV1beta2().Deployments(namespace).List(metav1.ListOptions{})
+		fullCommand := []string{}
+		fullCommand = append(fullCommand, "-n")
+		fullCommand = append(fullCommand, namespace)
+		fullCommand = append(fullCommand, command...)
+		fullCommand = append(fullCommand, "-o")
+		fullCommand = append(fullCommand, "json")
+
+		cmd := exec.Command("kubectl", fullCommand...)
+
+		out, err := cmd.Output()
+		output := string(out[:])
 
 		if err != nil {
 			panic(err.Error())
 		}
 
+		json := json.RawMessage(output)
+
+		c.JSON(200, json)
+
+	})
+
+	r.GET("/api/:namespace/deployments", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+		deployments, err := clientset.AppsV1beta2().Deployments(namespace).List(metav1.ListOptions{})
+
+		if err != nil {
+			panic(err.Error())
+		}
 		c.JSON(200, deployments)
 	})
 
