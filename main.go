@@ -5,7 +5,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -109,7 +111,7 @@ func main() {
 		c.Status(200)
 	})
 
-	r.GET("/api/:namespace/exec", func(c *gin.Context) {
+	r.GET("/api/:namespace/get", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 		command := strings.Fields(c.Query("command"))
 
@@ -133,6 +135,37 @@ func main() {
 
 		c.JSON(200, json)
 
+	})
+
+	r.POST("/api/:namespace/apply", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+
+		body := c.Request.Body
+		x, _ := ioutil.ReadAll(body)
+
+		fmt.Printf("%s \n", string(x))
+
+		err = ioutil.WriteFile("tmp.json", x, 0755)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		fullCommand := []string{}
+		fullCommand = append(fullCommand, "-n")
+		fullCommand = append(fullCommand, namespace)
+		fullCommand = append(fullCommand, "apply")
+		fullCommand = append(fullCommand, "-f")
+		fullCommand = append(fullCommand, "tmp.json")
+
+		cmd := exec.Command("kubectl", fullCommand...)
+
+		_, err := cmd.Output()
+
+		if err != nil {
+			panic(err.Error())
+		}
+
+		c.JSON(200, x)
 	})
 
 	r.GET("/api/:namespace/deployments", func(c *gin.Context) {

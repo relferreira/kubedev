@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import styled from '@emotion/styled';
 import brace from 'brace';
 import AceEditor from 'react-ace';
@@ -16,29 +16,40 @@ const EditorContainer = styled.div`
   height: 100%;
 `;
 
-function Editor({}) {
-  const { response, loading, query } = kubectl.exec(
-    'operations',
-    'get deploy operations-api'
-  );
+function Editor({ namespace, type, name }) {
+  const [text, setText] = useState('');
 
-  const { data } = response || {};
+  if (type !== 'new') {
+    const { response, loading, query } = kubectl.get(
+      'operations',
+      'get deploy operations-api',
+      (err, response) => {
+        if (response) {
+          const { data } = response || {};
 
-  if (loading) return <div>Loading...</div>;
+          if (!data) return null;
 
-  if (!data) return null;
+          let value = yaml.safeDump(data);
+          setText(value);
+        }
+      }
+    );
 
-  let value = yaml.safeDump(data);
+    if (loading) return <div>Loading...</div>;
+  }
 
-  const handleSave = () => {};
+  const handleSave = () => {
+    let json = yaml.safeLoad(text);
+    kubectl.apply(namespace, json).then(console.log);
+  };
 
   return (
     <EditorContainer>
       <AceEditor
         mode="yaml"
         theme="dracula"
-        value={value}
-        //   onChange={onChange}
+        value={text}
+        onChange={value => setText(value)}
         name="UNIQUE_ID_OF_DIV"
         editorProps={{ $blockScrolling: true }}
         style={{

@@ -143,9 +143,7 @@ export default function Header() {
               <Downshift
                 onChange={selection =>
                   navigate(
-                    `/${selection.namespace}/${selection.type}/${
-                      selection.name
-                    }/info`
+                    `/${selection.namespace}/${selection.type}/${selection.name}/info`
                   )
                 }
                 itemToString={item => (item ? item.name : '')}
@@ -188,9 +186,7 @@ export default function Header() {
                             .map((item, index) => (
                               <SearchItem
                                 {...getItemProps({
-                                  key: `${item.type}-${item.namespace}-${
-                                    item.name
-                                  }`,
+                                  key: `${item.type}-${item.namespace}-${item.name}`,
                                   index,
                                   item,
                                   highlighted: highlightedIndex === index,
