@@ -19,10 +19,15 @@ const CustomCard = styled(Card)`
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
   z-index: 1;
+
+  p {
+    flex: 1;
+  }
 `;
 
 const EditControl = ({ onSave }) => (
   <CustomCard>
+    <p>Apply Configuration?</p>
     <Button onClick={onSave}>SAVE</Button>
   </CustomCard>
 );

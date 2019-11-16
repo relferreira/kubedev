@@ -15,7 +15,6 @@ const DeployGrid = styled.div`
 export default function Deployments({ namespace }) {
   const [search, setSearch] = useState('');
   const { response, loading, query } = listDeployments(namespace);
-  console.log(response);
   const { data } = response || {};
 
   const items = useMemo(() => filterSearch(data, search), [data, search]);

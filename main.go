@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -141,11 +142,12 @@ func main() {
 		namespace := c.Param("namespace")
 
 		body := c.Request.Body
-		x, _ := ioutil.ReadAll(body)
+		json, _ := ioutil.ReadAll(body)
 
-		fmt.Printf("%s \n", string(x))
+		fmt.Printf("%s \n", string(json))
 
-		err = ioutil.WriteFile("tmp.json", x, 0755)
+		filename := ".files/" + strconv.FormatInt(time.Now().Unix(), 10) + ".json"
+		err = ioutil.WriteFile(filename, json, 0755)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -155,7 +157,7 @@ func main() {
 		fullCommand = append(fullCommand, namespace)
 		fullCommand = append(fullCommand, "apply")
 		fullCommand = append(fullCommand, "-f")
-		fullCommand = append(fullCommand, "tmp.json")
+		fullCommand = append(fullCommand, filename)
 
 		cmd := exec.Command("kubectl", fullCommand...)
 
@@ -165,7 +167,7 @@ func main() {
 			panic(err.Error())
 		}
 
-		c.JSON(200, x)
+		c.JSON(200, json)
 	})
 
 	r.GET("/api/:namespace/deployments", func(c *gin.Context) {

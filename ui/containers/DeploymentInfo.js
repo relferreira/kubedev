@@ -52,6 +52,10 @@ export default function DeploymentInfo({ namespace, name, navigate }) {
       .catch(err => console.error(err));
   };
 
+  const handleEdit = () => {
+    navigate(`/${namespace}/deployments/${name}/edit`);
+  };
+
   const handleRefresh = () => query();
 
   if (loading) return <div>Loading...</div>;
@@ -82,6 +86,7 @@ export default function DeploymentInfo({ namespace, name, navigate }) {
         <Button type="error" onClick={handleDelete}>
           DELETE
         </Button>
+        <Button onClick={handleEdit}>EDIT</Button>
         <Button onClick={handleScale}>SAVE</Button>
       </PageHeader>
       <SectionTitle>Status</SectionTitle>

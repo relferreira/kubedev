@@ -8,6 +8,7 @@ import 'brace/theme/dracula';
 
 import * as kubectl from '../kubectl';
 import EditControl from '../components/EditControl';
+import Button from '../components/Button';
 
 const yaml = require('js-yaml');
 
@@ -16,13 +17,12 @@ const EditorContainer = styled.div`
   height: 100%;
 `;
 
-function Editor({ namespace, type, name }) {
+function Editor(props) {
   const [text, setText] = useState('');
-
-  if (type !== 'new') {
+  if (props.type !== 'new') {
     const { response, loading, query } = kubectl.get(
-      'operations',
-      'get deploy operations-api',
+      props.namespace,
+      `get ${props.type} ${props.name}`,
       (err, response) => {
         if (response) {
           const { data } = response || {};
@@ -30,6 +30,7 @@ function Editor({ namespace, type, name }) {
           if (!data) return null;
 
           let value = yaml.safeDump(data);
+          value += `\n\n\n`; //TODO HACK
           setText(value);
         }
       }
@@ -40,7 +41,7 @@ function Editor({ namespace, type, name }) {
 
   const handleSave = () => {
     let json = yaml.safeLoad(text);
-    kubectl.apply(namespace, json).then(console.log);
+    kubectl.apply(props.namespace, json).then(() => alert('Saved with succes'));
   };
 
   return (
@@ -55,7 +56,6 @@ function Editor({ namespace, type, name }) {
         style={{
           width: '100%',
           height: '100%'
-          // margin: '-16px -16px -16px -16px'
         }}
       />
       <EditControl onSave={handleSave} />
