@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import PageHeader from '../components/PageHeader';
+import useSWR from 'swr';
 
+import * as kubectl from '../kubectl';
+import PageHeader from '../components/PageHeader';
 import {
   getJobInfo,
   getCondition,
@@ -17,19 +19,18 @@ const CustomTable = styled(Table)`
 `;
 
 export default function JobInfo({ namespace, name, navigate }) {
-  const { response, loading } = getJobInfo(namespace, name);
+  const { data: response, error, isValidating, revalidate } = useSWR(
+    [namespace, `get job ${name}`],
+    kubectl.exec,
+    { suspense: true }
+  );
 
-  const handleScale = () => {
-    deleteJob(namespace, name)
-      .then(resp => navigate('../'))
-      .catch(err => {
-        console.error(err);
-      });
+  const handleDelete = () => {
+    kubectl
+      .exec(namespace, `delete job ${name}`, false)
+      .then(resp => navigate(`/${namespace}/jobs`))
+      .catch(err => console.error(err));
   };
-
-  if (loading) return <div>Loading...</div>;
-
-  if (!response) return null;
 
   const {
     data: { spec, status }
@@ -38,7 +39,7 @@ export default function JobInfo({ namespace, name, navigate }) {
   return (
     <div>
       <PageHeader title={name}>
-        <Button type="error" onClick={handleScale}>
+        <Button type="error" onClick={handleDelete}>
           DELETE
         </Button>
       </PageHeader>

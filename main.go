@@ -104,7 +104,6 @@ func main() {
 		namespace := c.Param("namespace")
 		command := strings.Fields(c.Query("command"))
 		jsonOutput, jsonErr := strconv.ParseBool(c.Query("json"))
-
 		if jsonErr != nil {
 			panic(err.Error())
 		}

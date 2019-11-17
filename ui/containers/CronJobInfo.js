@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import styled from '@emotion/styled';
+import useSWR from 'swr';
 
+import * as kubectl from '../kubectl';
 import PageHeader from '../components/PageHeader';
 import {
   getCronJob,
@@ -21,33 +23,39 @@ const CustomInput = styled(Input)`
 
 export default function CronJobInfo({ namespace, name, navigate }) {
   const [schedule, setSchedule] = useState('');
-  const { response, loading, query } = getCronJob(
-    namespace,
-    name,
-    (err, response) => {
-      if (response) setSchedule(response.data.spec.schedule);
-    }
+  const { data: response, error, isValidating, revalidate } = useSWR(
+    [namespace, `get cronjob ${name}`],
+    kubectl.exec,
+    { suspense: true }
+    // (err, response) => {
+    //   if (response) setSchedule(response.data.spec.schedule);
+    // }
   );
 
+  //TODO not working
   const handleSchedule = () => {
-    scheduleCronJob(namespace, name, schedule)
-      .then(() => query())
+    kubectl
+      .exec(
+        namespace,
+        `patch cronjob ${name} -p '{"spec":{"schedule": "${schedule}"}}'`,
+        false
+      )
+      .then(() => revalidate())
       .catch(err => console.error(err));
   };
 
   const handleDelete = () => {
-    deleteCronJob(namespace, name)
-      .then(() => navigate('../'))
+    kubectl
+      .exec(namespace, `delete cronjob ${name}`, false)
+      .then(() => navigate(`/${namespace}/cron-jobs`))
       .catch(err => console.error(err));
   };
-
-  if (loading) return <div>Loading...</div>;
-
-  if (!response) return null;
 
   const {
     data: { metadata, spec, status }
   } = response || {};
+
+  useMemo(() => setSchedule(spec.schedule), [spec.schedule]);
 
   return (
     <div>
