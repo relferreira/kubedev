@@ -1,8 +1,21 @@
-import axios from 'axios';
+import * as kubectl from '../kubectl';
 
 self.onmessage = e => {
-  axios
-    .get(`${process.env.API}/all-namespaces/search`)
-    .then(response => self.postMessage(JSON.stringify(response.data)))
+  Promise.all([
+    kubectl.exec('all-namespaces', 'get services'),
+    kubectl.exec('all-namespaces', 'get deployments'),
+    kubectl.exec('all-namespaces', 'get pods'),
+    kubectl.exec('all-namespaces', 'get cronjobs'),
+    kubectl.exec('all-namespaces', 'get jobs')
+  ])
+    .then(([services, deployments, pods, cronjobs, jobs]) =>
+      self.postMessage({
+        services: services.data,
+        deployments: deployments.data,
+        pods: pods.data,
+        cronjobs: cronjobs.data,
+        jobs: jobs.data
+      })
+    )
     .catch(console.error);
 };

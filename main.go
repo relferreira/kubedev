@@ -17,12 +17,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gobuffalo/packr"
-	models "github.com/kubedev/models"
 	"github.com/kubedev/utils"
 	"github.com/relferreira/sse"
 	cors "github.com/rs/cors/wrapper/gin"
 	v1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 )
@@ -52,18 +50,6 @@ func main() {
 	r.Use(utils.Serve("/", box))
 	r.NoRoute(utils.RedirectIndex())
 
-	r.GET("/api/:namespace/search", func(c *gin.Context) {
-
-		services, _ := clientset.CoreV1().Services(metav1.NamespaceAll).List(metav1.ListOptions{})
-		deployments, _ := clientset.AppsV1beta2().Deployments(metav1.NamespaceAll).List(metav1.ListOptions{})
-		pods, _ := clientset.CoreV1().Pods(metav1.NamespaceAll).List(metav1.ListOptions{})
-		cronJobs, _ := clientset.BatchV1beta1().CronJobs(metav1.NamespaceAll).List(metav1.ListOptions{})
-		jobs, _ := clientset.BatchV1().Jobs(metav1.NamespaceAll).List(metav1.ListOptions{})
-
-		response := models.SearchResponse{Services: services, Deployments: deployments, Pods: pods, CronJobs: cronJobs, Jobs: jobs}
-		c.JSON(200, response)
-	})
-
 	r.GET("/api/:namespace/exec", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 		command := strings.Fields(c.Query("command"))
@@ -73,15 +59,21 @@ func main() {
 		}
 
 		fullCommand := []string{}
-		fullCommand = append(fullCommand, "-n")
-		fullCommand = append(fullCommand, namespace)
+
 		fullCommand = append(fullCommand, command...)
+
+		if namespace == "all-namespaces" {
+			fullCommand = append(fullCommand, "--all-namespaces")
+		} else {
+			fullCommand = append(fullCommand, "-n")
+			fullCommand = append(fullCommand, namespace)
+		}
 
 		if jsonOutput {
 			fullCommand = append(fullCommand, "-o")
 			fullCommand = append(fullCommand, "json")
 		}
-
+		fmt.Printf("%#v\n", fullCommand)
 		cmd := exec.Command("kubectl", fullCommand...)
 
 		out, err := cmd.Output()

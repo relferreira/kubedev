@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import useAxios from '@use-hooks/axios';
 import { LazyLog, ScrollFollow } from 'react-lazylog';
 
 import LogsControl from '../components/LogsControl';
 import { navigate } from '@reach/router';
 import { darkLight } from '../util/colors';
-import { getPodInfo } from '../state-management/pods-management';
 
 const LogsContainer = styled.div`
   position: relative;
@@ -55,9 +53,7 @@ export default function Logs({
         style={{ background: darkLight }}
         render={({ follow, onScroll }) => (
           <LazyLog
-            url={`${
-              process.env.API
-            }/${namespace}/pods/${name}/${container}/logs/stream`}
+            url={`${process.env.API}/${namespace}/pods/${name}/${container}/logs/stream`}
             stream
             formatPart={e => {
               let response = JSON.parse(e.replace('data:', ''));

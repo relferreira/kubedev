@@ -73,7 +73,8 @@ function App() {
   const [links, setLinks] = useState([]);
   const { data: response } = useSWR(
     ['default', 'get namespaces'],
-    kubectl.exec
+    kubectl.exec,
+    { revalidateOnFocus: false }
   );
 
   const { data } = response || {};
