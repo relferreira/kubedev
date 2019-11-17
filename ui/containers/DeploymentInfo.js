@@ -47,7 +47,6 @@ export default function DeploymentInfo({ namespace, name, navigate }) {
     [namespace, `get deployment ${name}`],
     (namespace, command) =>
       kubectl.exec(namespace, command, true).then(response => {
-        console.log(scale);
         if (!scale && response && response.data)
           //TODO resolve refresh with useMemo
           setScale(response.data.spec.replicas);
@@ -74,7 +73,8 @@ export default function DeploymentInfo({ namespace, name, navigate }) {
   };
 
   const handleDelete = () => {
-    deleteDeployment(namespace, name)
+    kubectl
+      .exec(namespace, `delete deploy ${name}`, false)
       .then(() => navigate(`/${namespace}/deployments`))
       .catch(err => console.error(err));
   };
