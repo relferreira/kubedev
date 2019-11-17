@@ -3,10 +3,8 @@ import styled from '@emotion/styled';
 import useSWR from 'swr';
 
 import * as kubectl from '../kubectl';
-import { listCronJobs } from '../state-management/jobs-management';
 import { filterSearch } from '../state-management/general-managements';
 import PageHeader from '../components/PageHeader';
-import JobCard from '../components/JobCard';
 import CronJobCard from '../components/CronJobCard';
 
 const CronJobsGrid = styled.div`
@@ -16,7 +14,7 @@ const CronJobsGrid = styled.div`
 
 export default function CronJobs({ namespace }) {
   const [search, setSearch] = useState('');
-  const { data: response, error, isValidating, revalidate } = useSWR(
+  const { data: response, revalidate } = useSWR(
     [namespace, 'get cronjobs'],
     kubectl.exec,
     { suspense: true }

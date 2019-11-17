@@ -4,11 +4,6 @@ import useSWR from 'swr';
 
 import * as kubectl from '../kubectl';
 import PageHeader from '../components/PageHeader';
-import {
-  getCronJob,
-  scheduleCronJob,
-  deleteCronJob
-} from '../state-management/jobs-management';
 import Table from '../components/Table';
 import Button from '../components/Button';
 import Input from '../components/Input';
@@ -27,9 +22,6 @@ export default function CronJobInfo({ namespace, name, navigate }) {
     [namespace, `get cronjob ${name}`],
     kubectl.exec,
     { suspense: true }
-    // (err, response) => {
-    //   if (response) setSchedule(response.data.spec.schedule);
-    // }
   );
 
   //TODO not working

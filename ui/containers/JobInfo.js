@@ -5,10 +5,8 @@ import useSWR from 'swr';
 import * as kubectl from '../kubectl';
 import PageHeader from '../components/PageHeader';
 import {
-  getJobInfo,
   getCondition,
-  getNumberOfJobs,
-  deleteJob
+  getNumberOfJobs
 } from '../state-management/jobs-management';
 import Table from '../components/Table';
 import StatusIcon from '../components/StatusIcon';
@@ -19,7 +17,7 @@ const CustomTable = styled(Table)`
 `;
 
 export default function JobInfo({ namespace, name, navigate }) {
-  const { data: response, error, isValidating, revalidate } = useSWR(
+  const { data: response } = useSWR(
     [namespace, `get job ${name}`],
     kubectl.exec,
     { suspense: true }
@@ -28,7 +26,7 @@ export default function JobInfo({ namespace, name, navigate }) {
   const handleDelete = () => {
     kubectl
       .exec(namespace, `delete job ${name}`, false)
-      .then(resp => navigate(`/${namespace}/jobs`))
+      .then(() => navigate(`/${namespace}/jobs`))
       .catch(err => console.error(err));
   };
 

@@ -52,16 +52,6 @@ func main() {
 	r.Use(utils.Serve("/", box))
 	r.NoRoute(utils.RedirectIndex())
 
-	r.GET("/api", func(c *gin.Context) {
-		namespaces, err := clientset.CoreV1().Namespaces().List(metav1.ListOptions{})
-
-		if err != nil {
-			panic(err.Error())
-		}
-
-		c.JSON(200, namespaces)
-	})
-
 	r.GET("/api/:namespace/search", func(c *gin.Context) {
 
 		services, _ := clientset.CoreV1().Services(metav1.NamespaceAll).List(metav1.ListOptions{})
@@ -74,33 +64,7 @@ func main() {
 		c.JSON(200, response)
 	})
 
-	r.GET("/api/:namespace/services/:name", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-		name := c.Param("name")
-
-		service, err := clientset.CoreV1().Services(namespace).Get(name, metav1.GetOptions{})
-		if err != nil {
-			panic(err.Error())
-		}
-
-		c.JSON(200, service)
-	})
-
-	r.DELETE("/api/:namespace/services/:name", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-		name := c.Param("name")
-
-		police := metav1.DeletePropagationForeground
-		deleteOptions := metav1.DeleteOptions{PropagationPolicy: &police}
-		err := clientset.CoreV1().Services(namespace).Delete(name, &deleteOptions)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		c.Status(200)
-	})
-
-	r.GET("/api/:namespace/get", func(c *gin.Context) {
+	r.GET("/api/:namespace/exec", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 		command := strings.Fields(c.Query("command"))
 		jsonOutput, jsonErr := strconv.ParseBool(c.Query("json"))
@@ -166,162 +130,6 @@ func main() {
 		}
 
 		c.JSON(200, json)
-	})
-
-	r.GET("/api/:namespace/deployments/:name", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-		name := c.Param("name")
-
-		deployment, err := clientset.AppsV1beta2().Deployments(namespace).Get(name, metav1.GetOptions{})
-		if err != nil {
-			panic(err.Error())
-		}
-
-		selector, errSelector := metav1.LabelSelectorAsSelector(deployment.Spec.Selector)
-		if errSelector != nil {
-			panic(errSelector.Error())
-		}
-
-		pods, err := clientset.CoreV1().Pods(namespace).List(metav1.ListOptions{LabelSelector: selector.String()})
-		if err != nil {
-			panic(err.Error())
-		}
-
-		response := models.DeploymentResponse{Deployment: deployment, Pods: pods}
-		c.JSON(200, response)
-	})
-
-	r.DELETE("/api/:namespace/deployments/:name", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-		name := c.Param("name")
-
-		police := metav1.DeletePropagationForeground
-		deleteOptions := metav1.DeleteOptions{PropagationPolicy: &police}
-		err := clientset.AppsV1beta2().Deployments(namespace).Delete(name, &deleteOptions)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		c.Status(200)
-	})
-
-	r.POST("/api/:namespace/deployments/:name/scale", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-		name := c.Param("name")
-		var scaleCmd models.ScaleCommand
-		err := c.BindJSON(&scaleCmd)
-
-		deployment, err := clientset.AppsV1().Deployments(namespace).Get(name, metav1.GetOptions{})
-		if err != nil {
-			panic(err.Error())
-		}
-
-		*deployment.Spec.Replicas = *scaleCmd.Scale
-		newDeployment, newErr := clientset.AppsV1().Deployments(namespace).Update(deployment)
-		if newErr != nil {
-			panic(newErr.Error())
-		}
-
-		c.JSON(200, newDeployment)
-	})
-
-	r.GET("/api/:namespace/jobs/:name", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-		name := c.Param("name")
-
-		job, err := clientset.BatchV1().Jobs(namespace).Get(name, metav1.GetOptions{})
-		if err != nil {
-			panic(err.Error())
-		}
-
-		c.JSON(200, job)
-	})
-
-	r.DELETE("/api/:namespace/jobs/:name", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-		name := c.Param("name")
-
-		police := metav1.DeletePropagationForeground
-		deleteOptions := metav1.DeleteOptions{PropagationPolicy: &police}
-		err := clientset.BatchV1().Jobs(namespace).Delete(name, &deleteOptions)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		c.Status(200)
-	})
-
-	r.GET("/api/:namespace/cron-jobs/:name", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-		name := c.Param("name")
-
-		cronJob, err := clientset.BatchV1beta1().CronJobs(namespace).Get(name, metav1.GetOptions{})
-		if err != nil {
-			panic(err.Error())
-		}
-
-		c.JSON(200, cronJob)
-	})
-
-	r.DELETE("/api/:namespace/cron-jobs/:name", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-		name := c.Param("name")
-
-		police := metav1.DeletePropagationForeground
-		deleteOptions := metav1.DeleteOptions{PropagationPolicy: &police}
-		err := clientset.BatchV1beta1().CronJobs(namespace).Delete(name, &deleteOptions)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		c.Status(200)
-	})
-
-	r.POST("/api/:namespace/cron-jobs/:name/schedule", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-		name := c.Param("name")
-
-		var scheduleCmd models.ScheduleCommand
-		err := c.BindJSON(&scheduleCmd)
-
-		cronJob, err := clientset.BatchV1beta1().CronJobs(namespace).Get(name, metav1.GetOptions{})
-		if err != nil {
-			panic(err.Error())
-		}
-
-		cronJob.Spec.Schedule = *scheduleCmd.Schedule
-		newCronJob, updateErr := clientset.BatchV1beta1().CronJobs(namespace).Update(cronJob)
-		if updateErr != nil {
-			panic(updateErr.Error())
-		}
-
-		c.JSON(200, newCronJob)
-	})
-
-	r.GET("/api/:namespace/pods/:name", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-		name := c.Param("name")
-
-		pod, err := clientset.CoreV1().Pods(namespace).Get(name, metav1.GetOptions{})
-		if err != nil {
-			panic(err.Error())
-		}
-
-		c.JSON(200, pod)
-	})
-
-	r.DELETE("/api/:namespace/pods/:name", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-		name := c.Param("name")
-
-		police := metav1.DeletePropagationForeground
-		deleteOptions := metav1.DeleteOptions{PropagationPolicy: &police}
-		err := clientset.CoreV1().Pods(namespace).Delete(name, &deleteOptions)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		c.Status(200)
 	})
 
 	r.GET("/api/:namespace/pods/:name/:container/logs", func(c *gin.Context) {

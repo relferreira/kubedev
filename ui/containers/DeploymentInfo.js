@@ -3,11 +3,6 @@ import styled from '@emotion/styled';
 import useSWR from 'swr';
 
 import * as kubectl from '../kubectl';
-import {
-  getDeployment,
-  scaleDeployment,
-  deleteDeployment
-} from '../state-management/deployments-management';
 import Table from '../components/Table';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -53,7 +48,10 @@ export default function DeploymentInfo({ namespace, name, navigate }) {
   const {
     data: {
       data: { items: podItems }
-    }
+    },
+    error: errorPods,
+    isValidating: isValidatingPods,
+    revalidate: revalidatePods
   } = useSWR(
     [namespace, `get pods -l=app=${metadata.labels.app}`],
     kubectl.exec,
@@ -63,7 +61,10 @@ export default function DeploymentInfo({ namespace, name, navigate }) {
   const handleScale = () => {
     kubectl
       .exec(namespace, `scale deploy ${name} --replicas=${scale}`, false)
-      .then(() => revalidate());
+      .then(() => {
+        revalidate();
+        revalidatePods();
+      });
   };
 
   const handleDelete = () => {
@@ -77,7 +78,10 @@ export default function DeploymentInfo({ namespace, name, navigate }) {
     navigate(`/${namespace}/deployments/${name}/edit`);
   };
 
-  const handleRefresh = () => revalidate();
+  const handleRefresh = () => {
+    revalidate();
+    revalidatePods();
+  };
 
   useMemo(() => setScale(spec.replicas), [spec.replicas]);
 

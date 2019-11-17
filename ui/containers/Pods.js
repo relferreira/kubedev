@@ -4,9 +4,7 @@ import useSWR from 'swr';
 
 import * as kubectl from '../kubectl';
 import PodCard from '../components/PodCard';
-import { listPods } from '../state-management/pods-management';
 import PageHeader from '../components/PageHeader';
-import Input from '../components/Input';
 import { filterSearch } from '../state-management/general-managements';
 const PodsGrid = styled.div`
   display: grid;
@@ -15,7 +13,7 @@ const PodsGrid = styled.div`
 
 export default function Pods({ namespace }) {
   const [search, setSearch] = useState('');
-  const { data: response, error, isValidating, revalidate } = useSWR(
+  const { data: response, revalidate } = useSWR(
     [namespace, 'get pods'],
     kubectl.exec,
     { suspense: true }

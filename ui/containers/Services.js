@@ -4,10 +4,7 @@ import useSWR from 'swr';
 
 import * as kubectl from '../kubectl';
 import ServiceCard from '../components/ServiceCard';
-import {
-  getPublicIP,
-  listServices
-} from '../state-management/services-management';
+import { getPublicIP } from '../state-management/services-management';
 import { filterSearch } from '../state-management/general-managements';
 import PageHeader from '../components/PageHeader';
 

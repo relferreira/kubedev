@@ -4,11 +4,7 @@ import useSWR from 'swr';
 
 import * as kubectl from '../kubectl';
 import Table from '../components/Table';
-import {
-  getPublicIP,
-  getServiceInfo,
-  deleteService
-} from '../state-management/services-management';
+import { getPublicIP } from '../state-management/services-management';
 import PageHeader from '../components/PageHeader';
 import Button from '../components/Button';
 

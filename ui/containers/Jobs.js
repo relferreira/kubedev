@@ -5,12 +5,9 @@ import useSWR from 'swr';
 import * as kubectl from '../kubectl';
 import PageHeader from '../components/PageHeader';
 import {
-  listJobs,
   getCondition,
   getNumberOfJobs
 } from '../state-management/jobs-management';
-import PodCard from '../components/PodCard';
-import DeployCard from '../components/DeployCard';
 import JobCard from '../components/JobCard';
 
 import { filterSearch } from '../state-management/general-managements';
@@ -22,7 +19,7 @@ const JobsGrid = styled.div`
 
 export default function Jobs({ namespace }) {
   const [search, setSearch] = useState('');
-  const { data: response, error, isValidating, revalidate } = useSWR(
+  const { data: response, revalidate } = useSWR(
     [namespace, 'get jobs'],
     kubectl.exec,
     { suspense: true }

@@ -2,8 +2,9 @@ import React, { useState, Suspense } from 'react';
 import { Redirect } from '@reach/router';
 import { Global, css } from '@emotion/core';
 import { ThemeProvider } from 'emotion-theming';
-import useAxios from '@use-hooks/axios';
+import useSWR from 'swr';
 
+import * as kubectl from '../kubectl';
 import Sidebar from '../components/Sidebar';
 import Header from './Header';
 import AppContainer from '../components/AppContainer';
@@ -70,11 +71,10 @@ const darkTheme = {
 function App() {
   const [theme, setTheme] = useState(darkTheme);
   const [links, setLinks] = useState([]);
-  const { response } = useAxios({
-    url: `${process.env.API}`,
-    method: 'GET',
-    trigger: null
-  });
+  const { data: response } = useSWR(
+    ['default', 'get namespaces'],
+    kubectl.exec
+  );
 
   const { data } = response || {};
   let namespaces = [];

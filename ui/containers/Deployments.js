@@ -4,7 +4,6 @@ import useSWR from 'swr';
 
 import * as kubectl from '../kubectl';
 import DeployCard from '../components/DeployCard';
-import { listDeployments } from '../state-management/deployments-management';
 import PageHeader from '../components/PageHeader';
 import { filterSearch } from '../state-management/general-managements';
 
@@ -15,7 +14,7 @@ const DeployGrid = styled.div`
 
 export default function Deployments({ namespace }) {
   const [search, setSearch] = useState('');
-  const { data: response, error, isValidating, revalidate } = useSWR(
+  const { data: response, revalidate } = useSWR(
     [namespace, 'get deployments'],
     kubectl.exec,
     { suspense: true }

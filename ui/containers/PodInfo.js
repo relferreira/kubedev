@@ -5,7 +5,6 @@ import useSWR from 'swr';
 import * as kubectl from '../kubectl';
 import Table from '../components/Table';
 import PodStatus from '../components/StatusIcon';
-import { getPodInfo, deletePod } from '../state-management/pods-management';
 import Button from '../components/Button';
 import Icon from '../components/Icon';
 
