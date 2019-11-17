@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import styled from '@emotion/styled';
 import useSWR from 'swr';
 
@@ -45,13 +45,7 @@ export default function DeploymentInfo({ namespace, name, navigate }) {
     revalidate
   } = useSWR(
     [namespace, `get deployment ${name}`],
-    (namespace, command) =>
-      kubectl.exec(namespace, command, true).then(response => {
-        if (!scale && response && response.data)
-          //TODO resolve refresh with useMemo
-          setScale(response.data.spec.replicas);
-        return response;
-      }),
+    (namespace, command) => kubectl.exec(namespace, command, true),
     {
       suspense: true
     }
@@ -83,7 +77,9 @@ export default function DeploymentInfo({ namespace, name, navigate }) {
     navigate(`/${namespace}/deployments/${name}/edit`);
   };
 
-  const handleRefresh = () => query();
+  const handleRefresh = () => revalidate();
+
+  useMemo(() => setScale(spec.replicas), [spec.replicas]);
 
   return (
     <div>
