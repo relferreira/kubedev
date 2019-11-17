@@ -1,14 +1,13 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import styled from '@emotion/styled';
-import brace from 'brace';
 import AceEditor from 'react-ace';
+import useSWR from 'swr';
 
 import 'brace/mode/yaml';
 import 'brace/theme/dracula';
 
 import * as kubectl from '../kubectl';
 import EditControl from '../components/EditControl';
-import Button from '../components/Button';
 
 const yaml = require('js-yaml');
 
@@ -19,30 +18,28 @@ const EditorContainer = styled.div`
 
 function Editor(props) {
   const [text, setText] = useState('');
-  if (props.type !== 'new') {
-    const { response, loading, query } = kubectl.exec(
-      props.namespace,
-      `get ${props.type} ${props.name}`,
-      (err, response) => {
-        if (response) {
-          const { data } = response || {};
-
-          if (!data) return null;
-
-          let value = yaml.safeDump(data);
-          value += `\n\n\n`; //TODO HACK
-          setText(value);
-        }
-      }
-    );
-
-    if (loading) return <div>Loading...</div>;
-  }
+  const { data: response } = useSWR(
+    props.type !== 'new'
+      ? [props.namespace, `get ${props.type} ${props.name}`]
+      : null,
+    kubectl.exec,
+    { suspense: true }
+  );
 
   const handleSave = () => {
     let json = yaml.safeLoad(text);
     kubectl.apply(props.namespace, json).then(() => alert('Saved with succes'));
   };
+
+  useMemo(() => {
+    const { data } = response || {};
+
+    if (!data) return null;
+
+    let value = yaml.safeDump(data);
+    value += `\n\n\n`; //TODO HACK
+    setText(value);
+  }, []);
 
   return (
     <EditorContainer>
