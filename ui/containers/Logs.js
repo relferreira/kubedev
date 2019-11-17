@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { LazyLog, ScrollFollow } from 'react-lazylog';
+import useSWR from 'swr';
 
+import * as kubectl from '../kubectl';
 import LogsControl from '../components/LogsControl';
 import { navigate } from '@reach/router';
 import { darkLight } from '../util/colors';
@@ -24,17 +26,17 @@ export default function Logs({
   onLogInit
 }) {
   const [following, setFollowing] = useState(false);
-  const { response, loading, error } = getPodInfo(namespace, name);
+  const { data: response } = useSWR(
+    [namespace, `get pod ${name}`],
+    kubectl.exec,
+    { suspense: true, revalidateOnFocus: false }
+  );
 
   useEffect(() => {
     onLogInit({ type: 'logs', namespace, resource: 'pods', name });
   }, []);
 
   const { data: pod } = response || {};
-
-  if (loading) return <div>Loading...</div>;
-
-  if (error) return <div>error</div>;
 
   if (!pod) return null;
 
