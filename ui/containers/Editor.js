@@ -20,7 +20,7 @@ const EditorContainer = styled.div`
 function Editor(props) {
   const [text, setText] = useState('');
   if (props.type !== 'new') {
-    const { response, loading, query } = kubectl.get(
+    const { response, loading, query } = kubectl.exec(
       props.namespace,
       `get ${props.type} ${props.name}`,
       (err, response) => {

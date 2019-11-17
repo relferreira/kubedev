@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import styled from '@emotion/styled';
+import useSWR from 'swr';
 
+import * as kubectl from '../kubectl';
 import { listCronJobs } from '../state-management/jobs-management';
 import { filterSearch } from '../state-management/general-managements';
 import PageHeader from '../components/PageHeader';
@@ -14,13 +16,15 @@ const CronJobsGrid = styled.div`
 
 export default function CronJobs({ namespace }) {
   const [search, setSearch] = useState('');
-  const { response, loading, query } = listCronJobs(namespace);
+  const { data: response, error, isValidating, revalidate } = useSWR(
+    [namespace, 'get cronjobs'],
+    kubectl.exec,
+    { suspense: true }
+  );
 
   const { data } = response || {};
 
   const items = useMemo(() => filterSearch(data, search), [data, search]);
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <div>
@@ -29,7 +33,7 @@ export default function CronJobs({ namespace }) {
         showSearch={true}
         search={search}
         onSearch={text => setSearch(text)}
-        onRefresh={() => query()}
+        onRefresh={() => revalidate()}
       />
       <CronJobsGrid>
         {items &&

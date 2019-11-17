@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
+import useSWR from 'swr';
+
+import * as kubectl from '../kubectl';
 import {
   getDeployment,
   scaleDeployment,
@@ -32,18 +35,42 @@ const RefreshIcon = styled(Icon)`
 `;
 
 export default function DeploymentInfo({ namespace, name, navigate }) {
-  const [scale, setScale] = useState(0);
-  const { response, loading, query } = getDeployment(
-    namespace,
-    name,
-    (err, response) => {
-      if (response && response.data && response.data.deployment)
-        setScale(response.data.deployment.spec.replicas);
+  const [scale, setScale] = useState('');
+  const {
+    data: {
+      data: { metadata, spec, status }
+    },
+    error,
+    isValidating,
+    revalidate
+  } = useSWR(
+    [namespace, `get deployment ${name}`],
+    (namespace, command) =>
+      kubectl.exec(namespace, command, true).then(response => {
+        console.log(scale);
+        if (!scale && response && response.data)
+          //TODO resolve refresh with useMemo
+          setScale(response.data.spec.replicas);
+        return response;
+      }),
+    {
+      suspense: true
     }
+  );
+  const {
+    data: {
+      data: { items: podItems }
+    }
+  } = useSWR(
+    [namespace, `get pods -l=app=${metadata.labels.app}`],
+    kubectl.exec,
+    { suspense: true }
   );
 
   const handleScale = () => {
-    scaleDeployment(namespace, name, scale).then(() => query());
+    kubectl
+      .exec(namespace, `scale deploy ${name} --replicas=${scale}`, false)
+      .then(() => revalidate());
   };
 
   const handleDelete = () => {
@@ -57,17 +84,6 @@ export default function DeploymentInfo({ namespace, name, navigate }) {
   };
 
   const handleRefresh = () => query();
-
-  if (loading) return <div>Loading...</div>;
-
-  if (!response) return null;
-
-  const {
-    data: {
-      deployment: { metadata, spec, status },
-      pods: { items: podItems }
-    }
-  } = response || {};
 
   return (
     <div>

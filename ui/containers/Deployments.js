@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import styled from '@emotion/styled';
-import useAxios from '@use-hooks/axios';
+import useSWR from 'swr';
 
+import * as kubectl from '../kubectl';
 import DeployCard from '../components/DeployCard';
 import { listDeployments } from '../state-management/deployments-management';
 import PageHeader from '../components/PageHeader';
@@ -14,14 +15,14 @@ const DeployGrid = styled.div`
 
 export default function Deployments({ namespace }) {
   const [search, setSearch] = useState('');
-  const { response, loading, query } = listDeployments(namespace);
+  const { data: response, error, isValidating, revalidate } = useSWR(
+    [namespace, 'get deployments'],
+    kubectl.exec,
+    { suspense: true }
+  );
   const { data } = response || {};
 
   const items = useMemo(() => filterSearch(data, search), [data, search]);
-
-  if (loading) return <div>Loading...</div>;
-
-  if (!response) return null;
 
   return (
     <div>
@@ -30,7 +31,7 @@ export default function Deployments({ namespace }) {
         showSearch={true}
         search={search}
         onSearch={text => setSearch(text)}
-        onRefresh={() => query()}
+        onRefresh={() => revalidate()}
       />
       <DeployGrid>
         {items &&

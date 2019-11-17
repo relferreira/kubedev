@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import styled from '@emotion/styled';
+import useSWR from 'swr';
 
+import * as kubectl from '../kubectl';
 import ServiceCard from '../components/ServiceCard';
 import {
   getPublicIP,
@@ -16,15 +18,15 @@ const ServicesGrid = styled.div`
 
 export default function Services({ namespace }) {
   const [search, setSearch] = useState('');
-  const { response, loading, query } = listServices(namespace);
+  const { data: response, error, isValidating, revalidate } = useSWR(
+    [namespace, 'get services'],
+    kubectl.exec,
+    { suspense: true }
+  );
 
   const { data } = response || {};
 
   const items = useMemo(() => filterSearch(data, search), [data, search]);
-
-  if (loading) return <div>Loading...</div>;
-
-  if (!response) return null;
 
   return (
     <div>
@@ -33,7 +35,7 @@ export default function Services({ namespace }) {
         showSearch={true}
         search={search}
         onSearch={text => setSearch(text)}
-        onRefresh={() => query()}
+        onRefresh={() => revalidate()}
       />
       <ServicesGrid>
         {items &&

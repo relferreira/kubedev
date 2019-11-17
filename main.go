@@ -74,18 +74,6 @@ func main() {
 		c.JSON(200, response)
 	})
 
-	r.GET("/api/:namespace/services", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-
-		services, err := clientset.CoreV1().Services(namespace).List(metav1.ListOptions{})
-
-		if err != nil {
-			panic(err.Error())
-		}
-
-		c.JSON(200, services)
-	})
-
 	r.GET("/api/:namespace/services/:name", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 		name := c.Param("name")
@@ -115,13 +103,21 @@ func main() {
 	r.GET("/api/:namespace/get", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 		command := strings.Fields(c.Query("command"))
+		jsonOutput, jsonErr := strconv.ParseBool(c.Query("json"))
+
+		if jsonErr != nil {
+			panic(err.Error())
+		}
 
 		fullCommand := []string{}
 		fullCommand = append(fullCommand, "-n")
 		fullCommand = append(fullCommand, namespace)
 		fullCommand = append(fullCommand, command...)
-		fullCommand = append(fullCommand, "-o")
-		fullCommand = append(fullCommand, "json")
+
+		if jsonOutput {
+			fullCommand = append(fullCommand, "-o")
+			fullCommand = append(fullCommand, "json")
+		}
 
 		cmd := exec.Command("kubectl", fullCommand...)
 
@@ -132,9 +128,12 @@ func main() {
 			panic(err.Error())
 		}
 
-		json := json.RawMessage(output)
-
-		c.JSON(200, json)
+		if jsonOutput {
+			jsonMesage := json.RawMessage(output)
+			c.JSON(200, jsonMesage)
+		} else {
+			c.JSON(200, nil)
+		}
 
 	})
 
@@ -168,16 +167,6 @@ func main() {
 		}
 
 		c.JSON(200, json)
-	})
-
-	r.GET("/api/:namespace/deployments", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-		deployments, err := clientset.AppsV1beta2().Deployments(namespace).List(metav1.ListOptions{})
-
-		if err != nil {
-			panic(err.Error())
-		}
-		c.JSON(200, deployments)
 	})
 
 	r.GET("/api/:namespace/deployments/:name", func(c *gin.Context) {
@@ -237,17 +226,6 @@ func main() {
 		c.JSON(200, newDeployment)
 	})
 
-	r.GET("/api/:namespace/jobs", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-
-		jobs, err := clientset.BatchV1().Jobs(namespace).List(metav1.ListOptions{})
-		if err != nil {
-			panic(err.Error())
-		}
-
-		c.JSON(200, jobs)
-	})
-
 	r.GET("/api/:namespace/jobs/:name", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 		name := c.Param("name")
@@ -272,17 +250,6 @@ func main() {
 		}
 
 		c.Status(200)
-	})
-
-	r.GET("/api/:namespace/cron-jobs", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-
-		cronJobs, err := clientset.BatchV1beta1().CronJobs(namespace).List(metav1.ListOptions{})
-		if err != nil {
-			panic(err.Error())
-		}
-
-		c.JSON(200, cronJobs)
 	})
 
 	r.GET("/api/:namespace/cron-jobs/:name", func(c *gin.Context) {
@@ -330,24 +297,6 @@ func main() {
 		}
 
 		c.JSON(200, newCronJob)
-	})
-
-	r.GET("/api/:namespace/pods", func(c *gin.Context) {
-		namespace := c.Param("namespace")
-
-		pods, err := clientset.CoreV1().Pods(namespace).List(metav1.ListOptions{})
-		if err != nil {
-			panic(err.Error())
-		}
-
-		// data, err := clientset.RESTClient().Get().AbsPath("apis/metrics.k8s.io/v1beta1/pods").DoRaw()
-		// if err != nil {
-		// 	panic(err.Error())
-		// }
-
-		// log.Println(string(data))
-
-		c.JSON(200, pods)
 	})
 
 	r.GET("/api/:namespace/pods/:name", func(c *gin.Context) {

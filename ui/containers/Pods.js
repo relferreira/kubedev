@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import styled from '@emotion/styled';
-import useAxios from '@use-hooks/axios';
+import useSWR from 'swr';
 
+import * as kubectl from '../kubectl';
 import PodCard from '../components/PodCard';
 import { listPods } from '../state-management/pods-management';
 import PageHeader from '../components/PageHeader';
@@ -14,13 +15,15 @@ const PodsGrid = styled.div`
 
 export default function Pods({ namespace }) {
   const [search, setSearch] = useState('');
-  const { response, loading, query } = listPods(namespace);
+  const { data: response, error, isValidating, revalidate } = useSWR(
+    [namespace, 'get pods'],
+    kubectl.exec,
+    { suspense: true }
+  );
 
   const { data } = response || {};
 
   const items = useMemo(() => filterSearch(data, search), [data, search]);
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <div>
@@ -29,7 +32,7 @@ export default function Pods({ namespace }) {
         showSearch={true}
         search={search}
         onSearch={text => setSearch(text)}
-        onRefresh={() => query()}
+        onRefresh={() => revalidate()}
       />
       <PodsGrid>
         {items &&

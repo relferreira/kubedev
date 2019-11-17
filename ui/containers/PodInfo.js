@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import useAxios from '@use-hooks/axios';
+import useSWR from 'swr';
 
+import * as kubectl from '../kubectl';
 import Table from '../components/Table';
 import PodStatus from '../components/StatusIcon';
 import { getPodInfo, deletePod } from '../state-management/pods-management';
@@ -35,23 +36,24 @@ const RefreshIcon = styled(Icon)`
 `;
 
 export default function PodInfo({ namespace, name, navigate }) {
-  const { response, loading, query } = getPodInfo(namespace, name);
+  const { data: response, error, isValidating, revalidate } = useSWR(
+    [namespace, `get pod ${name}`],
+    kubectl.exec,
+    { suspense: true }
+  );
 
   const handleLogs = () => {
     navigate(`/${namespace}/pods/${name}/logs/container/0`);
   };
 
   const handleDelete = () => {
-    deletePod(namespace, name)
+    kubectl
+      .exec(namespace, `delete pod ${name}`, false)
       .then(() => navigate(`/${namespace}/pods`))
       .catch(err => console.error(err));
   };
 
-  const handleRefresh = () => query();
-
-  if (loading) return <div>Loading...</div>;
-
-  if (!response) return null;
+  const handleRefresh = () => revalidate();
 
   const {
     data: { metadata, spec, status }
