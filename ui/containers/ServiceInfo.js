@@ -1,12 +1,10 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import useSWR from 'swr';
 
+import * as kubectl from '../kubectl';
 import Table from '../components/Table';
-import {
-  getPublicIP,
-  getServiceInfo,
-  deleteService
-} from '../state-management/services-management';
+import { getPublicIP } from '../state-management/services-management';
 import PageHeader from '../components/PageHeader';
 import Button from '../components/Button';
 
@@ -15,17 +13,20 @@ const ServiceType = styled.h3`
 `;
 
 export default function ServiceInfo({ namespace, name, navigate }) {
-  const { response, loading } = getServiceInfo(namespace, name);
+  // const { response, loading } = getServiceInfo(namespace, name);
+
+  const { data: response, error, isValidating, revalidate } = useSWR(
+    [namespace, `get service ${name}`],
+    kubectl.exec,
+    { suspense: true }
+  );
 
   const handleDelete = () => {
-    deleteService(namespace, name)
+    kubectl
+      .exec(namespace, `delete service ${name}`, false)
       .then(() => navigate(`/${namespace}/services`))
       .catch(err => console.error(err));
   };
-
-  if (loading) return <div>Loading...</div>;
-
-  if (!response) return null;
 
   const {
     data: { metadata, spec, status }

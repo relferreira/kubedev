@@ -2,8 +2,9 @@ import React, { useState, Suspense } from 'react';
 import { Redirect } from '@reach/router';
 import { Global, css } from '@emotion/core';
 import { ThemeProvider } from 'emotion-theming';
-import useAxios from '@use-hooks/axios';
+import useSWR from 'swr';
 
+import * as kubectl from '../kubectl';
 import Sidebar from '../components/Sidebar';
 import Header from './Header';
 import AppContainer from '../components/AppContainer';
@@ -37,6 +38,7 @@ const CronJobs = React.lazy(() => import('./CronJobs'));
 const JobInfo = React.lazy(() => import('./JobInfo'));
 const CronJobInfo = React.lazy(() => import('./CronJobInfo'));
 const Pods = React.lazy(() => import('./Pods'));
+const Editor = React.lazy(() => import('./Editor'));
 
 const lightTheme = {
   name: 'light',
@@ -69,11 +71,11 @@ const darkTheme = {
 function App() {
   const [theme, setTheme] = useState(darkTheme);
   const [links, setLinks] = useState([]);
-  const { response } = useAxios({
-    url: `${process.env.API}`,
-    method: 'GET',
-    trigger: null
-  });
+  const { data: response } = useSWR(
+    ['default', 'get namespaces'],
+    kubectl.exec,
+    { revalidateOnFocus: false }
+  );
 
   const { data } = response || {};
   let namespaces = [];
@@ -132,6 +134,8 @@ function App() {
               path="/:namespace/pods/:name/logs/container/:selectedContainer"
               onLogInit={handleSidebarChange}
             />
+            <Editor path="/:namespace/new" type="new" />
+            <Editor path="/:namespace/:type/:name/edit" />
           </CustomRouter>
         </Suspense>
       </AppContainer>

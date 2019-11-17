@@ -12,3 +12,4 @@ ui/node_modules
 ui/.cache
 ui/dist
 kubedev_*
+.files/*

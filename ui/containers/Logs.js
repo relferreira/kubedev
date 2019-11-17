@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import useAxios from '@use-hooks/axios';
 import { LazyLog, ScrollFollow } from 'react-lazylog';
+import useSWR from 'swr';
 
+import * as kubectl from '../kubectl';
 import LogsControl from '../components/LogsControl';
 import { navigate } from '@reach/router';
 import { darkLight } from '../util/colors';
-import { getPodInfo } from '../state-management/pods-management';
 
 const LogsContainer = styled.div`
   position: relative;
@@ -26,17 +26,17 @@ export default function Logs({
   onLogInit
 }) {
   const [following, setFollowing] = useState(false);
-  const { response, loading, error } = getPodInfo(namespace, name);
+  const { data: response } = useSWR(
+    [namespace, `get pod ${name}`],
+    kubectl.exec,
+    { suspense: true, revalidateOnFocus: false }
+  );
 
   useEffect(() => {
     onLogInit({ type: 'logs', namespace, resource: 'pods', name });
   }, []);
 
   const { data: pod } = response || {};
-
-  if (loading) return <div>Loading...</div>;
-
-  if (error) return <div>error</div>;
 
   if (!pod) return null;
 
@@ -55,9 +55,7 @@ export default function Logs({
         style={{ background: darkLight }}
         render={({ follow, onScroll }) => (
           <LazyLog
-            url={`${
-              process.env.API
-            }/${namespace}/pods/${name}/${container}/logs/stream`}
+            url={`${process.env.API}/${namespace}/pods/${name}/${container}/logs/stream`}
             stream
             formatPart={e => {
               let response = JSON.parse(e.replace('data:', ''));

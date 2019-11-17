@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { primaryLight, fontColor, primaryDark, primary } from '../util/colors';
 import { Link, Location, navigate } from '@reach/router';
 import Select from './Select';
+import { getSelectedNamespace } from '../state-management/general-managements';
 
 const SidebarContainer = styled.div`
   display: flex;
@@ -73,12 +74,6 @@ const HistoryLink = styled(NavLink)`
 const NamespaceSelect = styled(Select)`
   margin: 0px 10px;
 `;
-
-const getSelectedNamespace = location => {
-  let matches = location.pathname.split('/');
-  if (matches && matches.length > 1) return matches[1];
-  return '';
-};
 
 const Sidebar = ({ namespaces, links, onThemeChange }) => (
   <Location>

@@ -1,14 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import styled from '@emotion/styled';
+import useSWR from 'swr';
 
+import * as kubectl from '../kubectl';
 import PageHeader from '../components/PageHeader';
 import {
-  listJobs,
   getCondition,
   getNumberOfJobs
 } from '../state-management/jobs-management';
-import PodCard from '../components/PodCard';
-import DeployCard from '../components/DeployCard';
 import JobCard from '../components/JobCard';
 
 import { filterSearch } from '../state-management/general-managements';
@@ -20,13 +19,15 @@ const JobsGrid = styled.div`
 
 export default function Jobs({ namespace }) {
   const [search, setSearch] = useState('');
-  const { response, loading, query } = listJobs(namespace);
+  const { data: response, revalidate } = useSWR(
+    [namespace, 'get jobs'],
+    kubectl.exec,
+    { suspense: true }
+  );
 
   const { data } = response || {};
 
   const items = useMemo(() => filterSearch(data, search), [data, search]);
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <div>
@@ -35,7 +36,7 @@ export default function Jobs({ namespace }) {
         showSearch={true}
         search={search}
         onSearch={text => setSearch(text)}
-        onRefresh={() => query()}
+        onRefresh={() => revalidate()}
       />
       <JobsGrid>
         {items &&

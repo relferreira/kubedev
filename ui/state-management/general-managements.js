@@ -7,9 +7,8 @@ export const filterSearch = (data, search) => {
   return [];
 };
 
-export const formatSearchResponse = data => {
-  if (data) {
-    let info = JSON.parse(data);
+export const formatSearchResponse = info => {
+  if (info) {
     return Object.keys(info)
       .map(key => {
         let items = info[key].items;
@@ -24,4 +23,10 @@ export const formatSearchResponse = data => {
   }
 
   return [];
+};
+
+export const getSelectedNamespace = location => {
+  let matches = location.pathname.split('/');
+  if (matches && matches.length > 1) return matches[1];
+  return '';
 };
