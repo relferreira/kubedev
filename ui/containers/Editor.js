@@ -1,10 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import styled from '@emotion/styled';
-import AceEditor from 'react-ace';
+import { ControlledEditor, DiffEditor } from '@monaco-editor/react';
 import useSWR from 'swr';
-
-import 'brace/mode/yaml';
-import 'brace/theme/dracula';
 
 import * as kubectl from '../kubectl';
 import EditControl from '../components/EditControl';
@@ -18,6 +15,9 @@ const EditorContainer = styled.div`
 
 function Editor(props) {
   const [text, setText] = useState('');
+  const [original, setOriginal] = useState('');
+  const [loadingSave, setLoadingSave] = useState(false);
+
   const { data: response } = useSWR(
     props.type !== 'new'
       ? [props.namespace, `get ${props.type} ${props.name}`]
@@ -26,9 +26,41 @@ function Editor(props) {
     { suspense: true }
   );
 
+  const handleDiff = () => {
+    if (props.type == 'new') {
+      handleSave();
+      return;
+    }
+
+    setLoadingSave(true);
+    kubectl
+      .exec(props.namespace, `get ${props.type} ${props.name}`)
+      .then(response => {
+        const { data } = response || {};
+
+        if (!data) return null;
+
+        let value = yaml.safeDump(data);
+        setOriginal(value);
+        setLoadingSave(false);
+      });
+  };
+
   const handleSave = () => {
-    let json = yaml.safeLoad(text);
-    kubectl.apply(props.namespace, json).then(() => alert('Saved with succes'));
+    setLoadingSave(true);
+    kubectl
+      .apply(props.namespace, { yaml: text })
+      .then(() => {
+        alert('Saved with succes');
+        setOriginal('');
+        setLoadingSave(false);
+      })
+      .catch(e => {
+        //TODO improve error message
+        console.error(e);
+        setOriginal('');
+        setLoadingSave(false);
+      });
   };
 
   useMemo(() => {
@@ -37,25 +69,29 @@ function Editor(props) {
     if (!data) return null;
 
     let value = yaml.safeDump(data);
-    value += `\n\n\n`; //TODO HACK
     setText(value);
   }, []);
 
+  const EditorComponent = original ? DiffEditor : ControlledEditor;
+
   return (
     <EditorContainer>
-      <AceEditor
-        mode="yaml"
-        theme="dracula"
+      <EditorComponent
+        height="100%"
+        language="yaml"
+        theme="vs-dark"
+        original={original}
+        modified={text}
         value={text}
-        onChange={value => setText(value)}
-        name="UNIQUE_ID_OF_DIV"
-        editorProps={{ $blockScrolling: true }}
-        style={{
-          width: '100%',
-          height: '100%'
-        }}
+        onChange={(ev, value) => setText(value)}
       />
-      <EditControl onSave={handleSave} />
+      <EditControl
+        onDiff={handleDiff}
+        confirm={!!original}
+        loading={loadingSave}
+        onCancel={() => setOriginal('')}
+        onConfirm={() => handleSave()}
+      />
     </EditorContainer>
   );
 }

@@ -128,8 +128,8 @@ function App() {
             <DeploymentInfo path="/:namespace/deployments/:name/info" />
             <Jobs path="/:namespace/jobs" />
             <JobInfo path="/:namespace/jobs/:name/info" />
-            <CronJobs path="/:namespace/cron-jobs" />
-            <CronJobInfo path="/:namespace/cron-jobs/:name/info" />
+            <CronJobs path="/:namespace/cronjobs" />
+            <CronJobInfo path="/:namespace/cronjobs/:name/info" />
             <Logs
               path="/:namespace/pods/:name/logs/container/:selectedContainer"
               onLogInit={handleSidebarChange}

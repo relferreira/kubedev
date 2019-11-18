@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
@@ -23,17 +23,42 @@ const CustomCard = styled(Card)`
   p {
     flex: 1;
   }
+
+  button {
+    margin-left: 16px;
+  }
 `;
 
-const EditControl = ({ onSave }) => (
+const EditControl = ({ confirm, loading, onDiff, onConfirm, onCancel }) => (
   <CustomCard>
-    <p>Apply Configuration?</p>
-    <Button onClick={onSave}>SAVE</Button>
+    <p>{!loading ? 'Apply Configuration?' : 'Loading...'}</p>
+    {!confirm ? (
+      <Button onClick={onDiff} disabled={loading}>
+        SAVE
+      </Button>
+    ) : (
+      <Fragment>
+        <Button type="error" onClick={onCancel} disabled={loading}>
+          CANCEL
+        </Button>
+        <Button onClick={onConfirm} disabled={loading}>
+          CONFIRM
+        </Button>
+      </Fragment>
+    )}
   </CustomCard>
 );
 
 EditControl.propTypes = {
-  onSave: PropTypes.func
+  confirm: PropTypes.bool,
+  loading: PropTypes.bool,
+  onDiff: PropTypes.func,
+  confirm: PropTypes.bool
+};
+
+EditControl.defaultProps = {
+  confirm: false,
+  loading: false
 };
 
 export default EditControl;
