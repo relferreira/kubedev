@@ -45,6 +45,10 @@ export default function PodInfo({ namespace, name, navigate }) {
     navigate(`/${namespace}/pods/${name}/logs/container/0`);
   };
 
+  const handleEdit = () => {
+    navigate(`/${namespace}/pods/${name}/edit`);
+  };
+
   const handleDelete = () => {
     kubectl
       .exec(namespace, `delete pod ${name}`, false)
@@ -77,6 +81,7 @@ export default function PodInfo({ namespace, name, navigate }) {
         <Button type="primary" onClick={handleLogs}>
           LOGS
         </Button>
+        <Button onClick={handleEdit}>EDIT</Button>
         <Button type="error" onClick={handleDelete}>
           DELETE
         </Button>

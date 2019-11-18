@@ -36,10 +36,14 @@ export default function CronJobInfo({ namespace, name, navigate }) {
       .catch(err => console.error(err));
   };
 
+  const handleEdit = () => {
+    navigate(`/${namespace}/cronjobs/${name}/edit`);
+  };
+
   const handleDelete = () => {
     kubectl
       .exec(namespace, `delete cronjob ${name}`, false)
-      .then(() => navigate(`/${namespace}/cron-jobs`))
+      .then(() => navigate(`/${namespace}/cronjobs`))
       .catch(err => console.error(err));
   };
 
@@ -55,6 +59,7 @@ export default function CronJobInfo({ namespace, name, navigate }) {
         <Button type="error" onClick={handleDelete}>
           DELETE
         </Button>
+        <Button onClick={handleEdit}>EDIT</Button>
         <Button onClick={handleSchedule}>SAVE</Button>
       </PageHeader>
       <CustomTable>

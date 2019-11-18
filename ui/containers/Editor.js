@@ -16,6 +16,8 @@ const EditorContainer = styled.div`
 function Editor(props) {
   const [text, setText] = useState('');
   const [original, setOriginal] = useState('');
+  const [loadingSave, setLoadingSave] = useState(false);
+
   const { data: response } = useSWR(
     props.type !== 'new'
       ? [props.namespace, `get ${props.type} ${props.name}`]
@@ -30,6 +32,7 @@ function Editor(props) {
       return;
     }
 
+    setLoadingSave(true);
     kubectl
       .exec(props.namespace, `get ${props.type} ${props.name}`)
       .then(response => {
@@ -39,15 +42,25 @@ function Editor(props) {
 
         let value = yaml.safeDump(data);
         setOriginal(value);
+        setLoadingSave(false);
       });
   };
 
   const handleSave = () => {
-    let json = yaml.safeLoad(text);
-    kubectl.apply(props.namespace, json).then(() => {
-      alert('Saved with succes');
-      setOriginal('');
-    });
+    setLoadingSave(true);
+    kubectl
+      .apply(props.namespace, { yaml: text })
+      .then(() => {
+        alert('Saved with succes');
+        setOriginal('');
+        setLoadingSave(false);
+      })
+      .catch(e => {
+        //TODO improve error message
+        console.error(e);
+        setOriginal('');
+        setLoadingSave(false);
+      });
   };
 
   useMemo(() => {
@@ -75,6 +88,7 @@ function Editor(props) {
       <EditControl
         onDiff={handleDiff}
         confirm={!!original}
+        loading={loadingSave}
         onCancel={() => setOriginal('')}
         onConfirm={() => handleSave()}
       />

@@ -17,6 +17,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gobuffalo/packr"
+	"github.com/kubedev/models"
 	"github.com/kubedev/utils"
 	"github.com/relferreira/sse"
 	cors "github.com/rs/cors/wrapper/gin"
@@ -95,13 +96,18 @@ func main() {
 	r.POST("/api/:namespace/apply", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 
-		body := c.Request.Body
-		json, _ := ioutil.ReadAll(body)
+		var apply models.ApplyRequest
+		errJSON := c.BindJSON(&apply)
+		if errJSON != nil {
+			panic(errJSON.Error())
+		}
+		// body := c.Request.Body
+		// json, _ := ioutil.ReadAll(body)
 
-		fmt.Printf("%s \n", string(json))
+		// fmt.Printf("%s \n", string(json))
 
-		filename := ".files/" + strconv.FormatInt(time.Now().Unix(), 10) + ".json"
-		err = ioutil.WriteFile(filename, json, 0755)
+		filename := ".files/" + strconv.FormatInt(time.Now().Unix(), 10) + ".yaml"
+		err = ioutil.WriteFile(filename, []byte(apply.Yaml), 0755)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -121,7 +127,7 @@ func main() {
 			panic(err.Error())
 		}
 
-		c.JSON(200, json)
+		c.JSON(200, nil)
 	})
 
 	r.GET("/api/:namespace/pods/:name/:container/logs", func(c *gin.Context) {

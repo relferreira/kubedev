@@ -29,29 +29,36 @@ const CustomCard = styled(Card)`
   }
 `;
 
-const EditControl = ({ confirm, onDiff, onConfirm, onCancel }) => (
+const EditControl = ({ confirm, loading, onDiff, onConfirm, onCancel }) => (
   <CustomCard>
-    <p>Apply Configuration?</p>
+    <p>{!loading ? 'Apply Configuration?' : 'Loading...'}</p>
     {!confirm ? (
-      <Button onClick={onDiff}>SAVE</Button>
+      <Button onClick={onDiff} disabled={loading}>
+        SAVE
+      </Button>
     ) : (
       <Fragment>
-        <Button type="error" onClick={onCancel}>
+        <Button type="error" onClick={onCancel} disabled={loading}>
           CANCEL
         </Button>
-        <Button onClick={onConfirm}>CONFIRM</Button>
+        <Button onClick={onConfirm} disabled={loading}>
+          CONFIRM
+        </Button>
       </Fragment>
     )}
   </CustomCard>
 );
 
 EditControl.propTypes = {
+  confirm: PropTypes.bool,
+  loading: PropTypes.bool,
   onDiff: PropTypes.func,
   confirm: PropTypes.bool
 };
 
 EditControl.defaultProps = {
-  confirm: false
+  confirm: false,
+  loading: false
 };
 
 export default EditControl;

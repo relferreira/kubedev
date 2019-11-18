@@ -23,6 +23,10 @@ export default function JobInfo({ namespace, name, navigate }) {
     { suspense: true }
   );
 
+  const handleEdit = () => {
+    navigate(`/${namespace}/jobs/${name}/edit`);
+  };
+
   const handleDelete = () => {
     kubectl
       .exec(namespace, `delete job ${name}`, false)
@@ -37,6 +41,7 @@ export default function JobInfo({ namespace, name, navigate }) {
   return (
     <div>
       <PageHeader title={name}>
+        <Button onClick={handleEdit}>EDIT</Button>
         <Button type="error" onClick={handleDelete}>
           DELETE
         </Button>
