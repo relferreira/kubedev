@@ -123,7 +123,7 @@ export default function Header() {
     setFocus(false);
   };
 
-  const items = useMemo(() => formatSearchResponse(result), [result]);
+  const items = useMemo(() => formatSearchResponse(result), [searchDate]);
 
   let fuse = new Fuse(items, {
     keys: ['type', 'namespace', 'name']
