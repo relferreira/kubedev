@@ -6,7 +6,6 @@ import useSWR from 'swr';
 import * as kubectl from '../kubectl';
 import LogsControl from '../components/LogsControl';
 import { navigate } from '@reach/router';
-import { darkLight } from '../util/colors';
 
 const LogsContainer = styled.div`
   position: relative;
@@ -52,7 +51,6 @@ export default function Logs({
     <LogsContainer>
       <ScrollFollow
         startFollowing={true}
-        style={{ background: darkLight }}
         render={({ follow, onScroll }) => (
           <LazyLog
             url={`${process.env.API}/${namespace}/pods/${name}/${container}/logs/stream`}
@@ -62,10 +60,9 @@ export default function Logs({
               return response.content;
             }}
             selectableLines={true}
+            enableSearch={true}
             follow={following}
             extraLines={5}
-            containerStyle={{ background: darkLight }}
-            style={{ background: darkLight }}
           />
         )}
       />

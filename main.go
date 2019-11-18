@@ -166,7 +166,10 @@ func main() {
 			defer close(chanStream)
 			reader := bufio.NewReader(podLogs)
 			for {
-				line, _ := reader.ReadBytes('\n')
+				line, error := reader.ReadBytes('\n')
+				if error != nil {
+					break
+				}
 				chanStream <- string(line)
 			}
 		}()

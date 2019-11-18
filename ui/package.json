@@ -31,7 +31,7 @@
     "react-ace": "^7.0.1",
     "react-dom": "^16.8.1",
     "react-hooks-worker": "^0.3.0",
-    "react-lazylog": "^3.2.0",
+    "react-lazylog": "^4.4.1",
     "swr": "^0.1.10"
   }
 }
