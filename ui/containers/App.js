@@ -24,7 +24,9 @@ import {
   tableBorderLight,
   tableBorderDark
 } from '../util/colors';
+import ErrorBoundary from '../components/ErrorBoundary';
 import RouterLoading from '../components/RouterLoading';
+import ErrorLoading from '../components/ErrorLoading';
 
 const Home = React.lazy(() => import('./Home'));
 const Logs = React.lazy(() => import('./Logs'));
@@ -117,26 +119,28 @@ function App() {
         />
 
         <Suspense fallback={<RouterLoading />}>
-          <CustomRouter>
-            <Redirect from="/" to="/default/pods" noThrow />
-            {/* <Home path="/:namespace" /> */}
-            <Pods path="/:namespace/pods" />
-            <PodInfo path="/:namespace/pods/:name/info" />
-            <Services path="/:namespace/services" />
-            <ServiceInfo path="/:namespace/services/:name/info" />
-            <Deployments path="/:namespace/deployments" />
-            <DeploymentInfo path="/:namespace/deployments/:name/info" />
-            <Jobs path="/:namespace/jobs" />
-            <JobInfo path="/:namespace/jobs/:name/info" />
-            <CronJobs path="/:namespace/cronjobs" />
-            <CronJobInfo path="/:namespace/cronjobs/:name/info" />
-            <Logs
-              path="/:namespace/pods/:name/logs/container/:selectedContainer"
-              onLogInit={handleSidebarChange}
-            />
-            <Editor path="/:namespace/new" type="new" />
-            <Editor path="/:namespace/:type/:name/edit" />
-          </CustomRouter>
+          <ErrorBoundary fallback={<ErrorLoading />}>
+            <CustomRouter>
+              <Redirect from="/" to="/default/pods" noThrow />
+              {/* <Home path="/:namespace" /> */}
+              <Pods path="/:namespace/pods" />
+              <PodInfo path="/:namespace/pods/:name/info" />
+              <Services path="/:namespace/services" />
+              <ServiceInfo path="/:namespace/services/:name/info" />
+              <Deployments path="/:namespace/deployments" />
+              <DeploymentInfo path="/:namespace/deployments/:name/info" />
+              <Jobs path="/:namespace/jobs" />
+              <JobInfo path="/:namespace/jobs/:name/info" />
+              <CronJobs path="/:namespace/cronjobs" />
+              <CronJobInfo path="/:namespace/cronjobs/:name/info" />
+              <Logs
+                path="/:namespace/pods/:name/logs/container/:selectedContainer"
+                onLogInit={handleSidebarChange}
+              />
+              <Editor path="/:namespace/new" type="new" />
+              <Editor path="/:namespace/:type/:name/edit" />
+            </CustomRouter>
+          </ErrorBoundary>
         </Suspense>
       </AppContainer>
     </ThemeProvider>
