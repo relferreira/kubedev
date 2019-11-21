@@ -28,6 +28,8 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import RouterLoading from '../components/RouterLoading';
 import ErrorLoading from '../components/ErrorLoading';
 
+import { useConfigContext } from '../state-management/config-management';
+
 const Home = React.lazy(() => import('./Home'));
 const Logs = React.lazy(() => import('./Logs'));
 const PodInfo = React.lazy(() => import('./PodInfo'));
@@ -42,36 +44,36 @@ const CronJobInfo = React.lazy(() => import('./CronJobInfo'));
 const Pods = React.lazy(() => import('./Pods'));
 const Editor = React.lazy(() => import('./Editor'));
 
-const lightTheme = {
-  name: 'light',
-  background: backgroundLight,
-  header: primaryDark,
-  sidebarBackground: primaryLight,
-  sidebarFontColor: fontColor,
-  containerFont: fontColorDark,
-  cardBackground: cardBackgroundLight,
-  tableBorder: tableBorderLight,
-  controllerBackground: backgroundLight,
-  controllerColor: fontColor,
-  controllerBorder: fontColor
-};
+const themes = {
+  light: {
+    background: backgroundLight,
+    header: primaryDark,
+    sidebarBackground: primaryLight,
+    sidebarFontColor: fontColor,
+    containerFont: fontColorDark,
+    cardBackground: cardBackgroundLight,
+    tableBorder: tableBorderLight,
+    controllerBackground: backgroundLight,
+    controllerColor: fontColor,
+    controllerBorder: fontColor
+  },
 
-const darkTheme = {
-  name: 'dark',
-  background: darkDark,
-  header: darkLight,
-  sidebarBackground: darkDark,
-  sidebarFontColor: fontColorWhite,
-  containerFont: fontColorWhite,
-  cardBackground: cardBackgroundDark,
-  tableBorder: tableBorderDark,
-  controllerBackground: darkLight,
-  controllerColor: fontColorWhite,
-  controllerBorder: tableBorderLight
+  dark: {
+    background: darkDark,
+    header: darkLight,
+    sidebarBackground: darkDark,
+    sidebarFontColor: fontColorWhite,
+    containerFont: fontColorWhite,
+    cardBackground: cardBackgroundDark,
+    tableBorder: tableBorderDark,
+    controllerBackground: darkLight,
+    controllerColor: fontColorWhite,
+    controllerBorder: tableBorderLight
+  }
 };
 
 function App() {
-  const [theme, setTheme] = useState(darkTheme);
+  const { config, changeConfig } = useConfigContext();
   const [links, setLinks] = useState([]);
   const { data: response } = useSWR(
     ['default', 'get namespaces'],
@@ -95,11 +97,11 @@ function App() {
   };
 
   const handleThemeChange = () => {
-    setTheme(theme => (theme.name === 'light' ? darkTheme : lightTheme));
+    changeConfig({ theme: config.theme === 'light' ? 'dark' : 'light' });
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={themes[config.theme]}>
       <Global
         styles={css`
           * {
