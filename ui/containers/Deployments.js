@@ -15,10 +15,6 @@ const DeployGrid = styled.div`
   grid-template-columns: repeat(12, 1fr);
 `;
 
-const DeploymentLink = styled(Link)`
-  color: inherit;
-`;
-
 export default function Deployments({ namespace }) {
   const { config } = useConfigContext();
 
@@ -57,9 +53,7 @@ export default function Deployments({ namespace }) {
               items.map(({ metadata, status, spec }) => (
                 <tr key={metadata.name}>
                   <td>
-                    <DeploymentLink to={`${metadata.name}/info`}>
-                      {metadata.name}
-                    </DeploymentLink>
+                    <Link to={`${metadata.name}/info`}>{metadata.name}</Link>
                   </td>
                   <td>
                     {spec.replicas && `${status.replicas}/${spec.replicas}`}
