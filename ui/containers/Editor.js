@@ -27,7 +27,7 @@ function Editor(props) {
   );
 
   const handleDiff = () => {
-    if (props.type == 'new') {
+    if (props.type === 'new') {
       handleSave();
       return;
     }

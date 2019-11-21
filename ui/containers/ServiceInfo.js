@@ -21,6 +21,10 @@ export default function ServiceInfo({ namespace, name, navigate }) {
     { suspense: true }
   );
 
+  const handleEdit = () => {
+    navigate(`/${namespace}/services/${name}/edit`);
+  };
+
   const handleDelete = () => {
     kubectl
       .exec(namespace, `delete service ${name}`, false)
@@ -35,6 +39,7 @@ export default function ServiceInfo({ namespace, name, navigate }) {
   return (
     <div>
       <PageHeader title={metadata.name}>
+        <Button onClick={handleEdit}>EDIT</Button>
         <Button type="error" onClick={handleDelete}>
           DELETE
         </Button>

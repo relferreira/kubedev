@@ -26,7 +26,7 @@ const DeployCard = ({ replicas, name }) => (
 );
 
 DeployCard.propTypes = {
-  replicas: PropTypes.number.isRequired,
+  replicas: PropTypes.number,
   name: PropTypes.string.isRequired
 };
 

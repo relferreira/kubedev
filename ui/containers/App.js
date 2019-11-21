@@ -24,7 +24,11 @@ import {
   tableBorderLight,
   tableBorderDark
 } from '../util/colors';
+import ErrorBoundary from '../components/ErrorBoundary';
 import RouterLoading from '../components/RouterLoading';
+import ErrorLoading from '../components/ErrorLoading';
+
+import { useConfigContext } from '../state-management/config-management';
 
 const Home = React.lazy(() => import('./Home'));
 const Logs = React.lazy(() => import('./Logs'));
@@ -40,36 +44,36 @@ const CronJobInfo = React.lazy(() => import('./CronJobInfo'));
 const Pods = React.lazy(() => import('./Pods'));
 const Editor = React.lazy(() => import('./Editor'));
 
-const lightTheme = {
-  name: 'light',
-  background: backgroundLight,
-  header: primaryDark,
-  sidebarBackground: primaryLight,
-  sidebarFontColor: fontColor,
-  containerFont: fontColorDark,
-  cardBackground: cardBackgroundLight,
-  tableBorder: tableBorderLight,
-  controllerBackground: backgroundLight,
-  controllerColor: fontColor,
-  controllerBorder: fontColor
-};
+const themes = {
+  light: {
+    background: backgroundLight,
+    header: primaryDark,
+    sidebarBackground: primaryLight,
+    sidebarFontColor: fontColor,
+    containerFont: fontColorDark,
+    cardBackground: cardBackgroundLight,
+    tableBorder: tableBorderLight,
+    controllerBackground: backgroundLight,
+    controllerColor: fontColor,
+    controllerBorder: fontColor
+  },
 
-const darkTheme = {
-  name: 'dark',
-  background: darkDark,
-  header: darkLight,
-  sidebarBackground: darkDark,
-  sidebarFontColor: fontColorWhite,
-  containerFont: fontColorWhite,
-  cardBackground: cardBackgroundDark,
-  tableBorder: tableBorderDark,
-  controllerBackground: darkLight,
-  controllerColor: fontColorWhite,
-  controllerBorder: tableBorderLight
+  dark: {
+    background: darkDark,
+    header: darkLight,
+    sidebarBackground: darkDark,
+    sidebarFontColor: fontColorWhite,
+    containerFont: fontColorWhite,
+    cardBackground: cardBackgroundDark,
+    tableBorder: tableBorderDark,
+    controllerBackground: darkLight,
+    controllerColor: fontColorWhite,
+    controllerBorder: tableBorderLight
+  }
 };
 
 function App() {
-  const [theme, setTheme] = useState(darkTheme);
+  const { config, changeConfig } = useConfigContext();
   const [links, setLinks] = useState([]);
   const { data: response } = useSWR(
     ['default', 'get namespaces'],
@@ -93,11 +97,11 @@ function App() {
   };
 
   const handleThemeChange = () => {
-    setTheme(theme => (theme.name === 'light' ? darkTheme : lightTheme));
+    changeConfig({ theme: config.theme === 'light' ? 'dark' : 'light' });
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={themes[config.theme]}>
       <Global
         styles={css`
           * {
@@ -105,6 +109,10 @@ function App() {
             margin: 0 0;
             box-sizing: border-box;
             font-family: 'Roboto Mono', monospace;
+          }
+
+          a {
+            color: inherit;
           }
         `}
       />
@@ -117,26 +125,28 @@ function App() {
         />
 
         <Suspense fallback={<RouterLoading />}>
-          <CustomRouter>
-            <Redirect from="/" to="/default/pods" noThrow />
-            {/* <Home path="/:namespace" /> */}
-            <Pods path="/:namespace/pods" />
-            <PodInfo path="/:namespace/pods/:name/info" />
-            <Services path="/:namespace/services" />
-            <ServiceInfo path="/:namespace/services/:name/info" />
-            <Deployments path="/:namespace/deployments" />
-            <DeploymentInfo path="/:namespace/deployments/:name/info" />
-            <Jobs path="/:namespace/jobs" />
-            <JobInfo path="/:namespace/jobs/:name/info" />
-            <CronJobs path="/:namespace/cronjobs" />
-            <CronJobInfo path="/:namespace/cronjobs/:name/info" />
-            <Logs
-              path="/:namespace/pods/:name/logs/container/:selectedContainer"
-              onLogInit={handleSidebarChange}
-            />
-            <Editor path="/:namespace/new" type="new" />
-            <Editor path="/:namespace/:type/:name/edit" />
-          </CustomRouter>
+          <ErrorBoundary fallback={<ErrorLoading />}>
+            <CustomRouter>
+              <Redirect from="/" to="/default/pods" noThrow />
+              {/* <Home path="/:namespace" /> */}
+              <Pods path="/:namespace/pods" />
+              <PodInfo path="/:namespace/pods/:name/info" />
+              <Services path="/:namespace/services" />
+              <ServiceInfo path="/:namespace/services/:name/info" />
+              <Deployments path="/:namespace/deployments" />
+              <DeploymentInfo path="/:namespace/deployments/:name/info" />
+              <Jobs path="/:namespace/jobs" />
+              <JobInfo path="/:namespace/jobs/:name/info" />
+              <CronJobs path="/:namespace/cronjobs" />
+              <CronJobInfo path="/:namespace/cronjobs/:name/info" />
+              <Logs
+                path="/:namespace/pods/:name/logs/container/:selectedContainer"
+                onLogInit={handleSidebarChange}
+              />
+              <Editor path="/:namespace/new" type="new" />
+              <Editor path="/:namespace/:type/:name/edit" />
+            </CustomRouter>
+          </ErrorBoundary>
         </Suspense>
       </AppContainer>
     </ThemeProvider>
