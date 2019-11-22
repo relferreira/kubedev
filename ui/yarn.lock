@@ -528,7 +528,7 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.6.3":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.4.5", "@babel/runtime@^7.6.3":
   version "7.7.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.7.2.tgz#111a78002a5c25fc8e3361bedc9529c696b85a6a"
   integrity sha512-JONRbXbTXc9WQE2mAZd1p0Z3DZ/6vaQIkgYMSTP3KjRCyd7rCZCcfhCyX+YjwcKxcZ82UrxbRD358bpExNgrjw==
@@ -2398,6 +2398,11 @@ hosted-git-info@^2.1.4:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.7.1.tgz#97f236977bd6e125408930ff6de3eec6281ec047"
 
+hotkeys-js@^3.7.2:
+  version "3.7.2"
+  resolved "https://registry.yarnpkg.com/hotkeys-js/-/hotkeys-js-3.7.2.tgz#30378b6db40bcd24fe6e51cd19c29ed1898c125f"
+  integrity sha512-LJIPBgejlklphThig2edlYUiPq3iFDHdsXftvZ0VWrpi330dRwD2YxPlzOYv0UQEatvZdgwG3ZLCfJ020ix8vQ==
+
 hsl-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/hsl-regex/-/hsl-regex-1.0.0.tgz#d49330c789ed819e276a4c0d272dffa30b18fe6e"
@@ -4095,7 +4100,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.6.0, prop-types@^15.6.1:
+prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -4215,6 +4220,15 @@ react-dom@^16.8.1:
 react-hooks-worker@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/react-hooks-worker/-/react-hooks-worker-0.3.0.tgz#02cb203e10aa9d27f9eba8e0ba6f2cf4e01a5eef"
+
+react-hot-keys@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/react-hot-keys/-/react-hot-keys-2.3.1.tgz#6ee710e2d8c64290bb2f0e76d93c9ccf35eae5cb"
+  integrity sha512-0h3Nn8Lvf06NBBCwTspp32ONugVAUF55M9oYsuOqofzPqUo6jCvjtWPS+n08X7MJzqCz+oX82f9Lkd1guY45XQ==
+  dependencies:
+    "@babel/runtime" "^7.4.5"
+    hotkeys-js "^3.7.2"
+    prop-types "^15.7.2"
 
 react-is@^16.5.2:
   version "16.8.4"
