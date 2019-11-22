@@ -48,7 +48,7 @@ const InputContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  width: 500px;
+  width: ${({ focus }) => (focus ? '90%' : '500px')};
   border-radius: 3px;
   background: ${props => props.theme.background};
 
@@ -56,7 +56,7 @@ const InputContainer = styled.div`
     focus ? '0px 2px 2px rgba(0, 0, 0, 0.25)' : null};
 
   input {
-    width: 500px;
+    width: 100%;
     height: 40px;
     padding: 16px;
     border: none;
@@ -108,6 +108,17 @@ const SearchItem = styled.div`
   }
 `;
 
+const Backdrop = styled.div`
+  display: ${props => (props.show ? 'inherit' : 'none')};
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background: #000;
+  opacity: 0.8;
+`;
+
 const worker = new Worker('../workers/search.js');
 
 export default function Header() {
@@ -117,13 +128,19 @@ export default function Header() {
   const inputRef = useRef(null);
 
   const handleFocus = () => {
-    inputRef.current.focus();
     setFocus(true);
     setSearchDate(new Date());
   };
 
   const handleBlur = () => {
     setFocus(false);
+  };
+
+  const handleSelect = selection => {
+    inputRef.current.blur();
+    navigate(
+      `/${selection.namespace}/${selection.type}/${selection.name}/info`
+    );
   };
 
   const items = useMemo(() => formatSearchResponse(result), [searchDate]);
@@ -137,19 +154,20 @@ export default function Header() {
       {({ location }) => {
         let namespace = getSelectedNamespace(location);
         return (
-          <Hotkeys keyName="ctrl+k,command+k" onKeyUp={handleFocus}>
+          <Hotkeys
+            keyName="ctrl+k,command+k"
+            onKeyUp={() => inputRef.current.focus()}
+          >
             <HeaderContainer>
               <LogoContainer>
                 <Image src={logo} alt="KubeDev logo" />
                 <Title>KubeDev</Title>
               </LogoContainer>
+
+              <Backdrop show={focus} />
               <AutoCompleteContainer>
                 <Downshift
-                  onChange={selection =>
-                    navigate(
-                      `/${selection.namespace}/${selection.type}/${selection.name}/info`
-                    )
-                  }
+                  onChange={handleSelect}
                   itemToString={item => (item ? item.name : '')}
                 >
                   {({
