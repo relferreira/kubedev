@@ -44,7 +44,7 @@ const PodCard = ({ name, state }) => (
       </PodInfo>
     </PodTextContainer>
     <PodButtons>
-      <Link to={`${name}/info`}>
+      <Link to={`${name}/get`}>
         <PodIcon
           xmlns="http://www.w3.org/2000/svg"
           width="24"

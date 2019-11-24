@@ -11,7 +11,11 @@ import logo from '../assets/logo.svg';
 import Input from '../components/Input';
 import {
   formatSearchResponse,
-  getSelectedNamespace
+  getSelectedNamespace,
+  getSearchType,
+  getSearchAction,
+  formatSearchCommand,
+  shouldRefreshSearch
 } from '../state-management/general-managements';
 import Icon from '../components/Icon';
 
@@ -43,7 +47,7 @@ const Title = styled.h1`
   font-size: 24px;
 `;
 
-const InputContainer = styled.div`
+const InputContainer = styled.form`
   position: relative;
   display: flex;
   align-items: center;
@@ -121,131 +125,178 @@ const Backdrop = styled.div`
 
 const worker = new Worker('../workers/search.js');
 
-export default function Header() {
+export default function Header({ location }) {
   const [searchDate, setSearchDate] = useState(new Date());
+  const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const [namespace, setNamespace] = useState('');
+  const [type, setType] = useState('pods');
   const [focus, setFocus] = useState(false);
   const { result, error } = useWorker(worker, searchDate);
   const inputRef = useRef(null);
 
   const handleFocus = () => {
     setFocus(true);
-    setSearchDate(new Date());
+    if (result && shouldRefreshSearch(result.id)) setSearchDate(new Date());
   };
 
   const handleBlur = () => {
     setFocus(false);
   };
 
-  const handleSelect = selection => {
-    inputRef.current.blur();
-    navigate(
-      `/${selection.namespace}/${selection.type}/${selection.name}/info`
-    );
+  const handleSearchInput = event => {
+    let search = event.target.value;
+    setSearchInput(search);
+    let { namespace, type, name = null } = formatSearchCommand(search);
+
+    setNamespace(namespace);
+    setType(type);
+
+    setSearch(name || searchInput);
   };
 
-  const items = useMemo(() => formatSearchResponse(result), [searchDate]);
+  const handleShortcut = keyName => {
+    inputRef.current.focus();
+    if (keyName === 'command+shift+k' || keyName === 'ctrl+shift+k')
+      setSearchInput(`kubectl -n ${getSelectedNamespace(location)} `);
+    else setSearchInput('');
+  };
+
+  const handleSelect = selection => {
+    inputRef.current.blur();
+
+    let isCommand = searchInput.match('kubectl');
+    if (isCommand) {
+      let { namespace = 'default', type, name, action } = formatSearchCommand(
+        searchInput
+      );
+      namespace = selection ? selection.namespace : namespace;
+      let path = `/${namespace}/${type}`;
+
+      name = selection ? selection.name : name;
+      if (name && action) path = `${path}/${name}/${action}`;
+
+      navigate(path);
+      if (selection) {
+        let searchArgs = searchInput.split(' ');
+        searchArgs = searchArgs.slice(0, searchArgs.length - 1);
+        searchArgs.push(name);
+        setSearchInput(searchArgs.join(' '));
+      }
+    } else if (selection) {
+      let { type = 'get' } = formatSearchCommand(searchInput);
+
+      navigate(
+        `/${selection.namespace}/${selection.type}/${selection.name}/${type}`
+      );
+      setSearchInput(selection.name);
+    }
+  };
+
+  const items = useMemo(() => formatSearchResponse(result, namespace, type), [
+    result && result.id,
+    namespace,
+    type
+  ]);
 
   let fuse = new Fuse(items, {
     keys: ['type', 'namespace', 'name']
   });
 
   return (
-    <Location>
-      {({ location }) => {
-        let namespace = getSelectedNamespace(location);
-        return (
-          <Hotkeys
-            keyName="ctrl+k,command+k"
-            onKeyUp={() => inputRef.current.focus()}
-          >
-            <HeaderContainer>
-              <LogoContainer>
-                <Image src={logo} alt="KubeDev logo" />
-                <Title>KubeDev</Title>
-              </LogoContainer>
+    <Hotkeys
+      keyName="ctrl+k,ctrl+shift+k,command+k,command+shift+k"
+      onKeyUp={handleShortcut}
+    >
+      <HeaderContainer>
+        <LogoContainer>
+          <Image src={logo} alt="KubeDev logo" />
+          <Title>KubeDev</Title>
+        </LogoContainer>
 
-              <Backdrop show={focus} />
-              <AutoCompleteContainer>
-                <Downshift
-                  onChange={handleSelect}
-                  itemToString={item => (item ? item.name : '')}
+        <Backdrop show={focus} />
+        <AutoCompleteContainer>
+          <Downshift
+            onChange={handleSelect}
+            itemToString={item => (item ? item.name : '')}
+          >
+            {({
+              getInputProps,
+              getItemProps,
+              getLabelProps,
+              isOpen,
+              inputValue,
+              highlightedIndex,
+              selectedItem
+            }) => (
+              <div>
+                <InputContainer
+                  focus={focus}
+                  onSubmit={event => {
+                    event.preventDefault();
+                    handleSelect();
+                  }}
                 >
-                  {({
-                    getInputProps,
-                    getItemProps,
-                    getLabelProps,
-                    isOpen,
-                    inputValue,
-                    highlightedIndex,
-                    selectedItem
-                  }) => (
-                    <div>
-                      <InputContainer focus={focus}>
-                        <SearchIcon
-                          {...getLabelProps({ 'aria-label': 'search' })}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-                            <path d="M0 0h24v24H0z" fill="none" />
-                          </svg>
-                        </SearchIcon>
-                        <Input
-                          {...getInputProps({
-                            placeholder: 'Search',
-                            onFocus: handleFocus,
-                            onBlur: handleBlur
+                  <SearchIcon {...getLabelProps({ 'aria-label': 'search' })}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                      <path d="M0 0h24v24H0z" fill="none" />
+                    </svg>
+                  </SearchIcon>
+                  <Input
+                    {...getInputProps({
+                      placeholder: 'Search',
+                      onFocus: handleFocus,
+                      onBlur: handleBlur,
+                      value: searchInput,
+                      onChange: handleSearchInput
+                    })}
+                    ref={inputRef}
+                  />
+                  {isOpen ? (
+                    <AutoComplete>
+                      {fuse.search(search, { limit: 10 }).map((item, index) => (
+                        <SearchItem
+                          {...getItemProps({
+                            key: `${item.type}-${item.namespace}-${item.name}`,
+                            index,
+                            item,
+                            highlighted: highlightedIndex === index,
+                            selected: selectedItem === item
                           })}
-                          ref={inputRef}
-                        />
-                        {isOpen ? (
-                          <AutoComplete>
-                            {fuse
-                              .search(inputValue, { limit: 10 })
-                              .map((item, index) => (
-                                <SearchItem
-                                  {...getItemProps({
-                                    key: `${item.type}-${item.namespace}-${item.name}`,
-                                    index,
-                                    item,
-                                    highlighted: highlightedIndex === index,
-                                    selected: selectedItem === item
-                                  })}
-                                >
-                                  <strong>{item.name}</strong>
-                                  <span>
-                                    {item.namespace} - {item.type}
-                                  </span>
-                                </SearchItem>
-                              ))}
-                          </AutoComplete>
-                        ) : null}
-                      </InputContainer>
-                    </div>
-                  )}
-                </Downshift>
-              </AutoCompleteContainer>
-              <Link to={`${namespace}/new`}>
-                <Icon>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-                    <path d="M0 0h24v24H0z" fill="none" />
-                  </svg>
-                </Icon>
-              </Link>
-            </HeaderContainer>
-          </Hotkeys>
-        );
-      }}
-    </Location>
+                        >
+                          <strong>{item.name}</strong>
+                          <span>
+                            {item.namespace} - {item.type}
+                          </span>
+                        </SearchItem>
+                      ))}
+                    </AutoComplete>
+                  ) : null}
+                </InputContainer>
+              </div>
+            )}
+          </Downshift>
+        </AutoCompleteContainer>
+        <Link to={`${namespace}/new`}>
+          <Icon>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+              <path d="M0 0h24v24H0z" fill="none" />
+            </svg>
+          </Icon>
+        </Link>
+      </HeaderContainer>
+    </Hotkeys>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState, Suspense } from 'react';
-import { Redirect } from '@reach/router';
+import { Redirect, Location } from '@reach/router';
 import { Global, css } from '@emotion/core';
 import { ThemeProvider } from 'emotion-theming';
 import useSWR from 'swr';
@@ -116,7 +116,7 @@ function App() {
           }
         `}
       />
-      <Header />
+      <Location>{({ location }) => <Header location={location} />}</Location>
       <AppContainer>
         <Sidebar
           namespaces={namespaces}
@@ -130,15 +130,15 @@ function App() {
               <Redirect from="/" to="/default/pods" noThrow />
               {/* <Home path="/:namespace" /> */}
               <Pods path="/:namespace/pods" />
-              <PodInfo path="/:namespace/pods/:name/info" />
+              <PodInfo path="/:namespace/pods/:name/get" />
               <Services path="/:namespace/services" />
-              <ServiceInfo path="/:namespace/services/:name/info" />
+              <ServiceInfo path="/:namespace/services/:name/get" />
               <Deployments path="/:namespace/deployments" />
-              <DeploymentInfo path="/:namespace/deployments/:name/info" />
+              <DeploymentInfo path="/:namespace/deployments/:name/get" />
               <Jobs path="/:namespace/jobs" />
-              <JobInfo path="/:namespace/jobs/:name/info" />
+              <JobInfo path="/:namespace/jobs/:name/get" />
               <CronJobs path="/:namespace/cronjobs" />
-              <CronJobInfo path="/:namespace/cronjobs/:name/info" />
+              <CronJobInfo path="/:namespace/cronjobs/:name/get" />
               <Logs
                 path="/:namespace/pods/:name/logs/container/:selectedContainer"
                 onLogInit={handleSidebarChange}

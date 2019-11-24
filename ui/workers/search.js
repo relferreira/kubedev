@@ -10,6 +10,7 @@ self.onmessage = e => {
   ])
     .then(([services, deployments, pods, cronjobs, jobs]) =>
       self.postMessage({
+        id: new Date(),
         services: services.data,
         deployments: deployments.data,
         pods: pods.data,
