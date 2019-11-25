@@ -115,3 +115,5 @@ export const shouldRefreshSearch = id => {
 
   return resultInMinutes >= 5;
 };
+
+export const isSearchCommand = search => search.match('kubectl');

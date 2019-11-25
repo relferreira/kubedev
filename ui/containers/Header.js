@@ -15,7 +15,8 @@ import {
   getSearchType,
   getSearchAction,
   formatSearchCommand,
-  shouldRefreshSearch
+  shouldRefreshSearch,
+  isSearchCommand
 } from '../state-management/general-managements';
 import Icon from '../components/Icon';
 
@@ -165,7 +166,7 @@ export default function Header({ location }) {
   const handleSelect = selection => {
     inputRef.current.blur();
 
-    let isCommand = searchInput.match('kubectl');
+    let isCommand = isSearchCommand(searchInput);
     if (isCommand) {
       let { namespace = 'default', type, name, action } = formatSearchCommand(
         searchInput
@@ -174,9 +175,11 @@ export default function Header({ location }) {
       let path = `/${namespace}/${type}`;
 
       name = selection ? selection.name : name;
-      if (name && action) path = `${path}/${name}/${action}`;
+      if (name && action) {
+        path = `${path}/${name}/${action}`;
+        navigate(path);
+      }
 
-      navigate(path);
       if (selection) {
         let searchArgs = searchInput.split(' ');
         searchArgs = searchArgs.slice(0, searchArgs.length - 1);
@@ -238,15 +241,27 @@ export default function Header({ location }) {
                   }}
                 >
                   <SearchIcon {...getLabelProps({ 'aria-label': 'search' })}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-                      <path d="M0 0h24v24H0z" fill="none" />
-                    </svg>
+                    {!isSearchCommand(searchInput) ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                        <path d="M0 0h24v24H0z" fill="none" />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
+                        <path fill="none" d="M0 0h24v24H0V0z" />
+                      </svg>
+                    )}
                   </SearchIcon>
                   <Input
                     {...getInputProps({
