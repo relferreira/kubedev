@@ -143,8 +143,12 @@ function App() {
                 path="/:namespace/pods/:name/logs/container/:selectedContainer"
                 onLogInit={handleSidebarChange}
               />
-              <Editor path="/:namespace/new" type="new" />
-              <Editor path="/:namespace/:type/:name/edit" />
+              <Editor path="/:namespace/new" type="new" action="get" />
+              <Editor path="/:namespace/:type/:name/edit" action="get" />
+              <Editor
+                path="/:namespace/:type/:name/describe"
+                action="describe"
+              />
             </CustomRouter>
           </ErrorBoundary>
         </Suspense>

@@ -177,8 +177,9 @@ export default function Header({ location }) {
       name = selection ? selection.name : name;
       if (name && action) {
         path = `${path}/${name}/${action}`;
-        navigate(path);
       }
+
+      navigate(path);
 
       if (selection) {
         let searchArgs = searchInput.split(' ');
@@ -298,7 +299,7 @@ export default function Header({ location }) {
             )}
           </Downshift>
         </AutoCompleteContainer>
-        <Link to={`${namespace}/new`}>
+        <Link to={`${getSelectedNamespace(location)}/new`}>
           <Icon>
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -113,7 +113,7 @@ export const shouldRefreshSearch = id => {
   let difference = now.getTime() - oldDate.getTime();
   let resultInMinutes = Math.round(difference / 60000);
 
-  return resultInMinutes >= 5;
+  return resultInMinutes >= 1;
 };
 
 export const isSearchCommand = search => search.match('kubectl');
