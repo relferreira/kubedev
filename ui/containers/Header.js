@@ -138,7 +138,7 @@ export default function Header({ location }) {
 
   const handleFocus = () => {
     setFocus(true);
-    if (result && shouldRefreshSearch(result.id)) setSearchDate(new Date());
+    if (!result || shouldRefreshSearch(result.id)) setSearchDate(new Date());
   };
 
   const handleBlur = () => {
