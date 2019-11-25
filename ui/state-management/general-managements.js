@@ -90,7 +90,7 @@ export const getSearchCmdAction = search => {
 
 const getSearchCmdNamespace = search => {
   if (!search) return {};
-  let regex = /-n\s(\w+)/;
+  let regex = /-n\s(\S+)/;
   let matches = search.match(regex);
   if (matches) {
     let namespace = matches[1];
