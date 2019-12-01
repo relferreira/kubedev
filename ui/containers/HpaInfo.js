@@ -26,7 +26,7 @@ export default function HpaInfo({ namespace, name, navigate }) {
   const handleDelete = () => {
     kubectl
       .exec(namespace, `delete hpa ${name}`, false)
-      .then(() => navigate(`/${namespace}/jobs`))
+      .then(() => navigate(`/${namespace}/hpa`))
       .catch(err => console.error(err));
   };
 
