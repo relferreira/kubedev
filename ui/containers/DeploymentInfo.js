@@ -29,7 +29,7 @@ const RefreshIcon = styled(Icon)`
   margin-right: 5px;
 `;
 
-export default function DeploymentInfo({ namespace, name, navigate }) {
+export default function DeploymentInfo({ namespace, type, name, navigate }) {
   const [scale, setScale] = useState('');
   const {
     data: {
@@ -39,7 +39,7 @@ export default function DeploymentInfo({ namespace, name, navigate }) {
     isValidating,
     revalidate
   } = useSWR(
-    [namespace, `get deployment ${name}`],
+    [namespace, `get ${type} ${name}`],
     (namespace, command) => kubectl.exec(namespace, command, true),
     {
       suspense: true
@@ -53,14 +53,14 @@ export default function DeploymentInfo({ namespace, name, navigate }) {
     isValidating: isValidatingPods,
     revalidate: revalidatePods
   } = useSWR(
-    [namespace, `get pods -l=app=${metadata.labels.app}`],
+    [namespace, `get pods -l=app=${spec.selector.matchLabels.app}`],
     kubectl.exec,
     { suspense: true }
   );
 
   const handleScale = () => {
     kubectl
-      .exec(namespace, `scale deploy ${name} --replicas=${scale}`, false)
+      .exec(namespace, `scale ${type} ${name} --replicas=${scale}`, false)
       .then(() => {
         revalidate();
         revalidatePods();
@@ -69,13 +69,13 @@ export default function DeploymentInfo({ namespace, name, navigate }) {
 
   const handleDelete = () => {
     kubectl
-      .exec(namespace, `delete deploy ${name}`, false)
-      .then(() => navigate(`/${namespace}/deployments`))
+      .exec(namespace, `delete ${type} ${name}`, false)
+      .then(() => navigate(`/${namespace}/${type}`))
       .catch(err => console.error(err));
   };
 
   const handleEdit = () => {
-    navigate(`/${namespace}/deployments/${name}/edit`);
+    navigate(`/${namespace}/${type}/${name}/edit`);
   };
 
   const handleRefresh = () => {

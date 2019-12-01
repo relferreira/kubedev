@@ -42,6 +42,7 @@ const CronJobs = React.lazy(() => import('./CronJobs'));
 const JobInfo = React.lazy(() => import('./JobInfo'));
 const CronJobInfo = React.lazy(() => import('./CronJobInfo'));
 const Pods = React.lazy(() => import('./Pods'));
+const StatefulSets = React.lazy(() => import('./StatefulSets'));
 const Editor = React.lazy(() => import('./Editor'));
 
 const themes = {
@@ -134,11 +135,19 @@ function App() {
               <Services path="/:namespace/services" />
               <ServiceInfo path="/:namespace/services/:name/get" />
               <Deployments path="/:namespace/deployments" />
-              <DeploymentInfo path="/:namespace/deployments/:name/get" />
+              <DeploymentInfo
+                path="/:namespace/deployments/:name/get"
+                type="deployments"
+              />
               <Jobs path="/:namespace/jobs" />
               <JobInfo path="/:namespace/jobs/:name/get" />
               <CronJobs path="/:namespace/cronjobs" />
               <CronJobInfo path="/:namespace/cronjobs/:name/get" />
+              <StatefulSets path="/:namespace/statefulsets" />
+              <DeploymentInfo
+                path="/:namespace/statefulsets/:name/get"
+                type="statefulsets"
+              />
               <Logs
                 path="/:namespace/pods/:name/logs/container/:selectedContainer"
                 onLogInit={handleSidebarChange}
