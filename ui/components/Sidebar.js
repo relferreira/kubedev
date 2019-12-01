@@ -105,6 +105,7 @@ const Sidebar = ({ namespaces, links, onThemeChange }) => (
           <NavLink to={`/${namespace}/cronjobs`}>CronJobs</NavLink>
           <NavLink to={`/${namespace}/statefulsets`}>StatefulSets</NavLink>
           <NavLink to={`/${namespace}/hpa`}>Hpa</NavLink>
+          <NavLink to={`/${namespace}/pvc`}>Pvc</NavLink>
           <NavLink to={`/${namespace}/pods`}>Pods</NavLink>
           {/* <NavLink to="/nodes">Nodes</NavLink> */}
           <ThemeLink onClick={onThemeChange}>Change Theme</ThemeLink>

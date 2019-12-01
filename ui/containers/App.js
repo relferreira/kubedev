@@ -45,6 +45,8 @@ const Pods = React.lazy(() => import('./Pods'));
 const StatefulSets = React.lazy(() => import('./StatefulSets'));
 const Hpa = React.lazy(() => import('./Hpa'));
 const HpaInfo = React.lazy(() => import('./HpaInfo'));
+const Pvc = React.lazy(() => import('./Pvc'));
+const PvcInfo = React.lazy(() => import('./PvcInfo'));
 const Editor = React.lazy(() => import('./Editor'));
 
 const themes = {
@@ -152,6 +154,8 @@ function App() {
               />
               <Hpa path="/:namespace/hpa" />
               <HpaInfo path="/:namespace/hpa/:name/get" />
+              <Pvc path="/:namespace/pvc" />
+              <PvcInfo path="/:namespace/pvc/:name/get" />
               <Logs
                 path="/:namespace/pods/:name/logs/container/:selectedContainer"
                 onLogInit={handleSidebarChange}
