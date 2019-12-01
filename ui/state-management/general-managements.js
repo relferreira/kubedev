@@ -53,19 +53,20 @@ export const formatSearchCommand = search => {
 
 export const getSearchCmdType = search => {
   if (!search) return {};
-  let regex = /svc|service|services|deploy|deployment|deployments|pods|pod|cronjobs|cronjob|jobs|job/;
+  let regex = /\b(svc|service|services|deployments|deployment|deploy|pods|pod|cronjobs|cronjob|jobs|job)\b/;
   let matches = search.match(regex);
   if (matches) {
-    let type = matches[0];
+    let type = matches[1];
 
     let newSearch = search.replace(type, '').trim();
 
-    type = type.replace('service', 'services');
-    type = type.replace('svc', 'services');
-    type = type.replace(/deploy|deployment/, 'deployments');
-    type = type.replace('pod', 'pods');
-    type = type.replace('job', 'jobs');
-    type = type.replace('cronjob', 'cronjobs');
+    type = type.replace(/^service$/, 'services');
+    type = type.replace(/^svc$/, 'services');
+    type = type.replace(/^deploy$/, 'deployments');
+    type = type.replace(/^deployment$/, 'deployments');
+    type = type.replace(/^pod$/, 'pods');
+    type = type.replace(/^job$/, 'jobs');
+    type = type.replace(/^cronjob$/, 'cronjobs');
 
     return { newSearch, type };
   }
