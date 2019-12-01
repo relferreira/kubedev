@@ -43,6 +43,8 @@ const JobInfo = React.lazy(() => import('./JobInfo'));
 const CronJobInfo = React.lazy(() => import('./CronJobInfo'));
 const Pods = React.lazy(() => import('./Pods'));
 const StatefulSets = React.lazy(() => import('./StatefulSets'));
+const Hpa = React.lazy(() => import('./Hpa'));
+const HpaInfo = React.lazy(() => import('./HpaInfo'));
 const Editor = React.lazy(() => import('./Editor'));
 
 const themes = {
@@ -148,6 +150,8 @@ function App() {
                 path="/:namespace/statefulsets/:name/get"
                 type="statefulsets"
               />
+              <Hpa path="/:namespace/hpa" />
+              <HpaInfo path="/:namespace/hpa/:name/get" />
               <Logs
                 path="/:namespace/pods/:name/logs/container/:selectedContainer"
                 onLogInit={handleSidebarChange}
