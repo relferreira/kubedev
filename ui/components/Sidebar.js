@@ -99,6 +99,7 @@ const Sidebar = ({ namespaces, links, onThemeChange }) => (
             <hr />
           </SidebarTitle>
           {/* <NavLink to="/">Home</NavLink> */}
+          <NavLink to={`/${namespace}/nodes`}>Nodes</NavLink>
           <NavLink to={`/${namespace}/services`}>Services</NavLink>
           <NavLink to={`/${namespace}/deployments`}>Deployments</NavLink>
           <NavLink to={`/${namespace}/jobs`}>Jobs</NavLink>
