@@ -84,6 +84,7 @@ const SearchIcon = styled.button`
 
 const AutoCompleteContainer = styled.div`
   flex: 1;
+  z-index: 1;
 `;
 
 const AutoComplete = styled.div`

@@ -47,6 +47,11 @@ export const formatSearchCommand = search => {
     actionResultSearch
   );
 
+  if (action === 'logs') {
+    typeResultSearch = actionResultSearch;
+    type = 'pods';
+  }
+
   let name = getSearchCmdName(typeResultSearch);
   return { namespace, action, type, name };
 };
@@ -79,7 +84,7 @@ export const getSearchCmdType = search => {
 
 export const getSearchCmdAction = search => {
   if (!search) return {};
-  let regex = /get|edit|describe/;
+  let regex = /get|edit|describe|logs/;
   let matches = search.match(regex);
   if (matches) {
     let action = matches[0];

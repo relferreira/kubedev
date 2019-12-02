@@ -161,7 +161,7 @@ function App() {
               <Nodes path="/:namespace/nodes" />
               <NodeInfo path="/:namespace/nodes/:name/get" />
               <Logs
-                path="/:namespace/pods/:name/logs/container/:selectedContainer"
+                path="/:namespace/pods/:name/logs"
                 onLogInit={handleSidebarChange}
               />
               <Editor path="/:namespace/new" type="new" action="get" />
