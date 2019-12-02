@@ -20,9 +20,14 @@ function Editor(props) {
 
   const { data: response } = useSWR(
     props.type !== 'new'
-      ? [props.namespace, `get ${props.type} ${props.name}`]
+      ? [props.namespace, `${props.action} ${props.type} ${props.name}`]
       : null,
-    kubectl.exec,
+    (namespace, command) =>
+      kubectl.exec(
+        namespace,
+        command,
+        props.action === 'describe' ? false : true
+      ),
     { suspense: true }
   );
 
@@ -68,7 +73,7 @@ function Editor(props) {
 
     if (!data) return null;
 
-    let value = yaml.safeDump(data);
+    let value = data.yaml ? data.yaml : yaml.safeDump(data);
     setText(value);
   }, []);
 
@@ -85,13 +90,15 @@ function Editor(props) {
         value={text}
         onChange={(ev, value) => setText(value)}
       />
-      <EditControl
-        onDiff={handleDiff}
-        confirm={!!original}
-        loading={loadingSave}
-        onCancel={() => setOriginal('')}
-        onConfirm={() => handleSave()}
-      />
+      {props.action !== 'describe' && (
+        <EditControl
+          onDiff={handleDiff}
+          confirm={!!original}
+          loading={loadingSave}
+          onCancel={() => setOriginal('')}
+          onConfirm={() => handleSave()}
+        />
+      )}
     </EditorContainer>
   );
 }

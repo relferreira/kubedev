@@ -88,7 +88,9 @@ func main() {
 			jsonMesage := json.RawMessage(output)
 			c.JSON(200, jsonMesage)
 		} else {
-			c.JSON(200, nil)
+			var yamlRequest models.YamlRequest
+			yamlRequest.Yaml = output
+			c.JSON(200, yamlRequest)
 		}
 
 	})
@@ -96,15 +98,11 @@ func main() {
 	r.POST("/api/:namespace/apply", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 
-		var apply models.ApplyRequest
+		var apply models.YamlRequest
 		errJSON := c.BindJSON(&apply)
 		if errJSON != nil {
 			panic(errJSON.Error())
 		}
-		// body := c.Request.Body
-		// json, _ := ioutil.ReadAll(body)
-
-		// fmt.Printf("%s \n", string(json))
 
 		filename := ".files/" + strconv.FormatInt(time.Now().Unix(), 10) + ".yaml"
 		err = ioutil.WriteFile(filename, []byte(apply.Yaml), 0755)

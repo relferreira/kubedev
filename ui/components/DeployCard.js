@@ -18,7 +18,7 @@ const DeployLink = styled(Link)`
 
 const DeployCard = ({ replicas, name }) => (
   <GridCard>
-    <DeployLink to={`${name}/info`}>
+    <DeployLink to={`${name}/get`}>
       <DeployReplicas>{replicas}</DeployReplicas>
       <span>{name}</span>
     </DeployLink>

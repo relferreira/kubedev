@@ -58,7 +58,7 @@ export default function Pods({ namespace }) {
               items.map(({ metadata, status, spec }) => (
                 <tr key={metadata.name}>
                   <td>
-                    <Link to={`${metadata.name}/info`}>{metadata.name}</Link>
+                    <Link to={`${metadata.name}/get`}>{metadata.name}</Link>
                   </td>
                   <td>{getContainersReady(spec, status)}</td>
                   <td>{status.phase}</td>

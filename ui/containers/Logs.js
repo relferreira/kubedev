@@ -18,13 +18,9 @@ const LogText = styled(LazyLog)`
   background: ${props => props.theme.background};
 `;
 
-export default function Logs({
-  namespace,
-  name,
-  selectedContainer = 0,
-  onLogInit
-}) {
-  const [following, setFollowing] = useState(false);
+export default function Logs({ namespace, name, onLogInit }) {
+  const [selectedContainer, selectContainer] = useState(0);
+  const [following, setFollowing] = useState(true);
   const { data: response } = useSWR(
     [namespace, `get pod ${name}`],
     kubectl.exec,
@@ -72,10 +68,10 @@ export default function Logs({
         following={following}
         onFollow={() => setFollowing(following => !following)}
         onSelect={selectedContainer =>
-          navigate(
-            `${containers.findIndex(
+          selectContainer(
+            containers.findIndex(
               container => container.name === selectedContainer
-            )}`
+            )
           )
         }
       />

@@ -32,7 +32,7 @@ const JobInfo = styled.div`
 
 const JobCard = ({ name, state, number }) => (
   <GridCard>
-    <JobLink to={`${name}/info`}>
+    <JobLink to={`${name}/get`}>
       <StatusIcon state={state} />
       <JobTextContainer>
         <span>{name}</span>

@@ -37,7 +37,7 @@ const LogIndicator = styled.span`
   flex: 0 0 10px;
   height: 10px;
   border-radius: 50%;
-  background: ${props => (props.following ? successColor : errorColor)};
+  background: ${props => (props.following ? errorColor : successColor)};
 `;
 
 const LogTime = styled.span`

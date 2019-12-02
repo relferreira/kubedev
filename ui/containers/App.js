@@ -1,5 +1,5 @@
 import React, { useState, Suspense } from 'react';
-import { Redirect } from '@reach/router';
+import { Redirect, Location } from '@reach/router';
 import { Global, css } from '@emotion/core';
 import { ThemeProvider } from 'emotion-theming';
 import useSWR from 'swr';
@@ -42,6 +42,13 @@ const CronJobs = React.lazy(() => import('./CronJobs'));
 const JobInfo = React.lazy(() => import('./JobInfo'));
 const CronJobInfo = React.lazy(() => import('./CronJobInfo'));
 const Pods = React.lazy(() => import('./Pods'));
+const StatefulSets = React.lazy(() => import('./StatefulSets'));
+const Hpa = React.lazy(() => import('./Hpa'));
+const HpaInfo = React.lazy(() => import('./HpaInfo'));
+const Pvc = React.lazy(() => import('./Pvc'));
+const PvcInfo = React.lazy(() => import('./PvcInfo'));
+const Nodes = React.lazy(() => import('./Nodes'));
+const NodeInfo = React.lazy(() => import('./NodeInfo'));
 const Editor = React.lazy(() => import('./Editor'));
 
 const themes = {
@@ -116,7 +123,7 @@ function App() {
           }
         `}
       />
-      <Header />
+      <Location>{({ location }) => <Header location={location} />}</Location>
       <AppContainer>
         <Sidebar
           namespaces={namespaces}
@@ -130,21 +137,39 @@ function App() {
               <Redirect from="/" to="/default/pods" noThrow />
               {/* <Home path="/:namespace" /> */}
               <Pods path="/:namespace/pods" />
-              <PodInfo path="/:namespace/pods/:name/info" />
+              <PodInfo path="/:namespace/pods/:name/get" />
               <Services path="/:namespace/services" />
-              <ServiceInfo path="/:namespace/services/:name/info" />
+              <ServiceInfo path="/:namespace/services/:name/get" />
               <Deployments path="/:namespace/deployments" />
-              <DeploymentInfo path="/:namespace/deployments/:name/info" />
+              <DeploymentInfo
+                path="/:namespace/deployments/:name/get"
+                type="deployments"
+              />
               <Jobs path="/:namespace/jobs" />
-              <JobInfo path="/:namespace/jobs/:name/info" />
+              <JobInfo path="/:namespace/jobs/:name/get" />
               <CronJobs path="/:namespace/cronjobs" />
-              <CronJobInfo path="/:namespace/cronjobs/:name/info" />
+              <CronJobInfo path="/:namespace/cronjobs/:name/get" />
+              <StatefulSets path="/:namespace/statefulsets" />
+              <DeploymentInfo
+                path="/:namespace/statefulsets/:name/get"
+                type="statefulsets"
+              />
+              <Hpa path="/:namespace/hpa" />
+              <HpaInfo path="/:namespace/hpa/:name/get" />
+              <Pvc path="/:namespace/pvc" />
+              <PvcInfo path="/:namespace/pvc/:name/get" />
+              <Nodes path="/:namespace/nodes" />
+              <NodeInfo path="/:namespace/nodes/:name/get" />
               <Logs
-                path="/:namespace/pods/:name/logs/container/:selectedContainer"
+                path="/:namespace/pods/:name/logs"
                 onLogInit={handleSidebarChange}
               />
-              <Editor path="/:namespace/new" type="new" />
-              <Editor path="/:namespace/:type/:name/edit" />
+              <Editor path="/:namespace/new" type="new" action="get" />
+              <Editor path="/:namespace/:type/:name/edit" action="get" />
+              <Editor
+                path="/:namespace/:type/:name/describe"
+                action="describe"
+              />
             </CustomRouter>
           </ErrorBoundary>
         </Suspense>

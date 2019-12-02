@@ -34,7 +34,7 @@ const ServiceIPs = styled.div`
 
 const ServiceCard = ({ name, clusterIP, publicIP }) => (
   <ServiceCardContainer>
-    <ServiceLink to={`${name}/info`}>
+    <ServiceLink to={`${name}/get`}>
       <ServiceInfo>
         <span>{name}</span>
         <ServiceIPs>
