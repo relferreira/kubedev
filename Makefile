@@ -9,9 +9,7 @@ BINARY_NAME=kubedev
 BINARY_MAC=$(BINARY_NAME)_darwin
 BINARY_UNIX=$(BINARY_NAME)_unix
 
-all: test build
-build: 
-	$(GOBUILD) -o $(BINARY_NAME) -v
+all: test clean build
 test: 
 	$(GOTEST) -v ./...
 clean: 
