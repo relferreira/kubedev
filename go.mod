@@ -15,6 +15,7 @@ require (
 	github.com/json-iterator/go v0.0.0-20180701071628-ab8a2e0c74be // indirect
 	github.com/markbates/oncer v0.0.0-20181203154359-bf2de49a0be2 // indirect
 	github.com/mattn/go-isatty v0.0.7 // indirect
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
