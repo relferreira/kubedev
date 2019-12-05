@@ -118,7 +118,7 @@ const Sidebar = ({ namespaces, links, onThemeChange }) => (
             {links.map(({ type, namespace, name }) => (
               <HistoryLink
                 key={`${type}${namespace}${name}`}
-                to={`${namespace}/pods/${name}/logs/container/0`}
+                to={`${namespace}/pods/${name}/logs`}
                 replace
               >
                 {name}
