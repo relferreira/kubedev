@@ -14,12 +14,6 @@ Download the binary files in the relase page
 
 ### Server
 
-Install dependencies
-
-```
-glide up
-```
-
 Run Server
 
 ```

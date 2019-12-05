@@ -56,7 +56,7 @@ const PodCard = ({ name, state }) => (
         </PodIcon>
       </Link>
       {/* <img src={bug} /> */}
-      <Link to={`${name}/logs/container/0`}>
+      <Link to={`${name}/logs`}>
         <PodIcon
           xmlns="http://www.w3.org/2000/svg"
           width="24"

@@ -42,7 +42,7 @@ export default function PodInfo({ namespace, name, navigate }) {
   );
 
   const handleLogs = () => {
-    navigate(`/${namespace}/pods/${name}/logs/container/0`);
+    navigate(`/${namespace}/pods/${name}/logs`);
   };
 
   const handleEdit = () => {

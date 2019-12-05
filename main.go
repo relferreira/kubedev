@@ -24,6 +24,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
+	"github.com/mitchellh/go-homedir"
 )
 
 func main() {
@@ -104,7 +105,11 @@ func main() {
 			panic(errJSON.Error())
 		}
 
-		filename := ".files/" + strconv.FormatInt(time.Now().Unix(), 10) + ".yaml"
+		home, _ := homedir.Dir()
+		path := home + "/.kubedev/"
+		_ = os.Mkdir(path, os.ModePerm)
+		
+		filename := path + strconv.FormatInt(time.Now().Unix(), 10) + ".yaml"
 		err = ioutil.WriteFile(filename, []byte(apply.Yaml), 0755)
 		if err != nil {
 			panic(err.Error())
