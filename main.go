@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"syscall"
 	"bufio"
 	"bytes"
 	"encoding/json"
@@ -130,6 +132,72 @@ func main() {
 			panic(err.Error())
 		}
 
+		c.JSON(200, nil)
+	})
+
+	r.GET("/api/:namespace/port-forward/start/:type/:name/:from/:to", func(c *gin.Context) {
+		namespace := c.Param("namespace")
+		resourceType := c.Param("type")
+		name := c.Param("name")
+		from := c.Param("from")
+		to := c.Param("to")
+
+		fullCommand := []string{}
+		
+		fullCommand = append(fullCommand, "-n")
+		fullCommand = append(fullCommand, namespace)
+		fullCommand = append(fullCommand, "port-forward")
+		fullCommand = append(fullCommand, fmt.Sprintf("%s/%s", resourceType, name))
+		fullCommand = append(fullCommand, fmt.Sprintf("%s:%s", from, to))
+		
+		fmt.Printf("%#v\n", fullCommand)
+		cmd := exec.Command("kubectl", fullCommand...)
+		cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+
+		if err := cmd.Start(); err != nil {
+			panic(err.Error())
+		}
+
+		var yamlRequest models.YamlRequest
+		yamlRequest.Yaml = strconv.Itoa(cmd.Process.Pid)
+		c.JSON(200, yamlRequest)
+
+	})
+
+	r.GET("/api/:namespace/port-forward/stop/:pid", func(c *gin.Context) {
+		pid, _ := strconv.Atoi(c.Param("pid"))
+		
+		proc, err := os.FindProcess(pid)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		proc.Kill()
+
+		c.JSON(200, nil)
+	})
+
+	r.GET("/api/:namespace/port-forward/running/:pid", func(c *gin.Context) {
+		pid := c.Param("pid")
+
+		if pid == "0" {
+			c.AbortWithError(422, errors.New("invalid pid"))
+		}
+
+		fullCommand := []string{}
+		fullCommand = append(fullCommand, "-p")
+		fullCommand = append(fullCommand, pid)
+		cmd := exec.Command("ps", fullCommand...)
+
+		out, err := cmd.Output()
+		if err != nil {
+			c.AbortWithError(422, err)
+		}
+		output := string(out[:])
+		fmt.Printf(output)
+		if strings.Contains(output, "(kubectl)") {
+			c.AbortWithError(422, errors.New("port-forward killed"))
+		}
 		c.JSON(200, nil)
 	})
 
