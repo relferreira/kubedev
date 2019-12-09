@@ -14,11 +14,14 @@ function getBackground(type) {
 }
 
 const Button = styled.button`
-  padding: 5px 10px;
+  min-width: 64px;
+  height: 36px;
+  padding: 0px 10px;
   background: transparent;
   color: ${props => getBackground(props.type)};
   border: 1px solid ${props => getBackground(props.type)};
-  border-radius: 3px;
+  border-radius: 6px;
+  font-size: 12px;
   cursor: pointer;
 `;
 
