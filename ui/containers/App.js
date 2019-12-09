@@ -173,7 +173,7 @@ function App() {
                 path="/:namespace/:type/:name/describe"
                 action="describe"
               />
-              <PortForward path="/port-forward" />
+              <PortForward path="/:namespace/port-forward" />
             </CustomRouter>
           </ErrorBoundary>
         </Suspense>

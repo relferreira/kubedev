@@ -98,7 +98,6 @@ const Sidebar = ({ namespaces, links, onThemeChange }) => (
             <p>Resources</p>
             <hr />
           </SidebarTitle>
-          {/* <NavLink to="/">Home</NavLink> */}
           <NavLink to={`/${namespace}/nodes`}>Nodes</NavLink>
           <NavLink to={`/${namespace}/services`}>Services</NavLink>
           <NavLink to={`/${namespace}/deployments`}>Deployments</NavLink>
@@ -108,8 +107,7 @@ const Sidebar = ({ namespaces, links, onThemeChange }) => (
           <NavLink to={`/${namespace}/hpa`}>Hpa</NavLink>
           <NavLink to={`/${namespace}/pvc`}>Pvc</NavLink>
           <NavLink to={`/${namespace}/pods`}>Pods</NavLink>
-          <NavLink to="/port-forward">Port Forward</NavLink>
-          {/* <NavLink to="/nodes">Nodes</NavLink> */}
+          <NavLink to={`/${namespace}/port-forward`}>Port Forward</NavLink>
           <ThemeLink onClick={onThemeChange}>Change Theme</ThemeLink>
           <HistoryContainer>
             <SidebarTitle>
