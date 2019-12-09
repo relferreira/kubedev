@@ -19,7 +19,7 @@ export function storePid(namespace, type, name, pid, from, to) {
 export function findPid(name) {
   let storedPids = getStoredPids();
 
-  return storedPids[name];
+  return storedPids && storedPids[name];
 }
 
 export function formatPidKeyName(namespace, type, name) {
