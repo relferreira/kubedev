@@ -10,7 +10,7 @@ export default function PortForward() {
 
   useEffect(() => {
     let storedPids = getStoredPids();
-    setPids(Object.values(storedPids));
+    if (storedPids) setPids(Object.values(storedPids));
   }, []);
 
   return (
