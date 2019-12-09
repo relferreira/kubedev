@@ -7,3 +7,14 @@ export const exec = (namespace, command, json = true) => {
 
 export const apply = (namespace, json) =>
   axios.post(`${process.env.API}/${namespace}/apply`, json);
+
+export const portForward = (namespace, type, name, from, to) =>
+  axios.get(
+    `${process.env.API}/${namespace}/port-forward/start/${type}/${name}/${from}/${to}`
+  );
+
+export const stopPortForward = (namespace, pid) =>
+  axios.get(`${process.env.API}/${namespace}/port-forward/stop/${pid}`);
+
+export const checkPortForward = (namespace, pid) =>
+  axios.get(`${process.env.API}/${namespace}/port-forward/running/${pid}`);

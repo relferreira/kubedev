@@ -1,5 +1,5 @@
 export const primary = '#64B5F6';
-export const primaryLight = '#9BE7FF';
+export const primaryLight = '#F6F6F6';
 export const primaryDark = '#2286C3';
 export const fontColor = '#595959';
 export const fontColorWhite = '#ffffff';

@@ -8,6 +8,10 @@ const Input = styled.input`
   color: ${props => props.theme.controllerColor};
   border-radius: 5px;
   font-size: 12px;
+
+  &:disabled {
+    opacity: 0.3;
+  }
 `;
 
 export default Input;

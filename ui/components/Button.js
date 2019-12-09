@@ -15,11 +15,10 @@ function getBackground(type) {
 
 const Button = styled.button`
   padding: 5px 10px;
-  background: ${props => getBackground(props.type)};
-  color: ${fontColorWhite};
-  border: none;
+  background: transparent;
+  color: ${props => getBackground(props.type)};
+  border: 1px solid ${props => getBackground(props.type)};
   border-radius: 3px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   cursor: pointer;
 `;
 

@@ -13,3 +13,4 @@ ui/.cache
 ui/dist
 kubedev_*
 .files/*
+debug

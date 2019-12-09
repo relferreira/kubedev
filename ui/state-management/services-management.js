@@ -4,4 +4,6 @@ export const getPublicIP = loadBalancer => {
 };
 
 export const getPorts = ports =>
-  ports.map(portInfo => `${portInfo.port}/${portInfo.protocol}`).join(',');
+  ports.map(portInfo => getPort(portInfo)).join(',');
+
+export const getPort = portInfo => `${portInfo.port}/${portInfo.protocol}`;

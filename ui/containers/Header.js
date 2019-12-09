@@ -125,6 +125,10 @@ const Backdrop = styled.div`
   opacity: 0.8;
 `;
 
+const HeaderIcon = styled(Icon)`
+  fill: ${props => props.theme.headerIcon};
+`;
+
 const worker = new Worker('../workers/search.js');
 
 export default function Header({ location }) {
@@ -301,7 +305,7 @@ export default function Header({ location }) {
           </Downshift>
         </AutoCompleteContainer>
         <Link to={`${getSelectedNamespace(location)}/new`}>
-          <Icon>
+          <HeaderIcon>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -311,7 +315,7 @@ export default function Header({ location }) {
               <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
               <path d="M0 0h24v24H0z" fill="none" />
             </svg>
-          </Icon>
+          </HeaderIcon>
         </Link>
       </HeaderContainer>
     </Hotkeys>

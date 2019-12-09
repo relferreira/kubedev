@@ -10,6 +10,10 @@ const Select = styled.select`
   background: ${props => props.theme.controllerBackground};
   color: ${props => props.theme.containerFont};
   font-size: 12px;
+
+  &:disabled {
+    opacity: 0.3;
+  }
 `;
 
 export default Select;
