@@ -22,7 +22,9 @@ import {
   cardBackgroundDark,
   backgroundLight,
   tableBorderLight,
-  tableBorderDark
+  tableBorderDark,
+  controllerBorderLight,
+  controllerBorderDark
 } from '../util/colors';
 import ErrorBoundary from '../components/ErrorBoundary';
 import RouterLoading from '../components/RouterLoading';
@@ -64,7 +66,7 @@ const themes = {
     tableBorder: tableBorderLight,
     controllerBackground: backgroundLight,
     controllerColor: fontColor,
-    controllerBorder: fontColor
+    controllerBorder: controllerBorderLight
   },
 
   dark: {
@@ -78,7 +80,7 @@ const themes = {
     tableBorder: tableBorderDark,
     controllerBackground: darkLight,
     controllerColor: fontColorWhite,
-    controllerBorder: tableBorderLight
+    controllerBorder: controllerBorderDark
   }
 };
 
@@ -118,7 +120,7 @@ function App() {
             padding: 0 0;
             margin: 0 0;
             box-sizing: border-box;
-            font-family: 'Roboto Mono', monospace;
+            font-family: 'Roboto', sans-serif;
           }
 
           a {

@@ -9,9 +9,11 @@ import Input from './Input';
 const PageHeaderContainer = styled.div`
   display: flex;
   align-items: center;
+  margin-bottom: 16px;
 
   h1 {
     flex: 1;
+    margin-bottom: 0px;
   }
 
   button {

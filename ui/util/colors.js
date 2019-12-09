@@ -15,3 +15,6 @@ export const cardBackgroundLight = '#fafafa';
 export const cardBackgroundDark = darkLight;
 export const tableBorderLight = 'rgba(0, 0, 0, 0.12)';
 export const tableBorderDark = 'rgba(206, 205, 205, 0.12)';
+export const controllerBorderLight = 'rgba(0, 0, 0, 0.12)';
+export const controllerBorderDark = 'rgba(206, 205, 205, 0.12)';
+export const controllerBorderHighlight = primaryDark;
