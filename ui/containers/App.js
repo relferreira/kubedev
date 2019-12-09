@@ -50,11 +50,13 @@ const PvcInfo = React.lazy(() => import('./PvcInfo'));
 const Nodes = React.lazy(() => import('./Nodes'));
 const NodeInfo = React.lazy(() => import('./NodeInfo'));
 const Editor = React.lazy(() => import('./Editor'));
+const PortForward = React.lazy(() => import('./PortForward'));
 
 const themes = {
   light: {
     background: backgroundLight,
     header: primaryDark,
+    headerIcon: fontColorWhite,
     sidebarBackground: primaryLight,
     sidebarFontColor: fontColor,
     containerFont: fontColorDark,
@@ -68,6 +70,7 @@ const themes = {
   dark: {
     background: darkDark,
     header: darkLight,
+    headerIcon: fontColorWhite,
     sidebarBackground: darkDark,
     sidebarFontColor: fontColorWhite,
     containerFont: fontColorWhite,
@@ -170,6 +173,7 @@ function App() {
                 path="/:namespace/:type/:name/describe"
                 action="describe"
               />
+              <PortForward path="/port-forward" />
             </CustomRouter>
           </ErrorBoundary>
         </Suspense>

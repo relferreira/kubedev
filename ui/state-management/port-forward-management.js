@@ -8,7 +8,10 @@ export function getStoredPids() {
 export function storePid(namespace, type, name, pid, from, to) {
   let formatedName = formatPidKeyName(namespace, type, name);
   let storedPids = getStoredPids();
-  let newPids = { ...storedPids, [formatedName]: { pid, from, to } };
+  let newPids = {
+    ...storedPids,
+    [formatedName]: { pid, namespace, type, name, from, to }
+  };
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(newPids));
 }
