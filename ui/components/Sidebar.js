@@ -4,11 +4,13 @@ import { primaryLight, fontColor, primaryDark, primary } from '../util/colors';
 import { Link, Location, navigate } from '@reach/router';
 import Select from './Select';
 import { getSelectedNamespace } from '../state-management/general-managements';
+import LocationHistoryController from './LocationHistoryController';
 
 const SidebarContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 0 0 200px;
+  width: 200px;
   background: ${props => props.theme.sidebarBackground};
   color: ${props => props.theme.sidebarFontColor};
 `;
@@ -72,12 +74,20 @@ const HistoryLink = styled(NavLink)`
 `;
 
 const NamespaceSelect = styled(Select)`
-  margin: 0px 10px;
+  min-width: inherit;
+  width: 106px;
+  margin: 0px 5px 0px 0px;
+`;
+
+const NamespaceSelectContainer = styled.div`
+  display: flex;
+  padding: 0px 16px;
 `;
 
 const Sidebar = ({ namespaces, links, onThemeChange }) => (
   <Location>
     {({ location }) => {
+      console.log(location);
       let namespace = getSelectedNamespace(location);
       return (
         <SidebarContainer>
@@ -85,15 +95,18 @@ const Sidebar = ({ namespaces, links, onThemeChange }) => (
             <p>Namespaces</p>
             <hr />
           </SidebarTitle>
-          <NamespaceSelect
-            value={namespace}
-            aria-label="namespace-selector"
-            onChange={event => navigate(`/${event.target.value}/pods`)}
-          >
-            {namespaces.map(namespace => (
-              <option key={namespace}>{namespace}</option>
-            ))}
-          </NamespaceSelect>
+          <NamespaceSelectContainer>
+            <NamespaceSelect
+              value={namespace}
+              aria-label="namespace-selector"
+              onChange={event => navigate(`/${event.target.value}/pods`)}
+            >
+              {namespaces.map(namespace => (
+                <option key={namespace}>{namespace}</option>
+              ))}
+            </NamespaceSelect>
+            <LocationHistoryController />
+          </NamespaceSelectContainer>
           <SidebarTitle>
             <p>Resources</p>
             <hr />
