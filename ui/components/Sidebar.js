@@ -87,7 +87,6 @@ const NamespaceSelectContainer = styled.div`
 const Sidebar = ({ namespaces, links, onThemeChange }) => (
   <Location>
     {({ location }) => {
-      console.log(location);
       let namespace = getSelectedNamespace(location);
       return (
         <SidebarContainer>
@@ -120,6 +119,7 @@ const Sidebar = ({ namespaces, links, onThemeChange }) => (
           <NavLink to={`/${namespace}/hpa`}>Hpa</NavLink>
           <NavLink to={`/${namespace}/pvc`}>Pvc</NavLink>
           <NavLink to={`/${namespace}/pods`}>Pods</NavLink>
+          <NavLink to={`/${namespace}/ingress`}>Ingress</NavLink>
           <NavLink to={`/${namespace}/port-forward`}>Port Forward</NavLink>
           <ThemeLink onClick={onThemeChange}>Change Theme</ThemeLink>
           <HistoryContainer>
