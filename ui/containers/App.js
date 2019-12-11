@@ -53,6 +53,7 @@ const Nodes = React.lazy(() => import('./Nodes'));
 const NodeInfo = React.lazy(() => import('./NodeInfo'));
 const Editor = React.lazy(() => import('./Editor'));
 const PortForward = React.lazy(() => import('./PortForward'));
+const Ingress = React.lazy(() => import('./Ingress'));
 
 const themes = {
   light: {
@@ -165,6 +166,7 @@ function App() {
               <PvcInfo path="/:namespace/pvc/:name/get" />
               <Nodes path="/:namespace/nodes" />
               <NodeInfo path="/:namespace/nodes/:name/get" />
+              <Ingress path="/:namespace/ingress" />
               <Logs
                 path="/:namespace/pods/:name/logs"
                 onLogInit={handleSidebarChange}
