@@ -54,6 +54,9 @@ const NodeInfo = React.lazy(() => import('./NodeInfo'));
 const Editor = React.lazy(() => import('./Editor'));
 const PortForward = React.lazy(() => import('./PortForward'));
 const Ingress = React.lazy(() => import('./Ingress'));
+const ConfigMap = React.lazy(() => import('./ConfigMap'));
+const Secret = React.lazy(() => import('./Secret'));
+const SecretInfo = React.lazy(() => import('./SecretInfo'));
 
 const themes = {
   light: {
@@ -178,6 +181,9 @@ function App() {
                 action="describe"
               />
               <PortForward path="/:namespace/port-forward" />
+              <ConfigMap path="/:namespace/configmaps" />
+              <Secret path="/:namespace/secrets" />
+              <SecretInfo path="/:namespace/secrets/:name/get" />
             </CustomRouter>
           </ErrorBoundary>
         </Suspense>
