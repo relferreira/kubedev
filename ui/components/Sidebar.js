@@ -13,6 +13,7 @@ const SidebarContainer = styled.div`
   width: 200px;
   background: ${props => props.theme.sidebarBackground};
   color: ${props => props.theme.sidebarFontColor};
+  overflow: auto;
 `;
 
 const HistoryContainer = styled.div`
@@ -121,6 +122,7 @@ const Sidebar = ({ namespaces, links, onThemeChange }) => (
           <NavLink to={`/${namespace}/pods`}>Pods</NavLink>
           <NavLink to={`/${namespace}/ingress`}>Ingress</NavLink>
           <NavLink to={`/${namespace}/configmaps`}>Config Maps</NavLink>
+          <NavLink to={`/${namespace}/secrets`}>Secrets</NavLink>
           <NavLink to={`/${namespace}/port-forward`}>Port Forward</NavLink>
           <ThemeLink onClick={onThemeChange}>Change Theme</ThemeLink>
           <HistoryContainer>

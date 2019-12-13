@@ -58,7 +58,7 @@ export const formatSearchCommand = search => {
 
 export const getSearchCmdType = search => {
   if (!search) return {};
-  let regex = /\b(svc|service|services|deployments|deployment|deploy|pods|pod|cronjobs|cronjob|jobs|job|statefulsets|statefulset|sts|hpa|pvc|nodes|node|ingress|configmaps|configmap)\b/;
+  let regex = /\b(svc|service|services|deployments|deployment|deploy|pods|pod|cronjobs|cronjob|jobs|job|statefulsets|statefulset|sts|hpa|pvc|nodes|node|ingress|configmaps|configmap|secrets|secret)\b/;
   let matches = search.match(regex);
   if (matches) {
     let type = matches[1];
@@ -75,6 +75,8 @@ export const getSearchCmdType = search => {
     type = type.replace(/^statefulset$/, 'statefulsets');
     type = type.replace(/^sts$/, 'statefulsets');
     type = type.replace(/^node$/, 'nodes');
+    type = type.replace(/^configmap$/, 'configmaps');
+    type = type.replace(/^secret$/, 'secrets');
 
     return { newSearch, type };
   }
