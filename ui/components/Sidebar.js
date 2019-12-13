@@ -120,6 +120,7 @@ const Sidebar = ({ namespaces, links, onThemeChange }) => (
           <NavLink to={`/${namespace}/pvc`}>Pvc</NavLink>
           <NavLink to={`/${namespace}/pods`}>Pods</NavLink>
           <NavLink to={`/${namespace}/ingress`}>Ingress</NavLink>
+          <NavLink to={`/${namespace}/configmaps`}>Config Maps</NavLink>
           <NavLink to={`/${namespace}/port-forward`}>Port Forward</NavLink>
           <ThemeLink onClick={onThemeChange}>Change Theme</ThemeLink>
           <HistoryContainer>

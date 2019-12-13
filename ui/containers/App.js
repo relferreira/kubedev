@@ -54,6 +54,7 @@ const NodeInfo = React.lazy(() => import('./NodeInfo'));
 const Editor = React.lazy(() => import('./Editor'));
 const PortForward = React.lazy(() => import('./PortForward'));
 const Ingress = React.lazy(() => import('./Ingress'));
+const ConfigMap = React.lazy(() => import('./ConfigMap'));
 
 const themes = {
   light: {
@@ -178,6 +179,7 @@ function App() {
                 action="describe"
               />
               <PortForward path="/:namespace/port-forward" />
+              <ConfigMap path="/:namespace/configmaps" />
             </CustomRouter>
           </ErrorBoundary>
         </Suspense>
