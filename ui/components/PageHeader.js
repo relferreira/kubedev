@@ -1,6 +1,7 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
+import Hotkeys from 'react-hot-keys';
 
 import { useConfigContext } from '../state-management/config-management';
 import Icon from './Icon';
@@ -35,6 +36,7 @@ const PageHeader = ({
   children
 }) => {
   const { config, changeConfig } = useConfigContext();
+  const inputRef = useRef(null);
 
   const handleListStyleChange = () =>
     changeConfig({ listStyle: config.listStyle === 'grid' ? 'table' : 'grid' });
@@ -44,11 +46,17 @@ const PageHeader = ({
       <h1>{title}</h1>
       {showSearch && (
         <Fragment>
-          <Input
-            value={search}
-            placeholder="Search"
-            onChange={event => onSearch(event.target.value)}
-          />
+          <Hotkeys
+            keyName="ctrl+shift+f,command+shift+f"
+            onKeyUp={() => inputRef.current.focus()}
+          >
+            <Input
+              value={search}
+              placeholder="Search"
+              ref={inputRef}
+              onChange={event => onSearch(event.target.value)}
+            />
+          </Hotkeys>
           <RefreshIcon onClick={handleListStyleChange}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
