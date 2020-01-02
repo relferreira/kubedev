@@ -29,7 +29,7 @@ export default function Pvc({ namespace }) {
                     <Link to={`${metadata.name}/get`}>{metadata.name}</Link>
                   </td>
                   <td>{status.phase}</td>
-                  <td>{status.capacity.storage}</td>
+                  <td>{status.capacity && status.capacity.storage}</td>
                   <td>{metadata.creationTimestamp}</td>
                 </tr>
               ))}
