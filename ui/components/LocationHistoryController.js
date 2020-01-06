@@ -29,32 +29,38 @@ const ReversedHistoryButton = styled(HistoryButton)`
   }
 `;
 
-const LocationHistoryController = () => (
-  <HistoryButtons>
-    <ReversedHistoryButton onClick={() => window.history.back()}>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-      >
-        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-        <path fill="none" d="M0 0h24v24H0V0z" />
-      </svg>
-    </ReversedHistoryButton>
-    <span />
-    <HistoryButton onClick={() => window.history.forward()}>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-      >
-        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-        <path fill="none" d="M0 0h24v24H0V0z" />
-      </svg>
-    </HistoryButton>
-  </HistoryButtons>
-);
+const LocationHistoryController = () => {
+  const handleForward = () => window.history.forward();
+
+  const handleBackward = () => window.history.back();
+
+  return (
+    <HistoryButtons>
+      <ReversedHistoryButton onClick={handleBackward}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+        >
+          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
+          <path fill="none" d="M0 0h24v24H0V0z" />
+        </svg>
+      </ReversedHistoryButton>
+      <span />
+      <HistoryButton onClick={handleForward}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+        >
+          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
+          <path fill="none" d="M0 0h24v24H0V0z" />
+        </svg>
+      </HistoryButton>
+    </HistoryButtons>
+  );
+};
 
 export default LocationHistoryController;
