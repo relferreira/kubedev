@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import ProgressBar from './ProgressBar';
 
 const RouterLoadingContainer = styled.div`
   flex: 1;
@@ -10,7 +11,10 @@ const RouterLoadingContainer = styled.div`
 `;
 
 const RouterLoading = () => (
-  <RouterLoadingContainer>Loading...</RouterLoadingContainer>
+  <RouterLoadingContainer>
+    Loading...
+    <ProgressBar />
+  </RouterLoadingContainer>
 );
 
 export default RouterLoading;
