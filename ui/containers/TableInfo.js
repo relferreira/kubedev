@@ -4,10 +4,11 @@ import Fuse from 'fuse.js';
 
 import * as kubectl from '../kubectl';
 import PageHeader from '../components/PageHeader';
+import ProgressBar from '../components/ProgressBar';
 
 export default function TableInfo({ title, namespace, command, children }) {
   const [search, setSearch] = useState('');
-  const { data: response, revalidate } = useSWR(
+  const { data: response, revalidate, isValidating } = useSWR(
     [namespace, command],
     kubectl.exec,
     { suspense: true }
@@ -22,6 +23,7 @@ export default function TableInfo({ title, namespace, command, children }) {
   });
   return (
     <div>
+      {isValidating && <ProgressBar />}
       <PageHeader
         title={title}
         showSearch={true}

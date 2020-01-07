@@ -70,7 +70,9 @@ const themes = {
     tableBorder: tableBorderLight,
     controllerBackground: backgroundLight,
     controllerColor: fontColor,
-    controllerBorder: controllerBorderLight
+    controllerBorder: controllerBorderLight,
+    loadingContainer: primary,
+    loadingIndicator: primaryLight
   },
 
   dark: {
@@ -84,7 +86,9 @@ const themes = {
     tableBorder: tableBorderDark,
     controllerBackground: darkLight,
     controllerColor: fontColorWhite,
-    controllerBorder: controllerBorderDark
+    controllerBorder: controllerBorderDark,
+    loadingContainer: primaryDark,
+    loadingIndicator: primaryLight
   }
 };
 
