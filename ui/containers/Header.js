@@ -1,9 +1,9 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useWorker } from 'react-hooks-worker';
 import Downshift from 'downshift';
 import Fuse from 'fuse.js';
-import { navigate, Location, Link } from '@reach/router';
+import { navigate, Link } from '@reach/router';
 import Hotkeys from 'react-hot-keys';
 
 import { primaryDark, fontColorWhite } from '../util/colors';
@@ -12,13 +12,12 @@ import Input from '../components/Input';
 import {
   formatSearchResponse,
   getSelectedNamespace,
-  getSearchType,
-  getSearchAction,
   formatSearchCommand,
   shouldRefreshSearch,
   isSearchCommand
 } from '../state-management/general-managements';
 import Icon from '../components/Icon';
+import { addHistory, getHistory } from '../state-management/history-management';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -90,13 +89,14 @@ const AutoCompleteContainer = styled.div`
 const AutoComplete = styled.div`
   position: absolute;
   width: 100%;
+  max-height: 500px;
   top: 38px;
   background: ${props => props.theme.background};
   color: ${props => props.theme.sidebarFontColor};
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
+  overflow: auto;
 `;
 
 const SearchItem = styled.div`
@@ -134,21 +134,33 @@ const worker = new Worker('../workers/search.js');
 
 export default function Header({ location }) {
   const [searchDate, setSearchDate] = useState(new Date());
+  const [historyDate, setHistoryDate] = useState(new Date());
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [namespace, setNamespace] = useState('');
   const [type, setType] = useState('pods');
   const [focus, setFocus] = useState(false);
-  const { result, error } = useWorker(worker, searchDate);
+  const [historyMode, setHistoryMode] = useState(false);
+  const [history, setHistory] = useState([]);
+  const { result } = useWorker(worker, searchDate);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    setHistory(getHistory());
+  }, [historyDate]);
 
   const handleFocus = () => {
     setFocus(true);
-    if (!result || shouldRefreshSearch(result.id)) setSearchDate(new Date());
+
+    let date = new Date();
+    setHistoryDate(date);
+    if (!result || shouldRefreshSearch(result.id)) setSearchDate(date);
   };
 
   const handleBlur = () => {
+    inputRef.current.blur();
     setFocus(false);
+    setHistoryMode(false);
   };
 
   const handleSearchInput = event => {
@@ -159,51 +171,72 @@ export default function Header({ location }) {
     setNamespace(namespace);
     setType(type);
 
-    setSearch(name || searchInput);
+    setSearch(name || search);
   };
 
   const handleShortcut = keyName => {
     inputRef.current.focus();
-    if (keyName === 'command+shift+k' || keyName === 'ctrl+shift+k')
+    if (keyName === 'command+shift+k' || keyName === 'ctrl+shift+k') {
       setSearchInput(`kubectl -n ${getSelectedNamespace(location)} `);
-    else setSearchInput('');
+    } else if (keyName === 'command+shift+y' || keyName === 'ctrl+shift+y') {
+      resetInput();
+      setHistoryMode(true);
+    } else {
+      resetInput();
+    }
   };
 
   const handleSelect = selection => {
     inputRef.current.blur();
 
-    let isCommand = isSearchCommand(searchInput);
-    if (isCommand) {
-      let { namespace = 'default', type, name, action } = formatSearchCommand(
-        searchInput
-      );
-      namespace = selection ? selection.namespace : namespace;
-      let path = `/${namespace}/${type}`;
+    let {
+      namespace = getSelectedNamespace(location),
+      type,
+      name,
+      action
+    } = formatSearchCommand(searchInput);
 
-      name = selection ? selection.name : name;
-      if (name && action) {
-        path = `${path}/${name}/${action}`;
-      }
+    namespace = selection ? selection.namespace : namespace;
+    type = selection ? selection.type : type;
+    let path = `/${namespace}/${type}`;
 
-      navigate(path);
+    name = selection ? selection.name : name;
 
-      if (selection) {
-        let searchArgs = searchInput.split(' ');
-        searchArgs = searchArgs.slice(0, searchArgs.length - 1);
-        searchArgs.push(name);
-        setSearchInput(searchArgs.join(' '));
-      }
-    } else if (selection) {
-      let { type = 'get' } = formatSearchCommand(searchInput);
+    if (selection && !action) action = 'get';
 
-      navigate(
-        `/${selection.namespace}/${selection.type}/${selection.name}/${type}`
-      );
-      setSearchInput(selection.name);
+    if (name && action) {
+      path = `${path}/${name}/${action}`;
     }
+
+    navigate(path);
+
+    if (selection) {
+      let searchArgs = searchInput.split(' ');
+      searchArgs = searchArgs.slice(0, searchArgs.length - 1);
+      searchArgs.push(name);
+      setSearchInput(searchArgs.join(' '));
+    }
+
+    let search = selection && selection.search ? selection.search : searchInput;
+    addHistory({ namespace, type, name, action, search });
   };
 
   const handleCommandIconClick = () => handleShortcut('command+shift+k');
+
+  const handleInputKeyDown = event => {
+    if (event.key === 'Escape') {
+      event.nativeEvent.preventDownshiftDefault = true;
+      resetInput();
+      handleBlur();
+    }
+  };
+
+  const resetInput = () => {
+    setSearchInput('');
+    setSearch('');
+    setNamespace('');
+    setType('');
+  };
 
   const items = useMemo(() => formatSearchResponse(result, namespace, type), [
     result && result.id,
@@ -211,13 +244,19 @@ export default function Header({ location }) {
     type
   ]);
 
-  let fuse = new Fuse(items, {
+  let searchItems = historyMode ? history : items;
+
+  let fuse = new Fuse(searchItems, {
     keys: ['type', 'namespace', 'name']
   });
 
+  let searchResults = fuse.search(search, { limit: 10 });
+
+  if (historyMode && searchResults.length === 0) searchResults = history;
+
   return (
     <Hotkeys
-      keyName="ctrl+k,ctrl+shift+k,command+k,command+shift+k"
+      keyName="ctrl+k,ctrl+shift+k,ctrl+shift+y,command+k,command+shift+k,command+shift+y"
       onKeyUp={handleShortcut}
     >
       <HeaderContainer>
@@ -236,8 +275,6 @@ export default function Header({ location }) {
               getInputProps,
               getItemProps,
               getLabelProps,
-              isOpen,
-              inputValue,
               highlightedIndex,
               selectedItem
             }) => (
@@ -250,7 +287,7 @@ export default function Header({ location }) {
                   }}
                 >
                   <SearchIcon {...getLabelProps({ 'aria-label': 'search' })}>
-                    {!isSearchCommand(searchInput) ? (
+                    {!isSearchCommand(searchInput) && !historyMode ? (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -260,7 +297,7 @@ export default function Header({ location }) {
                         <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
                         <path d="M0 0h24v24H0z" fill="none" />
                       </svg>
-                    ) : (
+                    ) : !historyMode ? (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -270,6 +307,16 @@ export default function Header({ location }) {
                         <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
                         <path fill="none" d="M0 0h24v24H0V0z" />
                       </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M0 0h24v24H0z" fill="none" />
+                        <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
+                      </svg>
                     )}
                   </SearchIcon>
                   <Input
@@ -278,13 +325,14 @@ export default function Header({ location }) {
                       onFocus: handleFocus,
                       onBlur: handleBlur,
                       value: searchInput,
-                      onChange: handleSearchInput
+                      onChange: handleSearchInput,
+                      onKeyDown: handleInputKeyDown
                     })}
                     ref={inputRef}
                   />
-                  {isOpen ? (
+                  {focus ? (
                     <AutoComplete>
-                      {fuse.search(search, { limit: 10 }).map((item, index) => (
+                      {searchResults.map((item, index) => (
                         <SearchItem
                           {...getItemProps({
                             key: `${item.type}-${item.namespace}-${item.name}`,
@@ -294,7 +342,7 @@ export default function Header({ location }) {
                             selected: selectedItem === item
                           })}
                         >
-                          <strong>{item.name}</strong>
+                          <strong>{item.name || item.search}</strong>
                           <span>
                             {item.namespace} - {item.type}
                           </span>
