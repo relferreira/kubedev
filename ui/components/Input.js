@@ -4,10 +4,10 @@ import { controllerBorderHighlight } from '../util/colors';
 
 const Input = styled.input`
   padding: 8px 12px;
-  border: 2px solid ${props => props.theme.controllerBorder};
-  background: ${props => props.theme.controllerBackground};
+  border: 1px solid ${props => props.theme.controllerBorder};
+  background: transparent;
   color: ${props => props.theme.controllerColor};
-  border-radius: 5px;
+  border-radius: 3px;
   font-size: 12px;
   outline: none;
 

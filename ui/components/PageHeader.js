@@ -55,6 +55,11 @@ const PageHeader = ({
               placeholder="Search"
               ref={inputRef}
               onChange={event => onSearch(event.target.value)}
+              onKeyDown={event => {
+                if (event.key === 'Escape') {
+                  inputRef.current.blur();
+                }
+              }}
             />
           </Hotkeys>
           <RefreshIcon onClick={handleListStyleChange}>
