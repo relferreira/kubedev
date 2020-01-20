@@ -2,8 +2,13 @@ name: Docker Image CI
 
 on: 
   create:
-  release:
-    -'*'
+    release:
+      -'*'
+  push:
+    tags: 
+      - '* '
+    branches:
+      - master
 
 jobs:
 
