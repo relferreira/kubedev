@@ -4,11 +4,6 @@ on:
   create:
     release:
       -'*'
-  push:
-    tags: 
-      - '* '
-    branches:
-      - master
 
 jobs:
 
