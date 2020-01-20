@@ -58,7 +58,7 @@ yarn start
 ### Docker
 
 ```bash
-docker build -f deploy/Dockerfile -t relferreira/kubedev:0.0.22 .
+docker build -t relferreira/kubedev:0.0.22 .
 docker push relferreira/kubedev:0.0.22
 ```
 
