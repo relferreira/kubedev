@@ -2,6 +2,7 @@ FROM node:11.14 as ui-builder
 COPY ui /kubedev/ui
 WORKDIR /kubedev/ui
 
+RUN yarn
 RUN yarn build
 
 FROM golang:1.13 as builder
