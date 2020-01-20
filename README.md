@@ -2,13 +2,32 @@
     :construction: Work in Progress! :construction:
 </p>
 
-![alt text](https://raw.githubusercontent.com/relferreira/kubedev/master/ui/assets/kubedev-logo.png)
-
+<div align="center">
+<img src="https://raw.githubusercontent.com/relferreira/kubedev/master/ui/assets/kubedev-logo.png" />
+</div>
 Kubernetes Dashboard that helps developers in their everyday usage
 
 ## Installation
 
-Download the binary files in the relase page
+### Executable
+
+Download the binary files in the [release page](https://github.com/relferreira/kubedev/releases)
+
+Then run:
+
+```bash
+./kubedev_darwin
+OR
+./kubedev_unix
+```
+
+This method requires that you have `kubectl` installed and configured
+
+### Docker
+
+```bash
+docker run --rm -it -v ~/.kube/:/root/.kube/ -p 9898:9898 relferreira/kubedev:0.0.22
+```
 
 ## Development
 
@@ -36,15 +55,16 @@ yarn start
 
 ## Packaging
 
-Package UI
+### Docker
 
-```
-yarn build
+```bash
+docker build -f deploy/Dockerfile -t relferreira/kubedev:0.0.22 .
+docker push relferreira/kubedev:0.0.22
 ```
 
-Package Server
+### Executable
 
-```
+```bash
 go get -u github.com/gobuffalo/packr/packr
-make build
+make
 ```

@@ -40,3 +40,5 @@ require (
 	k8s.io/klog v0.0.0-20190306015804-8e90cee79f82 // indirect
 	sigs.k8s.io/yaml v1.1.0 // indirect
 )
+
+go 1.13
