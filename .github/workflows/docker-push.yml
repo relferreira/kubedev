@@ -1,0 +1,20 @@
+name: Docker Image CI
+
+on: 
+  push:
+    branches:
+    - master
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Publish Docker
+        uses: elgohr/Publish-Docker-Github-Action@2.12
+        with:
+          name: relferreira/kubedev
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          dockerfile: deploy/Dockerfile
