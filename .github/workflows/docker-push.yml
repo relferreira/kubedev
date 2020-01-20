@@ -17,4 +17,4 @@ jobs:
           name: relferreira/kubedev
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          dockerfile: deploy/Dockerfile
+          dockerfile: ./deploy/Dockerfile
