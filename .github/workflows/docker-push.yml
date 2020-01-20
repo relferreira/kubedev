@@ -1,9 +1,8 @@
 name: Docker Image CI
 
 on: 
-  create:
-    release:
-      -'*'
+  - push
+  - create
 
 jobs:
 
@@ -12,8 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Publish Docker
-        uses: elgohr/Publish-Docker-Github-Action@2.12
+        uses: jerray/publish-docker-action@master
         with:
-          name: relferreira/kubedev
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
