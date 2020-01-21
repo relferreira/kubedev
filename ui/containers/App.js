@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, Fragment } from 'react';
 import { Redirect, Location } from '@reach/router';
 import { Global, css } from '@emotion/core';
 import { ThemeProvider } from 'emotion-theming';
@@ -136,62 +136,68 @@ function App() {
           }
         `}
       />
-      <Location>{({ location }) => <Header location={location} />}</Location>
-      <AppContainer>
-        <Sidebar
-          namespaces={namespaces}
-          links={links}
-          onThemeChange={handleThemeChange}
-        />
+      <Location>
+        {({ location }) => (
+          <Fragment>
+            <Header location={location} />
+            <AppContainer>
+              <Sidebar
+                namespaces={namespaces}
+                links={links}
+                onThemeChange={handleThemeChange}
+              />
 
-        <Suspense fallback={<RouterLoading />}>
-          <ErrorBoundary fallback={<ErrorLoading />}>
-            <CustomRouter>
-              <Redirect from="/" to="/default/pods" noThrow />
-              {/* <Home path="/:namespace" /> */}
-              <Pods path="/:namespace/pods" />
-              <PodInfo path="/:namespace/pods/:name/get" />
-              <Services path="/:namespace/services" />
-              <ServiceInfo path="/:namespace/services/:name/get" />
-              <Deployments path="/:namespace/deployments" />
-              <DeploymentInfo
-                path="/:namespace/deployments/:name/get"
-                type="deployments"
-              />
-              <Jobs path="/:namespace/jobs" />
-              <JobInfo path="/:namespace/jobs/:name/get" />
-              <CronJobs path="/:namespace/cronjobs" />
-              <CronJobInfo path="/:namespace/cronjobs/:name/get" />
-              <StatefulSets path="/:namespace/statefulsets" />
-              <DeploymentInfo
-                path="/:namespace/statefulsets/:name/get"
-                type="statefulsets"
-              />
-              <Hpa path="/:namespace/hpa" />
-              <HpaInfo path="/:namespace/hpa/:name/get" />
-              <Pvc path="/:namespace/pvc" />
-              <PvcInfo path="/:namespace/pvc/:name/get" />
-              <Nodes path="/:namespace/nodes" />
-              <NodeInfo path="/:namespace/nodes/:name/get" />
-              <Ingress path="/:namespace/ingress" />
-              <Logs
-                path="/:namespace/pods/:name/logs"
-                onLogInit={handleSidebarChange}
-              />
-              <Editor path="/:namespace/new" type="new" action="get" />
-              <Editor path="/:namespace/:type/:name/edit" action="get" />
-              <Editor
-                path="/:namespace/:type/:name/describe"
-                action="describe"
-              />
-              <PortForward path="/:namespace/port-forward" />
-              <ConfigMap path="/:namespace/configmaps" />
-              <Secret path="/:namespace/secrets" />
-              <SecretInfo path="/:namespace/secrets/:name/get" />
-            </CustomRouter>
-          </ErrorBoundary>
-        </Suspense>
-      </AppContainer>
+              <Suspense fallback={<RouterLoading />}>
+                <ErrorBoundary key={location.href} fallback={<ErrorLoading />}>
+                  <CustomRouter>
+                    <Redirect from="/" to="/default/pods" noThrow />
+                    {/* <Home path="/:namespace" /> */}
+                    <Pods path="/:namespace/pods" />
+                    <PodInfo path="/:namespace/pods/:name/get" />
+                    <Services path="/:namespace/services" />
+                    <ServiceInfo path="/:namespace/services/:name/get" />
+                    <Deployments path="/:namespace/deployments" />
+                    <DeploymentInfo
+                      path="/:namespace/deployments/:name/get"
+                      type="deployments"
+                    />
+                    <Jobs path="/:namespace/jobs" />
+                    <JobInfo path="/:namespace/jobs/:name/get" />
+                    <CronJobs path="/:namespace/cronjobs" />
+                    <CronJobInfo path="/:namespace/cronjobs/:name/get" />
+                    <StatefulSets path="/:namespace/statefulsets" />
+                    <DeploymentInfo
+                      path="/:namespace/statefulsets/:name/get"
+                      type="statefulsets"
+                    />
+                    <Hpa path="/:namespace/hpa" />
+                    <HpaInfo path="/:namespace/hpa/:name/get" />
+                    <Pvc path="/:namespace/pvc" />
+                    <PvcInfo path="/:namespace/pvc/:name/get" />
+                    <Nodes path="/:namespace/nodes" />
+                    <NodeInfo path="/:namespace/nodes/:name/get" />
+                    <Ingress path="/:namespace/ingress" />
+                    <Logs
+                      path="/:namespace/pods/:name/logs"
+                      onLogInit={handleSidebarChange}
+                    />
+                    <Editor path="/:namespace/new" type="new" action="get" />
+                    <Editor path="/:namespace/:type/:name/edit" action="get" />
+                    <Editor
+                      path="/:namespace/:type/:name/describe"
+                      action="describe"
+                    />
+                    <PortForward path="/:namespace/port-forward" />
+                    <ConfigMap path="/:namespace/configmaps" />
+                    <Secret path="/:namespace/secrets" />
+                    <SecretInfo path="/:namespace/secrets/:name/get" />
+                  </CustomRouter>
+                </ErrorBoundary>
+              </Suspense>
+            </AppContainer>
+          </Fragment>
+        )}
+      </Location>
     </ThemeProvider>
   );
 }
