@@ -20,6 +20,7 @@ import {
 } from '../state-management/port-forward-management';
 import Select from '../components/Select';
 import setPrototypeOf from 'setprototypeof';
+import DeleteButton from '../components/DeleteButton';
 
 const ServiceType = styled.h3`
   margin-bottom: 16px;
@@ -97,9 +98,9 @@ export default function ServiceInfo({ namespace, name, navigate }) {
     <div>
       <PageHeader title={metadata.name}>
         <Button onClick={handleEdit}>EDIT</Button>
-        <Button type="error" onClick={handleDelete}>
+        <DeleteButton name={metadata.name} onClick={handleDelete}>
           DELETE
-        </Button>
+        </DeleteButton>
       </PageHeader>
       <ServiceType>Type: {spec.type}</ServiceType>
       <Table>

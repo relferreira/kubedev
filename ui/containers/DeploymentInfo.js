@@ -11,6 +11,7 @@ import { Link } from '@reach/router';
 import Icon from '../components/Icon';
 import StatusIcon from '../components/StatusIcon';
 import CustomTooltip from '../components/CustomTooltip';
+import DeleteButton from '../components/DeleteButton';
 
 const CustomInput = styled(Input)`
   font-size: 14px;
@@ -102,9 +103,9 @@ export default function DeploymentInfo({ namespace, type, name, navigate }) {
             </svg>
           </RefreshIcon>
         </CustomTooltip>
-        <Button type="error" onClick={handleDelete}>
+        <DeleteButton name={metadata.name} onClick={handleDelete}>
           DELETE
-        </Button>
+        </DeleteButton>
         <Button onClick={handleEdit}>EDIT</Button>
         <Button onClick={handleScale}>SAVE</Button>
       </PageHeader>

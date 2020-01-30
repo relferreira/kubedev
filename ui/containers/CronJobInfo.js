@@ -7,6 +7,7 @@ import PageHeader from '../components/PageHeader';
 import Table from '../components/Table';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import DeleteButton from '../components/DeleteButton';
 
 const CustomTable = styled(Table)`
   margin-top: 5px;
@@ -56,9 +57,9 @@ export default function CronJobInfo({ namespace, name, navigate }) {
   return (
     <div>
       <PageHeader title={metadata.name}>
-        <Button type="error" onClick={handleDelete}>
+        <DeleteButton name={metadata.name} onClick={handleDelete}>
           DELETE
-        </Button>
+        </DeleteButton>
         <Button onClick={handleEdit}>EDIT</Button>
         <Button onClick={handleSchedule}>SAVE</Button>
       </PageHeader>

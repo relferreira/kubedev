@@ -8,6 +8,7 @@ import PodStatus from '../components/StatusIcon';
 import Button from '../components/Button';
 import Icon from '../components/Icon';
 import CustomTooltip from '../components/CustomTooltip';
+import DeleteButton from '../components/DeleteButton';
 
 const ContainerHeader = styled.div`
   display: flex;
@@ -85,9 +86,9 @@ export default function PodInfo({ namespace, name, navigate }) {
           LOGS
         </Button>
         <Button onClick={handleEdit}>EDIT</Button>
-        <Button type="error" onClick={handleDelete}>
+        <DeleteButton name={metadata.name} onClick={handleDelete}>
           DELETE
-        </Button>
+        </DeleteButton>
       </ContainerHeader>
       <h3>Containers</h3>
 
