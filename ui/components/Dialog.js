@@ -31,7 +31,12 @@ const DialogContainer = styled.div`
 `;
 
 const CustomDialog = ({ title, isOpen, onDismiss, children, width }) => (
-  <StyledDialog isOpen={isOpen} onDismiss={onDismiss} width={width}>
+  <StyledDialog
+    isOpen={isOpen}
+    onDismiss={onDismiss}
+    width={width}
+    aria-label="Modal content"
+  >
     <DialogHeader>
       <span>{title}</span>
       <button className="close-button" onClick={onDismiss} tabIndex="-1">

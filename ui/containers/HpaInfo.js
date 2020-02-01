@@ -7,6 +7,7 @@ import PageHeader from '../components/PageHeader';
 import Table from '../components/Table';
 import Button from '../components/Button';
 import { getMetrics } from '../state-management/hpa-management';
+import DeleteButton from '../components/DeleteButton';
 
 const CustomTable = styled(Table)`
   margin-top: 5px;
@@ -38,9 +39,9 @@ export default function HpaInfo({ namespace, name, navigate }) {
     <div>
       <PageHeader title={name}>
         <Button onClick={handleEdit}>EDIT</Button>
-        <Button type="error" onClick={handleDelete}>
+        <DeleteButton name={name} onClick={handleDelete}>
           DELETE
-        </Button>
+        </DeleteButton>
       </PageHeader>
       <CustomTable>
         <thead>

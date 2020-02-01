@@ -11,6 +11,7 @@ import {
 import Table from '../components/Table';
 import StatusIcon from '../components/StatusIcon';
 import Button from '../components/Button';
+import DeleteButton from '../components/DeleteButton';
 
 const CustomTable = styled(Table)`
   margin-top: 5px;
@@ -42,9 +43,9 @@ export default function JobInfo({ namespace, name, navigate }) {
     <div>
       <PageHeader title={name}>
         <Button onClick={handleEdit}>EDIT</Button>
-        <Button type="error" onClick={handleDelete}>
+        <DeleteButton name={name} onClick={handleDelete}>
           DELETE
-        </Button>
+        </DeleteButton>
       </PageHeader>
       <CustomTable>
         <thead>

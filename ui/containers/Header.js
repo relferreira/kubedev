@@ -18,6 +18,7 @@ import {
 } from '../state-management/general-managements';
 import Icon from '../components/Icon';
 import { addHistory, getHistory } from '../state-management/history-management';
+import CustomTooltip from '../components/CustomTooltip';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -357,41 +358,47 @@ export default function Header({ location }) {
             )}
           </Downshift>
         </AutoCompleteContainer>
-        <HeaderIcon onClick={handleHistoryIconClick}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-          >
-            <path d="M0 0h24v24H0z" fill="none" />
-            <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
-          </svg>
-        </HeaderIcon>
-        <HeaderIcon onClick={handleCommandIconClick}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-          >
-            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-            <path fill="none" d="M0 0h24v24H0V0z" />
-          </svg>
-        </HeaderIcon>
-        <Link to={`${getSelectedNamespace(location)}/new`}>
-          <HeaderIcon>
+        <CustomTooltip label="History">
+          <HeaderIcon onClick={handleHistoryIconClick}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
               viewBox="0 0 24 24"
             >
-              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
               <path d="M0 0h24v24H0z" fill="none" />
+              <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
             </svg>
           </HeaderIcon>
-        </Link>
+        </CustomTooltip>
+        <CustomTooltip label="Run Command">
+          <HeaderIcon onClick={handleCommandIconClick}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
+              <path fill="none" d="M0 0h24v24H0V0z" />
+            </svg>
+          </HeaderIcon>
+        </CustomTooltip>
+        <CustomTooltip label="New Resource">
+          <Link to={`${getSelectedNamespace(location)}/new`}>
+            <HeaderIcon>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                <path d="M0 0h24v24H0z" fill="none" />
+              </svg>
+            </HeaderIcon>
+          </Link>
+        </CustomTooltip>
       </HeaderContainer>
     </Hotkeys>
   );
