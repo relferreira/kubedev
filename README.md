@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/relferreira/kubedev/master/ui/assets/kubedev-logo.png" width="300px" />
+<img src="https://raw.githubusercontent.com/relferreira/kubedev/master/ui/assets/banner.png" width="100%" />
 </div>
 
 <hr />
