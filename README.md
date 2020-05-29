@@ -1,11 +1,12 @@
-<p align="center">
-    :construction: Work in Progress! :construction:
-</p>
-
 <div align="center">
-<img src="https://raw.githubusercontent.com/relferreira/kubedev/master/ui/assets/kubedev-logo.png" />
+<img src="https://raw.githubusercontent.com/relferreira/kubedev/master/ui/assets/banner.png" width="100%" />
 </div>
+
+<hr />
+
 Kubernetes Dashboard that helps developers in their everyday usage
+
+![Docker Image CI](https://github.com/relferreira/kubedev/workflows/Docker%20Image%20CI/badge.svg)
 
 ## Installation
 
@@ -26,8 +27,23 @@ This method requires that you have `kubectl` installed and configured
 ### Docker
 
 ```bash
-docker run --rm -it -v ~/.kube/:/root/.kube/ -p 9898:9898 relferreira/kubedev:0.0.22
+docker run --rm -it -v ~/.kube/:/root/.kube/ --net=host relferreira/kubedev:1.0.0
 ```
+
+or for macOS (port-forward functionality doesn't work this way):
+
+```bash
+docker run --rm -it -v ~/.kube/:/root/.kube/ -p 9898:9898 relferreira/kubedev:1.0.0
+```
+
+## Shortcuts
+
+| Keys            | Shortcut        |
+| --------------- | --------------- |
+| cmd + k         | Global Search   |
+| cmd + shift + k | Command Pallete |
+| cmd + shift + y | Command History |
+| cmd + shift + f | Table Search    |
 
 ## Development
 
@@ -58,8 +74,8 @@ yarn start
 ### Docker
 
 ```bash
-docker build -t relferreira/kubedev:0.0.22 .
-docker push relferreira/kubedev:0.0.22
+docker build -t relferreira/kubedev:1.0.0 .
+docker push relferreira/kubedev:1.0.0
 ```
 
 ### Executable
