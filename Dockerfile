@@ -15,6 +15,8 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 packr build -o kubedev -v
 
 FROM alpine:latest
 
+ENV KUBEDEV_ENV=docker
+
 RUN apk add curl && \
     curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.0/bin/linux/amd64/kubectl
 RUN chmod +x kubectl
@@ -23,5 +25,6 @@ RUN mv kubectl /bin/
 WORKDIR /root/
 
 COPY --from=builder /kubedev/kubedev .
+COPY --from=ui-builder /kubedev/dist dist
 
 CMD ["./kubedev"]

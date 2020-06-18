@@ -30,7 +30,7 @@ export const formatSearchResponse = (info, namespace, type) => {
 
 export const getSelectedNamespace = location => {
   let matches = location.pathname.split('/');
-  if (matches && matches.length > 1) return matches[1];
+  if (matches && matches.length > 2) return matches[2];
   return '';
 };
 
@@ -106,10 +106,7 @@ const getSearchCmdNamespace = search => {
   if (matches) {
     let namespace = matches[1];
 
-    let newSearch = search
-      .replace(matches[0], '')
-      .replace(/\s+/, ' ')
-      .trim();
+    let newSearch = search.replace(matches[0], '').replace(/\s+/, ' ').trim();
     return { newSearch, namespace };
   }
 

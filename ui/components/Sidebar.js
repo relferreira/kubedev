@@ -99,7 +99,7 @@ const Sidebar = ({ namespaces, links, onThemeChange }) => (
             <NamespaceSelect
               value={namespace}
               aria-label="namespace-selector"
-              onChange={event => navigate(`/${event.target.value}/pods`)}
+              onChange={event => navigate(`/ui/${event.target.value}/pods`)}
             >
               {namespaces.map(namespace => (
                 <option key={namespace}>{namespace}</option>
@@ -111,19 +111,19 @@ const Sidebar = ({ namespaces, links, onThemeChange }) => (
             <p>Resources</p>
             <hr />
           </SidebarTitle>
-          <NavLink to={`/${namespace}/nodes`}>Nodes</NavLink>
-          <NavLink to={`/${namespace}/services`}>Services</NavLink>
-          <NavLink to={`/${namespace}/deployments`}>Deployments</NavLink>
-          <NavLink to={`/${namespace}/jobs`}>Jobs</NavLink>
-          <NavLink to={`/${namespace}/cronjobs`}>CronJobs</NavLink>
-          <NavLink to={`/${namespace}/statefulsets`}>StatefulSets</NavLink>
-          <NavLink to={`/${namespace}/hpa`}>Hpa</NavLink>
-          <NavLink to={`/${namespace}/pvc`}>Pvc</NavLink>
-          <NavLink to={`/${namespace}/pods`}>Pods</NavLink>
-          <NavLink to={`/${namespace}/ingress`}>Ingress</NavLink>
-          <NavLink to={`/${namespace}/configmaps`}>Config Maps</NavLink>
-          <NavLink to={`/${namespace}/secrets`}>Secrets</NavLink>
-          <NavLink to={`/${namespace}/port-forward`}>Port Forward</NavLink>
+          <NavLink to={`/ui/${namespace}/nodes`}>Nodes</NavLink>
+          <NavLink to={`/ui/${namespace}/services`}>Services</NavLink>
+          <NavLink to={`/ui/${namespace}/deployments`}>Deployments</NavLink>
+          <NavLink to={`/ui/${namespace}/jobs`}>Jobs</NavLink>
+          <NavLink to={`/ui/${namespace}/cronjobs`}>CronJobs</NavLink>
+          <NavLink to={`/ui/${namespace}/statefulsets`}>StatefulSets</NavLink>
+          <NavLink to={`/ui/${namespace}/hpa`}>Hpa</NavLink>
+          <NavLink to={`/ui/${namespace}/pvc`}>Pvc</NavLink>
+          <NavLink to={`/ui/${namespace}/pods`}>Pods</NavLink>
+          <NavLink to={`/ui/${namespace}/ingress`}>Ingress</NavLink>
+          <NavLink to={`/ui/${namespace}/configmaps`}>Config Maps</NavLink>
+          <NavLink to={`/ui/${namespace}/secrets`}>Secrets</NavLink>
+          <NavLink to={`/ui/${namespace}/port-forward`}>Port Forward</NavLink>
           <ThemeLink onClick={onThemeChange}>Change Theme</ThemeLink>
           <HistoryContainer>
             <SidebarTitle>

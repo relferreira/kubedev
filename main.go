@@ -56,9 +56,14 @@ func main() {
 		Debug:              true,
 	}))
 
-	box := packr.NewBox("./dist")
-	// r.StaticFS("/", box)
-	r.Use(utils.Serve("/", box))
+	runningEnv, exists := os.LookupEnv("KUBEDEV_ENV")
+	if exists && runningEnv == "docker" {
+		r.Static("/ui", "./dist")
+	} else {
+		box := packr.NewBox("./dist")
+		r.StaticFS("/ui", box)
+	}
+
 	r.NoRoute(utils.RedirectIndex())
 
 	r.GET("/api/:namespace/exec", func(c *gin.Context) {
