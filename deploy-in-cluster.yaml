@@ -1,0 +1,56 @@
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: kubedev-role
+subjects:
+  - kind: ServiceAccount
+    name: kubedev-role
+    namespace: kubedev
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubedev-role
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubedev
+  labels:
+    app: kubedev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubedev
+  template:
+    metadata:
+      labels:
+        app: kubedev
+    spec:
+      serviceAccountName: kubedev-role
+      containers:
+        - name: kubedev
+          image: relferreira/kubedev:dev
+          ports:
+            - containerPort: 9898
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubedev-service
+spec:
+  selector:
+    app: kubedev
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9898
