@@ -1,4 +1,8 @@
 FROM node:11.14 as ui-builder
+
+ENV NODE_ENVIRONMENT=production
+ENV API=/api
+
 COPY ui /kubedev/ui
 WORKDIR /kubedev/ui
 
