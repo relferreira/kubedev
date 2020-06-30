@@ -25,13 +25,13 @@ export default function SecretInfo({ namespace, name, navigate }) {
   );
 
   const handleEdit = () => {
-    navigate(`/${namespace}/secrets/${name}/edit`);
+    navigate(`/ui/${namespace}/secrets/${name}/edit`);
   };
 
   const handleDelete = () => {
     kubectl
       .exec(namespace, `delete secrets ${name}`, false)
-      .then(() => navigate(`/${namespace}/secrets`))
+      .then(() => navigate(`/ui/${namespace}/secrets`))
       .catch(err => console.error(err));
   };
 

@@ -57,13 +57,13 @@ export default function ServiceInfo({ namespace, name, navigate }) {
   }, []);
 
   const handleEdit = () => {
-    navigate(`/${namespace}/services/${name}/edit`);
+    navigate(`/ui/${namespace}/services/${name}/edit`);
   };
 
   const handleDelete = () => {
     kubectl
       .exec(namespace, `delete service ${name}`, false)
-      .then(() => navigate(`/${namespace}/services`))
+      .then(() => navigate(`/ui/${namespace}/services`))
       .catch(err => console.error(err));
   };
 

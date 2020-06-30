@@ -20,13 +20,13 @@ export default function PvcInfo({ namespace, name, navigate }) {
   );
 
   const handleEdit = () => {
-    navigate(`/${namespace}/pvc/${name}/edit`);
+    navigate(`/ui/${namespace}/pvc/${name}/edit`);
   };
 
   const handleDelete = () => {
     kubectl
       .exec(namespace, `delete pvc ${name}`, false)
-      .then(() => navigate(`/${namespace}/pvc`))
+      .then(() => navigate(`/ui/${namespace}/pvc`))
       .catch(err => console.error(err));
   };
 

@@ -198,7 +198,7 @@ export default function Header({ location }) {
 
     namespace = selection ? selection.namespace : namespace;
     type = selection ? selection.type : type;
-    let path = `/${namespace}/${type}`;
+    let path = `/ui/${namespace}/${type}`;
 
     name = selection ? selection.name : name;
 

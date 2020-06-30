@@ -21,13 +21,13 @@ export default function HpaInfo({ namespace, name, navigate }) {
   );
 
   const handleEdit = () => {
-    navigate(`/${namespace}/hpa/${name}/edit`);
+    navigate(`/ui/${namespace}/hpa/${name}/edit`);
   };
 
   const handleDelete = () => {
     kubectl
       .exec(namespace, `delete hpa ${name}`, false)
-      .then(() => navigate(`/${namespace}/hpa`))
+      .then(() => navigate(`/ui/${namespace}/hpa`))
       .catch(err => console.error(err));
   };
 

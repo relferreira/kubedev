@@ -31,7 +31,7 @@ export default function JobInfo({ namespace, name, navigate }) {
   const handleDelete = () => {
     kubectl
       .exec(namespace, `delete job ${name}`, false)
-      .then(() => navigate(`/${namespace}/jobs`))
+      .then(() => navigate(`/ui/${namespace}/jobs`))
       .catch(err => console.error(err));
   };
 
