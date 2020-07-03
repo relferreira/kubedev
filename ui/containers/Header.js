@@ -400,7 +400,7 @@ export default function Header({ location }) {
           </HeaderIcon>
         </CustomTooltip>
         <CustomTooltip label="New Resource">
-          <Link to={`${getSelectedNamespace(location)}/new`}>
+          <Link to={`/ui/${getSelectedNamespace(location)}/new`}>
             <HeaderIcon>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

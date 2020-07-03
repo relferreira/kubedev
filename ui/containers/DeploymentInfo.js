@@ -152,7 +152,7 @@ export default function DeploymentInfo({ namespace, type, name, navigate }) {
                 <PodStatusIcon state={status.phase} />
               </td>
               <td>
-                <Link to={`/${namespace}/pods/${metadata.name}/get`}>
+                <Link to={`/ui/${namespace}/pods/${metadata.name}/get`}>
                   <Icon
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
