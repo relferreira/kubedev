@@ -10,10 +10,11 @@ import (
 // Serve returns a middleware handler that serves static files from packr box
 func Serve(urlPrefix string, box packr.Box) gin.HandlerFunc {
 	fileserver := http.FileServer(box)
-
+	if urlPrefix != "" {
+		fileserver = http.StripPrefix(urlPrefix, fileserver)
+	}
 	return func(c *gin.Context) {
-		_, err := box.FindString(c.Request.URL.Path)
-		if err == nil {
+		if box.Has(c.Request.URL.Path) {
 			fileserver.ServeHTTP(c.Writer, c.Request)
 			c.Abort()
 		}
@@ -23,7 +24,7 @@ func Serve(urlPrefix string, box packr.Box) gin.HandlerFunc {
 // RedirectIndex returns a middleware handler that serves redirects to /
 func RedirectIndex() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Redirect(http.StatusMovedPermanently, "/")
+		c.Redirect(http.StatusMovedPermanently, "/ui")
 		c.Abort()
 	}
 }

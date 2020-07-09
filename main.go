@@ -1,11 +1,10 @@
 package main
 
 import (
-	"errors"
-	"syscall"
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -15,25 +14,33 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gobuffalo/packr"
 	"github.com/kubedev/models"
 	"github.com/kubedev/utils"
+	"github.com/mitchellh/go-homedir"
 	"github.com/relferreira/sse"
 	cors "github.com/rs/cors/wrapper/gin"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
-	"github.com/mitchellh/go-homedir"
 )
 
 func main() {
 	r := gin.Default()
-	var kubeconfig = flag.String("kubeconfig", filepath.Join(os.Getenv("HOME"), ".kube", "config"), "(optional) absolute path to the kubeconfig file")
+	var kubeconfigFile = flag.String("kubeconfig", filepath.Join(os.Getenv("HOME"), ".kube", "config"), "(optional) absolute path to the kubeconfig file")
 	flag.Parse()
-	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+
+	var kubeConfig = *kubeconfigFile
+	_, err := os.Stat(*kubeconfigFile)
+	if os.IsNotExist(err) {
+		kubeConfig = ""
+	}
+
+	config, err := clientcmd.BuildConfigFromFlags("", kubeConfig)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -49,9 +56,14 @@ func main() {
 		Debug:              true,
 	}))
 
-	box := packr.NewBox("./dist")
-	// r.StaticFS("/", box)
-	r.Use(utils.Serve("/", box))
+	runningEnv, exists := os.LookupEnv("KUBEDEV_ENV")
+	if exists && runningEnv == "docker" {
+		r.Static("/ui", "./dist")
+	} else {
+		box := packr.NewBox("./dist")
+		r.StaticFS("/ui", box)
+	}
+
 	r.NoRoute(utils.RedirectIndex())
 
 	r.GET("/api/:namespace/exec", func(c *gin.Context) {
@@ -110,7 +122,7 @@ func main() {
 		home, _ := homedir.Dir()
 		path := home + "/.kubedev/"
 		_ = os.Mkdir(path, os.ModePerm)
-		
+
 		filename := path + strconv.FormatInt(time.Now().Unix(), 10) + ".yaml"
 		err = ioutil.WriteFile(filename, []byte(apply.Yaml), 0755)
 		if err != nil {
@@ -143,13 +155,13 @@ func main() {
 		to := c.Param("to")
 
 		fullCommand := []string{}
-		
+
 		fullCommand = append(fullCommand, "-n")
 		fullCommand = append(fullCommand, namespace)
 		fullCommand = append(fullCommand, "port-forward")
 		fullCommand = append(fullCommand, fmt.Sprintf("%s/%s", resourceType, name))
 		fullCommand = append(fullCommand, fmt.Sprintf("%s:%s", from, to))
-		
+
 		fmt.Printf("%#v\n", fullCommand)
 		cmd := exec.Command("kubectl", fullCommand...)
 		cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
@@ -166,7 +178,7 @@ func main() {
 
 	r.GET("/api/:namespace/port-forward/stop/:pid", func(c *gin.Context) {
 		pid, _ := strconv.Atoi(c.Param("pid"))
-		
+
 		proc, err := os.FindProcess(pid)
 		if err != nil {
 			panic(err.Error())

@@ -7,7 +7,6 @@ import { navigate, Link } from '@reach/router';
 import Hotkeys from 'react-hot-keys';
 
 import { primaryDark, fontColorWhite } from '../util/colors';
-import logo from '../assets/logo.svg';
 import Input from '../components/Input';
 import {
   formatSearchResponse,
@@ -39,7 +38,7 @@ const LogoContainer = styled.div`
   height: 100%;
 `;
 
-const Image = styled.img`
+const Image = styled.svg`
   height: 100%;
 `;
 
@@ -199,7 +198,7 @@ export default function Header({ location }) {
 
     namespace = selection ? selection.namespace : namespace;
     type = selection ? selection.type : type;
-    let path = `/${namespace}/${type}`;
+    let path = `/ui/${namespace}/${type}`;
 
     name = selection ? selection.name : name;
 
@@ -264,7 +263,23 @@ export default function Header({ location }) {
     >
       <HeaderContainer>
         <LogoContainer>
-          <Image src={logo} alt="KubeDev logo" />
+          <Image
+            width="29"
+            height="50"
+            viewBox="0 0 29 50"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M2.76113 22.7864L6.91373 13.658L19.6839 40.8717L15.5313 50L2.76113 22.7864Z"
+              fill="#9BE7FF"
+            />
+            <path
+              d="M18.9256 30.458L28.6004 33.0977L15.8302 5.88402L6.15537 3.24431L18.9256 30.458Z"
+              fill="#64B5F6"
+            />
+          </Image>
+
           <Title>KubeDev</Title>
         </LogoContainer>
 
@@ -385,7 +400,7 @@ export default function Header({ location }) {
           </HeaderIcon>
         </CustomTooltip>
         <CustomTooltip label="New Resource">
-          <Link to={`${getSelectedNamespace(location)}/new`}>
+          <Link to={`/ui/${getSelectedNamespace(location)}/new`}>
             <HeaderIcon>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

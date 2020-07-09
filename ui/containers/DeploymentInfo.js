@@ -72,12 +72,12 @@ export default function DeploymentInfo({ namespace, type, name, navigate }) {
   const handleDelete = () => {
     kubectl
       .exec(namespace, `delete ${type} ${name}`, false)
-      .then(() => navigate(`/${namespace}/${type}`))
+      .then(() => navigate(`/ui/${namespace}/${type}`))
       .catch(err => console.error(err));
   };
 
   const handleEdit = () => {
-    navigate(`/${namespace}/${type}/${name}/edit`);
+    navigate(`/ui/${namespace}/${type}/${name}/edit`);
   };
 
   const handleRefresh = () => {
@@ -152,7 +152,7 @@ export default function DeploymentInfo({ namespace, type, name, navigate }) {
                 <PodStatusIcon state={status.phase} />
               </td>
               <td>
-                <Link to={`/${namespace}/pods/${metadata.name}/get`}>
+                <Link to={`/ui/${namespace}/pods/${metadata.name}/get`}>
                   <Icon
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"

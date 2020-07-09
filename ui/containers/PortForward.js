@@ -31,7 +31,9 @@ export default function PortForward() {
             pids.map(({ pid, namespace, type, name, from, to }) => (
               <tr key={pid}>
                 <td>
-                  <Link to={`/${namespace}/${type}/${name}/get`}>{name}</Link>
+                  <Link to={`/ui/${namespace}/${type}/${name}/get`}>
+                    {name}
+                  </Link>
                 </td>
                 <td>{type}</td>
                 <td>{namespace}</td>

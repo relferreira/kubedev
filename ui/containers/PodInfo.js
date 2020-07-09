@@ -44,17 +44,17 @@ export default function PodInfo({ namespace, name, navigate }) {
   );
 
   const handleLogs = () => {
-    navigate(`/${namespace}/pods/${name}/logs`);
+    navigate(`/ui/${namespace}/pods/${name}/logs`);
   };
 
   const handleEdit = () => {
-    navigate(`/${namespace}/pods/${name}/edit`);
+    navigate(`/ui/${namespace}/pods/${name}/edit`);
   };
 
   const handleDelete = () => {
     kubectl
       .exec(namespace, `delete pod ${name}`, false)
-      .then(() => navigate(`/${namespace}/pods`))
+      .then(() => navigate(`/ui/${namespace}/pods`))
       .catch(err => console.error(err));
   };
 

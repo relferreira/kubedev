@@ -38,13 +38,13 @@ export default function CronJobInfo({ namespace, name, navigate }) {
   };
 
   const handleEdit = () => {
-    navigate(`/${namespace}/cronjobs/${name}/edit`);
+    navigate(`/ui/${namespace}/cronjobs/${name}/edit`);
   };
 
   const handleDelete = () => {
     kubectl
       .exec(namespace, `delete cronjob ${name}`, false)
-      .then(() => navigate(`/${namespace}/cronjobs`))
+      .then(() => navigate(`/ui/${namespace}/cronjobs`))
       .catch(err => console.error(err));
   };
 
