@@ -36,6 +36,14 @@ or for macOS (port-forward functionality doesn't work this way):
 docker run --rm -it -v ~/.kube/:/root/.kube/ -p 9898:9898 relferreira/kubedev:1.0.0
 ```
 
+### Kubernetes Deploy
+
+To install KubeDev in your kubernetes cluster, just apply the `deploy-in-cluster.yaml` file and you are ready to go:
+
+```bash
+kubectl apply -f deploy-in-cluster.yaml -n <NAMESPACE>
+```
+
 ## Shortcuts
 
 | Keys            | Shortcut        |

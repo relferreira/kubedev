@@ -38,7 +38,7 @@ spec:
       serviceAccountName: kubedev-role
       containers:
         - name: kubedev
-          image: relferreira/kubedev:dev
+          image: relferreira/kubedev:1.0.1
           ports:
             - containerPort: 9898
 
