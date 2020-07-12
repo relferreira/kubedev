@@ -154,16 +154,9 @@ func main() {
 		from := c.Param("from")
 		to := c.Param("to")
 
-		fullCommand := []string{}
-
-		fullCommand = append(fullCommand, "-n")
-		fullCommand = append(fullCommand, namespace)
-		fullCommand = append(fullCommand, "port-forward")
-		fullCommand = append(fullCommand, fmt.Sprintf("%s/%s", resourceType, name))
-		fullCommand = append(fullCommand, fmt.Sprintf("%s:%s", from, to))
-
-		fmt.Printf("%#v\n", fullCommand)
-		cmd := exec.Command("kubectl", fullCommand...)
+		command := fmt.Sprintf("while true; do kubectl -n %s port-forward %s/%s %s:%s; done", namespace, resourceType, name, from, to)
+		fmt.Printf("%s\n", command)
+		cmd := exec.Command("bash", "-c", command)
 		cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 
 		if err := cmd.Start(); err != nil {
