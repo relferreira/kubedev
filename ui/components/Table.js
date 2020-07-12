@@ -20,6 +20,10 @@ const Table = styled.table`
     vertical-align: middle;
     border-radius: 2px;
   }
+
+  a {
+    text-decoration: none;
+  }
 `;
 
 export default Table;

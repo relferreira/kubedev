@@ -1,15 +1,24 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { Dialog, DialogOverlay, DialogContent } from '@reach/dialog';
+import { useSpring, animated, useTransition } from 'react-spring';
 
-const StyledDialog = styled(Dialog)`
+const AnimatedDialogContent = animated(DialogContent);
+const AnimatedDialogOverlay = animated(DialogOverlay);
+
+const StyledDialog = styled(AnimatedDialogContent)`
   width: ${props => props.width};
-  background: ${props => props.theme.background};
+  background: ${props => props.theme.header};
   color: ${props => props.theme.containerFont};
+  border-radius: 5px;
+  padding: 0px;
 `;
 
 const DialogHeader = styled.div`
   display: flex;
+  align-items: center;
+  padding: 16px 32px;
+  border-bottom: 1px solid ${props => props.theme.controllerBorder};
 
   span {
     flex: 1;
@@ -19,7 +28,7 @@ const DialogHeader = styled.div`
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 20px;
     color: ${props => props.theme.containerFont};
   }
 `;
@@ -27,24 +36,43 @@ const DialogHeader = styled.div`
 const DialogContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 32px;
+  padding: 16px 32px;
 `;
 
-const CustomDialog = ({ title, isOpen, onDismiss, children, width }) => (
-  <StyledDialog
-    isOpen={isOpen}
-    onDismiss={onDismiss}
-    width={width}
-    aria-label="Modal content"
-  >
-    <DialogHeader>
-      <span>{title}</span>
-      <button className="close-button" onClick={onDismiss} tabIndex="-1">
-        <span aria-hidden>×</span>
-      </button>
-    </DialogHeader>
-    <DialogContainer>{children}</DialogContainer>
-  </StyledDialog>
-);
+const CustomDialog = ({ title, isOpen, onDismiss, children, width }) => {
+  const transitions = useTransition(isOpen, null, {
+    from: { opacity: 0, y: 50 },
+    enter: {
+      opacity: 1,
+      y: 0,
+      boxShadow: '0px 10px 20px 0px rgba(0,0,0,0.4)'
+    },
+    leave: { opacity: 0, y: 50 },
+    config: { tension: 250 }
+  });
+  return transitions.map(
+    ({ item, key, props: styles }) =>
+      item && (
+        <AnimatedDialogOverlay
+          style={{ background: 'transparent', opacity: styles.opacity }}
+          onDismiss={onDismiss}
+        >
+          <StyledDialog style={styles} width={width}>
+            <DialogHeader>
+              <span>{title}</span>
+              {/* <button
+                className="close-button"
+                onClick={onDismiss}
+                tabIndex="-1"
+              >
+                <span aria-hidden>×</span>
+              </button> */}
+            </DialogHeader>
+            <DialogContainer>{children}</DialogContainer>
+          </StyledDialog>
+        </AnimatedDialogOverlay>
+      )
+  );
+};
 
 export default CustomDialog;

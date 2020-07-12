@@ -26,8 +26,8 @@ const DialogContainer = styled.div`
     width: 100%;
   }
 
-  a:last-child {
-    margin-top: 16px;
+  a {
+    margin-bottom: 16px;
   }
 `;
 
@@ -101,11 +101,14 @@ export default function Pods({ namespace }) {
         isOpen={showDialog}
         onDismiss={closeDialog}
         title={selected}
-        width="400px"
+        width="500px"
       >
         <DialogContainer>
           <Link to={`${selected}/logs`} tabIndex={1}>
             <Button tabIndex={-1}>Logs</Button>
+          </Link>
+          <Link to={`${selected}/edit`} tabIndex={1}>
+            <Button tabIndex={-1}>Edit</Button>
           </Link>
           <Link to={`${selected}/get`} tabIndex={2}>
             <Button tabIndex={-1}>Info</Button>
