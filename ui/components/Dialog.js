@@ -12,12 +12,13 @@ const StyledDialog = styled(AnimatedDialogContent)`
   color: ${props => props.theme.containerFont};
   border-radius: 5px;
   padding: 0px;
+  overflow: hidden;
 `;
 
 const DialogHeader = styled.div`
   display: flex;
   align-items: center;
-  padding: 16px 32px;
+  padding: 16px;
   border-bottom: 1px solid ${props => props.theme.controllerBorder};
 
   span {
@@ -36,7 +37,6 @@ const DialogHeader = styled.div`
 const DialogContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 16px 32px;
 `;
 
 const CustomDialog = ({ title, isOpen, onDismiss, children, width }) => {
