@@ -54,10 +54,15 @@ const CustomDialog = ({ title, isOpen, onDismiss, children, width }) => {
     ({ item, key, props: styles }) =>
       item && (
         <AnimatedDialogOverlay
+          key={key}
           style={{ background: 'transparent', opacity: styles.opacity }}
           onDismiss={onDismiss}
         >
-          <StyledDialog style={styles} width={width}>
+          <StyledDialog
+            style={styles}
+            width={width}
+            aria-label="Dialog content"
+          >
             <DialogHeader>
               <span>{title}</span>
               {/* <button
