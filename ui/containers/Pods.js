@@ -28,10 +28,10 @@ export default function Pods({ namespace, navigate }) {
           ])
         }
         dialogItems={[
-          { value: 'Logs', href: 'logs' },
-          { value: 'Edit', href: 'edit' },
-          { value: 'Info', href: 'get' },
-          { value: 'Describe', href: 'describe' }
+          { value: 'Logs', type: 'pods', href: 'logs' },
+          { value: 'Edit', type: 'pods', href: 'edit' },
+          { value: 'Info', type: 'pods', href: 'get' },
+          { value: 'Describe', type: 'pods', href: 'describe' }
         ]}
       />
     </Fragment>

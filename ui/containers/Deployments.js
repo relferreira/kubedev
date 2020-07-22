@@ -19,17 +19,16 @@ export default function Deployments({ namespace, navigate }) {
             setItems(
               items.map(({ metadata }) => ({
                 value: metadata.name,
-                href: `../pods/${metadata.name}/logs`,
-                full: true
+                href: `pods/${metadata.name}/logs`
               }))
             );
           })
           .finally(() => setDialogLoading(false));
       }
     },
-    { value: 'Info', href: 'get' },
-    { value: 'Edit', href: 'edit' },
-    { value: 'Describe', href: 'describe' }
+    { value: 'Info', type: 'deployments', href: 'get' },
+    { value: 'Edit', type: 'deployments', href: 'edit' },
+    { value: 'Describe', type: 'deployments', href: 'describe' }
   ];
 
   useEffect(() => {

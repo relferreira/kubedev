@@ -12,6 +12,7 @@ const TableContainer = styled.table`
 
   tr {
     border-bottom: 1px solid ${props => props.theme.tableBorder};
+    outline: none;
   }
 
   tr.selected {
