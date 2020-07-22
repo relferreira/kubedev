@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from '@emotion/styled';
 import { primaryLight, fontColor, primaryDark } from '../util/colors';
 import { Link, Location, navigate } from '@reach/router';
 import { getSelectedNamespace } from '../state-management/general-managements';
 import LocationHistoryController from './LocationHistoryController';
+import Hotkeys from 'react-hot-keys';
+import CustomTooltip from './CustomTooltip';
 
 const SidebarContainer = styled.div`
   display: flex;
@@ -34,16 +36,24 @@ const SidebarTitle = styled.div`
   }
 `;
 
-const CustomLink = ({ className, ...rest }) => (
-  <Link
-    {...rest}
-    getProps={({ isCurrent }) => {
-      return {
-        className: className + (isCurrent ? ' active' : '')
-      };
-    }}
-  />
-);
+function CustomLink({ className, shortcut, ...rest }) {
+  const linkRef = useRef(null);
+  return (
+    <Hotkeys keyName={`${shortcut}`} onKeyUp={() => linkRef.current.click()}>
+      {/* <CustomTooltip label="Refresh"> */}
+      <Link
+        {...rest}
+        ref={linkRef}
+        getProps={({ isCurrent }) => {
+          return {
+            className: className + (isCurrent ? ' active' : '')
+          };
+        }}
+      />
+      {/* </CustomTooltip> */}
+    </Hotkeys>
+  );
+}
 
 const NavLink = styled(CustomLink)`
   padding: 10px 16px;
@@ -131,19 +141,45 @@ const Sidebar = ({ namespaces, links, onNamespaceChange, onThemeChange }) => (
             <p>Resources</p>
             <hr />
           </SidebarTitle>
-          <NavLink to={`/ui/${namespace}/nodes`}>Nodes</NavLink>
-          <NavLink to={`/ui/${namespace}/services`}>Services</NavLink>
-          <NavLink to={`/ui/${namespace}/deployments`}>Deployments</NavLink>
-          <NavLink to={`/ui/${namespace}/jobs`}>Jobs</NavLink>
-          <NavLink to={`/ui/${namespace}/cronjobs`}>CronJobs</NavLink>
-          <NavLink to={`/ui/${namespace}/statefulsets`}>StatefulSets</NavLink>
-          <NavLink to={`/ui/${namespace}/hpa`}>Hpa</NavLink>
-          <NavLink to={`/ui/${namespace}/pvc`}>Pvc</NavLink>
-          <NavLink to={`/ui/${namespace}/pods`}>Pods</NavLink>
-          <NavLink to={`/ui/${namespace}/ingress`}>Ingress</NavLink>
-          <NavLink to={`/ui/${namespace}/configmaps`}>Config Maps</NavLink>
-          <NavLink to={`/ui/${namespace}/secrets`}>Secrets</NavLink>
-          <NavLink to={`/ui/${namespace}/port-forward`}>Port Forward</NavLink>
+          <NavLink to={`/ui/${namespace}/nodes`} shortcut="g+n">
+            Nodes
+          </NavLink>
+          <NavLink to={`/ui/${namespace}/services`} shortcut="g+s">
+            Services
+          </NavLink>
+          <NavLink to={`/ui/${namespace}/deployments`} shortcut="g+d">
+            Deployments
+          </NavLink>
+          <NavLink to={`/ui/${namespace}/jobs`} shortcut="g+j">
+            Jobs
+          </NavLink>
+          <NavLink to={`/ui/${namespace}/cronjobs`} shortcut="g+c">
+            CronJobs
+          </NavLink>
+          <NavLink to={`/ui/${namespace}/statefulsets`} shortcut="g+t">
+            StatefulSets
+          </NavLink>
+          <NavLink to={`/ui/${namespace}/hpa`} shortcut="g+h">
+            Hpa
+          </NavLink>
+          <NavLink to={`/ui/${namespace}/pvc`} shortcut="g+v">
+            Pvc
+          </NavLink>
+          <NavLink to={`/ui/${namespace}/pods`} shortcut="g+p">
+            Pods
+          </NavLink>
+          <NavLink to={`/ui/${namespace}/ingress`} shortcut="g+i">
+            Ingress
+          </NavLink>
+          <NavLink to={`/ui/${namespace}/configmaps`} shortcut="g+m">
+            Config Maps
+          </NavLink>
+          <NavLink to={`/ui/${namespace}/secrets`} shortcut="g+r">
+            Secrets
+          </NavLink>
+          <NavLink to={`/ui/${namespace}/port-forward`} shortcut="g+f">
+            Port Forward
+          </NavLink>
           <ThemeLink onClick={onThemeChange}>Change Theme</ThemeLink>
           <HistoryContainer>
             <SidebarTitle>
