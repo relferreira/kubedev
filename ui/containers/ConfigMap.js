@@ -1,39 +1,26 @@
 import React from 'react';
 
-import Table from '../components/Table';
-import TableInfo from './TableInfo';
+import NewTableInfo from './NewTableInfo';
 
-export default function ConfigMap({ namespace }) {
+export default function ConfigMap({ namespace, navigate }) {
   return (
-    <TableInfo
+    <NewTableInfo
       title="Config Maps"
       namespace={namespace}
       command="get configmaps"
-    >
-      {items => (
-        <Table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Data</th>
-              <th>Age</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items &&
-              items.map(({ data, metadata }) => (
-                <tr key={metadata.name}>
-                  <td>
-                    {metadata.name}
-                    {/* <Link to={`${metadata.name}/get`}>{metadata.name}</Link> */}
-                  </td>
-                  <td>{data && Object.keys(data).length}</td>
-                  <td>{metadata.creationTimestamp}</td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
-      )}
-    </TableInfo>
+      navigate={navigate}
+      formatHeader={() => ['Name', 'Data', 'Age']}
+      formatItems={items =>
+        items.map(({ metadata, data }) => [
+          metadata.name,
+          data && Object.keys(data).length,
+          metadata.creationTimestamp
+        ])
+      }
+      dialogItems={[
+        { value: 'Edit', type: 'configmaps', href: 'edit' },
+        { value: 'Describe', type: 'configmaps', href: 'describe' }
+      ]}
+    />
   );
 }
