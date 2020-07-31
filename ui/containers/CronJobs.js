@@ -27,7 +27,11 @@ export default function CronJobs({ namespace, navigate }) {
           metadata.creationTimestamp
         ])
       }
-      dialogItems={[{ value: 'Info', type: 'cronjobs', href: 'get' }]}
+      dialogItems={[
+        { value: 'Info', type: 'cronjobs', href: 'get' },
+        { value: 'Edit', type: 'cronjobs', href: 'edit' },
+        { value: 'Describe', type: 'cronjobs', href: 'describe' }
+      ]}
     />
   );
 }

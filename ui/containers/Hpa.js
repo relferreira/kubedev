@@ -21,7 +21,11 @@ export default function Hpa({ namespace, navigate }) {
           metadata.creationTimestamp
         ])
       }
-      dialogItems={[{ value: 'Info', type: 'hpa', href: 'get' }]}
+      dialogItems={[
+        { value: 'Info', type: 'hpa', href: 'get' },
+        { value: 'Describe', type: 'hpa', href: 'describe' },
+        { value: 'Edit', type: 'hpa', href: 'edit' }
+      ]}
     />
   );
 }

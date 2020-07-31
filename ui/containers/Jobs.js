@@ -20,7 +20,11 @@ export default function Jobs({ namespace, navigate }) {
           metadata.creationTimestamp
         ])
       }
-      dialogItems={[{ value: 'Info', type: 'jobs', href: 'get' }]}
+      dialogItems={[
+        { value: 'Info', type: 'jobs', href: 'get' },
+        { value: 'Edit', type: 'jobs', href: 'edit' },
+        { value: 'Describe', type: 'jobs', href: 'describe' }
+      ]}
     />
   );
 }
