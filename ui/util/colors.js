@@ -1,6 +1,7 @@
 export const primary = '#64B5F6';
 export const primaryLight = '#F6F6F6';
 export const primaryDark = '#2286C3';
+export const accentColor = '#9BE7FF';
 export const fontColor = '#595959';
 export const fontColorWhite = '#ffffff';
 export const fontColorDark = '#000000';

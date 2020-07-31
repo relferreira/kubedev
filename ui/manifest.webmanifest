@@ -43,7 +43,7 @@
       "type": "image/png"
     }
   ],
-  "start_url": "/",
+  "start_url": "/ui",
   "display": "standalone",
   "theme_color": "#2b2c2f",
   "background_color": "#2b2c2f"
