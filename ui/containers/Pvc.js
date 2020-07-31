@@ -1,41 +1,28 @@
 import React from 'react';
-import { Link } from '@reach/router';
 
-import Table from '../components/Table';
-import TableInfo from './TableInfo';
+import NewTableInfo from './NewTableInfo';
 
-export default function Pvc({ namespace }) {
+export default function Pvc({ namespace, navigate }) {
   return (
-    <TableInfo
+    <NewTableInfo
       title="Persistent Volume Claims"
       namespace={namespace}
       command="get pvc"
-    >
-      {items => (
-        <Table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Status</th>
-              <th>Capacity</th>
-              <th>Age</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items &&
-              items.map(({ metadata, status }) => (
-                <tr key={metadata.name}>
-                  <td>
-                    <Link to={`${metadata.name}/get`}>{metadata.name}</Link>
-                  </td>
-                  <td>{status.phase}</td>
-                  <td>{status.capacity && status.capacity.storage}</td>
-                  <td>{metadata.creationTimestamp}</td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
-      )}
-    </TableInfo>
+      navigate={navigate}
+      formatHeader={() => ['Name', 'Status', 'Capacity', 'Age']}
+      formatItems={items =>
+        items.map(({ metadata, status }) => [
+          metadata.name,
+          status.phase,
+          status.capacity && status.capacity.storage,
+          metadata.creationTimestamp
+        ])
+      }
+      dialogItems={[
+        { value: 'Info', type: 'pvc', href: 'get' },
+        { value: 'Edit', type: 'pvc', href: 'edit' },
+        { value: 'Describe', type: 'pvc', href: 'describe' }
+      ]}
+    />
   );
 }
