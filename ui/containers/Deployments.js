@@ -9,7 +9,7 @@ export default function Deployments({ namespace, navigate }) {
   const originalItems = [
     {
       value: 'Logs',
-      callback: ({ spec }) => {
+      callback: (_, { spec }) => {
         setDialogLoading(true);
         setItems([]);
         kubectl

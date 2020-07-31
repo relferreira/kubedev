@@ -144,7 +144,7 @@ function App() {
         `}
       />
       <Location>
-        {({ location }) => (
+        {({ location, navigate }) => (
           <Fragment>
             <Header location={location} />
             <AppContainer>
@@ -162,7 +162,16 @@ function App() {
                     namespaces &&
                     namespaces.map(namespace => ({
                       value: namespace,
-                      href: `/ui/${namespace}/pods`
+                      callback: ({ value: selectedNamespace }) => {
+                        let [
+                          url,
+                          ui,
+                          namespace,
+                          type
+                        ] = location.pathname.split('/');
+                        navigate(`/ui/${selectedNamespace}/${type}`);
+                        handleNamespaceDismiss();
+                      }
                     }))
                   }
                   selected="Namespaces"

@@ -54,11 +54,12 @@ function SearchDialog({
 
   const handleOnSelect = selection => {
     if (selection && selection.callback) {
-      const { items } = data;
-      let selectedItem = items.find(
-        ({ metadata }) => metadata.name === selected
-      );
-      selection.callback(selectedItem);
+      let selectedItem = null;
+      if (data) {
+        const { items } = data;
+        selectedItem = items.find(({ metadata }) => metadata.name === selected);
+      }
+      selection.callback(selection, selectedItem);
     } else if (selection && !selection.type) {
       navigate(`${selection.href}`);
       onDismiss();
