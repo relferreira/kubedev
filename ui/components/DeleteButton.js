@@ -7,6 +7,7 @@ import Button from './Button';
 const DialogButtons = styled.div`
   display: flex;
   justify-content: flex-end;
+  padding: 16px;
 
   button {
     margin-left: 16px;
