@@ -46,12 +46,25 @@ kubectl apply -f deploy-in-cluster.yaml -n <NAMESPACE>
 
 ## Shortcuts
 
-| Keys            | Shortcut        |
-| --------------- | --------------- |
-| cmd + k         | Global Search   |
-| cmd + shift + k | Command Pallete |
-| cmd + shift + y | Command History |
-| cmd + shift + f | Table Search    |
+| Keys            | Shortcut           |
+| --------------- | ------------------ |
+| cmd + k         | Global Search      |
+| cmd + shift + k | Command Pallete    |
+| cmd + shift + y | Command History    |
+| cmd + shift + f | Table Search       |
+| g + n           | Namespace Selector |
+| g + s           | Go to services     |
+| g + d           | Go to deployments  |
+| g + j           | Go to jobs         |
+| g + c           | Go to cronjobs     |
+| g + t           | Go to statefulsets |
+| g + h           | Go to hpa          |
+| g + v           | Go to pvc          |
+| g + p           | Go to pods         |
+| g + i           | Go to ingress      |
+| g + m           | Go to configmaps   |
+| g + r           | Go to secrets      |
+| g + f           | Go to port-forward |
 
 ## Development
 
