@@ -3,6 +3,7 @@ import { Redirect, Location } from '@reach/router';
 import { Global, css } from '@emotion/core';
 import { ThemeProvider } from 'emotion-theming';
 import useSWR from 'swr';
+import Hotkeys from 'react-hot-keys';
 
 import * as kubectl from '../kubectl';
 import Sidebar from '../components/Sidebar';
@@ -31,6 +32,7 @@ import RouterLoading from '../components/RouterLoading';
 import ErrorLoading from '../components/ErrorLoading';
 
 import { useConfigContext } from '../state-management/config-management';
+import SearchDialog from '../components/SearchDialog';
 
 const Home = React.lazy(() => import('./Home'));
 const Logs = React.lazy(() => import('./Logs'));
@@ -95,6 +97,7 @@ const themes = {
 function App() {
   const { config, changeConfig } = useConfigContext();
   const [links, setLinks] = useState([]);
+  const [namespaceSelectOpen, setNamespaceSelectOpen] = useState(false);
   const { data: response } = useSWR(
     ['default', 'get namespaces'],
     kubectl.exec,
@@ -120,6 +123,10 @@ function App() {
     changeConfig({ theme: config.theme === 'light' ? 'dark' : 'light' });
   };
 
+  const handleNamespaceSelection = () => setNamespaceSelectOpen(true);
+
+  const handleNamespaceDismiss = () => setNamespaceSelectOpen(false);
+
   return (
     <ThemeProvider theme={themes[config.theme]}>
       <Global
@@ -137,7 +144,7 @@ function App() {
         `}
       />
       <Location>
-        {({ location }) => (
+        {({ location, navigate }) => (
           <Fragment>
             <Header location={location} />
             <AppContainer>
@@ -145,8 +152,33 @@ function App() {
                 namespaces={namespaces}
                 links={links}
                 onThemeChange={handleThemeChange}
+                onNamespaceChange={handleNamespaceSelection}
               />
-
+              <Hotkeys keyName="g+n,g+n" onKeyUp={handleNamespaceSelection}>
+                <SearchDialog
+                  isOpen={namespaceSelectOpen}
+                  onDismiss={handleNamespaceDismiss}
+                  dialogItems={
+                    namespaces &&
+                    namespaces.map(namespace => ({
+                      value: namespace,
+                      callback: ({ value: selectedNamespace }) => {
+                        let [
+                          url,
+                          ui,
+                          namespace,
+                          type
+                        ] = location.pathname.split('/');
+                        navigate(`/ui/${selectedNamespace}/${type}`);
+                        handleNamespaceDismiss();
+                      }
+                    }))
+                  }
+                  selected="Namespaces"
+                  loading={false}
+                  onSelect={handleNamespaceDismiss}
+                />
+              </Hotkeys>
               <Suspense fallback={<RouterLoading />}>
                 <ErrorBoundary key={location.href} fallback={<ErrorLoading />}>
                   <CustomRouter basepath="/ui">

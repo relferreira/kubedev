@@ -1,36 +1,27 @@
 import React from 'react';
 
-import Table from '../components/Table';
 import { getHosts } from '../state-management/ingress-management';
-import TableInfo from './TableInfo';
+import NewTableInfo from './NewTableInfo';
 
-export default function Ingress({ namespace }) {
+export default function Ingress({ namespace, navigate }) {
   return (
-    <TableInfo title="Ingress" namespace={namespace} command="get ingress">
-      {items => (
-        <Table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Host</th>
-              <th>Age</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items &&
-              items.map(({ metadata, spec }) => (
-                <tr key={metadata.name}>
-                  <td>
-                    {metadata.name}
-                    {/* <Link to={`${metadata.name}/get`}>{metadata.name}</Link> */}
-                  </td>
-                  <td>{getHosts(spec)}</td>
-                  <td>{metadata.creationTimestamp}</td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
-      )}
-    </TableInfo>
+    <NewTableInfo
+      title="Ingress"
+      namespace={namespace}
+      command="get ingress"
+      navigate={navigate}
+      formatHeader={() => ['Name', 'Host', 'Age']}
+      formatItems={items =>
+        items.map(({ metadata, spec }) => [
+          metadata.name,
+          getHosts(spec),
+          metadata.creationTimestamp
+        ])
+      }
+      dialogItems={[
+        { value: 'Describe', type: 'ingress', href: 'describe' },
+        { value: 'Edit', type: 'ingress', href: 'edit' }
+      ]}
+    />
   );
 }

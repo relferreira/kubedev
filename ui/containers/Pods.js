@@ -1,117 +1,39 @@
 import React, { useState, Fragment } from 'react';
-import styled from '@emotion/styled';
-import { Link } from '@reach/router';
 
 import { useConfigContext } from '../state-management/config-management';
-import PodCard from '../components/PodCard';
-import Table from '../components/Table';
 import {
   getContainersReady,
   getContainersRestarts
 } from '../state-management/pod-management';
-import TableInfo from './TableInfo';
-import Button from '../components/Button';
-import Dialog from '../components/Dialog';
+import NewTableInfo from './NewTableInfo';
 
-const PodsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-`;
-
-const DialogContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  button {
-    width: 100%;
-  }
-
-  a:last-child {
-    margin-top: 16px;
-  }
-`;
-
-export default function Pods({ namespace }) {
+export default function Pods({ namespace, navigate }) {
   const { config } = useConfigContext();
-
-  const [showDialog, setShowDialog] = useState(false);
-  const [selected, setSelected] = useState(null);
-
-  const openDialog = item => {
-    setShowDialog(true);
-    setSelected(item);
-  };
-  const closeDialog = () => setShowDialog(false);
 
   return (
     <Fragment>
-      <TableInfo title="Pods" namespace={namespace} command="get pods">
-        {items =>
-          config.listStyle === 'table' ? (
-            <Table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Ready</th>
-                  <th>Status</th>
-                  <th>Restarts</th>
-                  <th>Age</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items &&
-                  items.map(({ metadata, status, spec }) => (
-                    <tr
-                      key={metadata.name}
-                      onClick={() => openDialog(metadata.name)}
-                    >
-                      <td>
-                        <a
-                          href=""
-                          onClick={event =>
-                            event.preventDefault() && openDialog(metadata.name)
-                          }
-                        >
-                          {metadata.name}
-                        </a>
-                      </td>
-                      <td>{getContainersReady(spec, status)}</td>
-                      <td>{status.phase}</td>
-                      <td>{getContainersRestarts(status)}</td>
-                      <td>{metadata.creationTimestamp}</td>
-                    </tr>
-                  ))}
-              </tbody>
-            </Table>
-          ) : (
-            <PodsGrid>
-              {items &&
-                items.map(({ metadata, status }) => (
-                  <PodCard
-                    key={metadata.name}
-                    name={metadata.name}
-                    state={status.phase}
-                  />
-                ))}
-            </PodsGrid>
-          )
+      <NewTableInfo
+        title="Pods"
+        namespace={namespace}
+        command="get pods"
+        navigate={navigate}
+        formatHeader={() => ['Name', 'Ready', 'Status', 'Restarts', 'Age']}
+        formatItems={items =>
+          items.map(({ metadata, status, spec }) => [
+            metadata.name,
+            getContainersReady(spec, status),
+            status.phase,
+            getContainersRestarts(status),
+            metadata.creationTimestamp
+          ])
         }
-      </TableInfo>
-      <Dialog
-        isOpen={showDialog}
-        onDismiss={closeDialog}
-        title={selected}
-        width="400px"
-      >
-        <DialogContainer>
-          <Link to={`${selected}/logs`} tabIndex={1}>
-            <Button tabIndex={-1}>Logs</Button>
-          </Link>
-          <Link to={`${selected}/get`} tabIndex={2}>
-            <Button tabIndex={-1}>Info</Button>
-          </Link>
-        </DialogContainer>
-      </Dialog>
+        dialogItems={[
+          { value: 'Logs', type: 'pods', href: 'logs' },
+          { value: 'Edit', type: 'pods', href: 'edit' },
+          { value: 'Info', type: 'pods', href: 'get' },
+          { value: 'Describe', type: 'pods', href: 'describe' }
+        ]}
+      />
     </Fragment>
   );
 }

@@ -34,6 +34,7 @@ const PageHeader = ({
   showToggleList,
   onSearch,
   onRefresh,
+  onBlur,
   children
 }) => {
   const { config, changeConfig } = useConfigContext();
@@ -57,13 +58,14 @@ const PageHeader = ({
               ref={inputRef}
               onChange={event => onSearch(event.target.value)}
               onKeyDown={event => {
-                if (event.key === 'Escape') {
+                if (event.key === 'Escape' || event.key === 'ArrowDown') {
                   inputRef.current.blur();
                 }
               }}
+              onBlur={onBlur}
             />
           </Hotkeys>
-          <CustomTooltip label="Change Layout">
+          {/* <CustomTooltip label="Change Layout">
             <RefreshIcon onClick={handleListStyleChange}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +77,7 @@ const PageHeader = ({
                 <path d="M0 0h24v24H0z" fill="none" />
               </svg>
             </RefreshIcon>
-          </CustomTooltip>
+          </CustomTooltip> */}
           {showToggleList && (
             <CustomTooltip label="Refresh">
               <RefreshIcon onClick={onRefresh}>

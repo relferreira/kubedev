@@ -36,7 +36,7 @@ const LocationHistoryController = () => {
 
   return (
     <HistoryButtons>
-      <ReversedHistoryButton onClick={handleBackward}>
+      <ReversedHistoryButton onClick={handleBackward} aria-label="Go Back">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="18"
@@ -48,7 +48,7 @@ const LocationHistoryController = () => {
         </svg>
       </ReversedHistoryButton>
       <span />
-      <HistoryButton onClick={handleForward}>
+      <HistoryButton onClick={handleForward} aria-label="Go Forward">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="18"
