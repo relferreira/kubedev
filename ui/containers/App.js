@@ -4,6 +4,7 @@ import { Global, css } from '@emotion/core';
 import { ThemeProvider } from 'emotion-theming';
 import useSWR from 'swr';
 import Hotkeys from 'react-hot-keys';
+import '@elastic/eui/dist/eui_theme_dark.css';
 
 import * as kubectl from '../kubectl';
 import Sidebar from '../components/Sidebar';
@@ -33,6 +34,7 @@ import ErrorLoading from '../components/ErrorLoading';
 
 import { useConfigContext } from '../state-management/config-management';
 import SearchDialog from '../components/SearchDialog';
+import ScaledObjects from './ScaledObjects';
 
 const Home = React.lazy(() => import('./Home'));
 const Logs = React.lazy(() => import('./Logs'));
@@ -223,6 +225,8 @@ function App() {
                     <ConfigMap path=":namespace/configmaps" />
                     <Secret path=":namespace/secrets" />
                     <SecretInfo path=":namespace/secrets/:name/get" />
+                    <ScaledObjects path=":namespace/scaledobjects" />
+                    {/* <SecretInfo path=":namespace/secrets/:name/get" /> */}
                   </CustomRouter>
                 </ErrorBoundary>
               </Suspense>

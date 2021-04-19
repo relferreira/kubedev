@@ -211,7 +211,7 @@ func main() {
 		name := c.Param("name")
 		logOptions := v1.PodLogOptions{}
 		req := clientset.CoreV1().Pods(namespace).GetLogs(name, &logOptions)
-		podLogs, err := req.Stream()
+		podLogs, err := req.Stream(c)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -237,7 +237,7 @@ func main() {
 			Follow:    true,
 		}
 		req := clientset.CoreV1().Pods(namespace).GetLogs(name, &logOptions)
-		podLogs, err := req.Stream()
+		podLogs, err := req.Stream(c)
 		if err != nil {
 			panic(err.Error())
 		}
