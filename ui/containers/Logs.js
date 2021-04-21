@@ -9,8 +9,9 @@ import { navigate } from '@reach/router';
 
 const LogsContainer = styled.div`
   position: relative;
+  width: 100%;
   height: 100%;
-  height: calc(100% + 32px);
+  height: calc(100vh - 100px);
   margin: -16px;
   color: white;
   background: ${props => props.theme.background};

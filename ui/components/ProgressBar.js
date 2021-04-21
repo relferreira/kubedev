@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { EuiPortal, EuiProgress } from '@elastic/eui';
 
 const ProgressContainer = styled.div`
   position: fixed;
@@ -34,9 +35,9 @@ const ProgressIndicator = styled.div`
 `;
 
 const ProgressBar = ({ porcentage = 20 }) => (
-  <ProgressContainer>
-    <ProgressIndicator porcentage={porcentage} />
-  </ProgressContainer>
+  <EuiPortal>
+    <EuiProgress size="xs" color="primary" position="fixed" />
+  </EuiPortal>
 );
 
 export default ProgressBar;

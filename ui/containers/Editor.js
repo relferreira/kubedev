@@ -10,7 +10,7 @@ const yaml = require('js-yaml');
 
 const EditorContainer = styled.div`
   position: relative;
-  height: calc(100% + 32px);
+  height: calc(100vh - 100px);
   margin: -16px;
 `;
 

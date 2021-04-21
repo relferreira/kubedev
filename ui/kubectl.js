@@ -18,3 +18,6 @@ export const stopPortForward = (namespace, pid) =>
 
 export const checkPortForward = (namespace, pid) =>
   axios.get(`${process.env.API}/${namespace}/port-forward/running/${pid}`);
+
+export const refreshContext = () =>
+  axios.post(`${process.env.API}/default/refresh-context`);

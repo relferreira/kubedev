@@ -18,6 +18,20 @@ import {
 import Icon from '../components/Icon';
 import { addHistory, getHistory } from '../state-management/history-management';
 import CustomTooltip from '../components/CustomTooltip';
+import {
+  EuiPopover,
+  EuiText,
+  EuiHeaderSectionItemButton,
+  EuiAvatar,
+  EuiHeader,
+  EuiHeaderSection,
+  EuiHeaderSectionItem,
+  EuiHeaderLogo,
+  EuiBreadcrumbs
+} from '@elastic/eui';
+import * as kubectl from '../kubectl';
+import useSWR from 'swr';
+import SearchBar from '../components/SearchBar';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -132,7 +146,7 @@ const HeaderIcon = styled(Icon)`
 
 const worker = new Worker('../workers/search.js');
 
-export default function Header({ location }) {
+export default function Header({ location, onContextChange }) {
   const [searchDate, setSearchDate] = useState(new Date());
   const [historyDate, setHistoryDate] = useState(new Date());
   const [search, setSearch] = useState('');
@@ -144,6 +158,12 @@ export default function Header({ location }) {
   const [history, setHistory] = useState([]);
   const { result } = useWorker(worker, searchDate);
   const inputRef = useRef(null);
+  const [isUserMenuVisible, setIsUserMenuVisible] = useState(false);
+  const { data: response, revalidate, isValidating } = useSWR(
+    ['default', 'config view'],
+    kubectl.exec,
+    { suspense: false }
+  );
 
   useEffect(() => {
     setHistory(getHistory());
@@ -236,6 +256,18 @@ export default function Header({ location }) {
     }
   };
 
+  const handleContextSwitch = name => {
+    kubectl
+      .exec('default', `config use-context ${name}`, false)
+      .then(() => kubectl.refreshContext())
+      .then(() => {
+        setIsUserMenuVisible(false);
+        onContextChange();
+        navigate(`/ui/${getSelectedNamespace(location)}/pods`);
+      })
+      .catch(console.error);
+  };
+
   const resetInput = () => {
     setSearchInput('');
     setSearch('');
@@ -258,6 +290,94 @@ export default function Header({ location }) {
   let searchResults = fuse.search(search, { limit: 10 });
 
   if (historyMode && searchResults.length === 0) searchResults = history;
+
+  return (
+    <EuiHeader position="fixed">
+      <EuiHeaderSection>
+        <EuiHeaderSectionItemButton>
+          <svg
+            width="30"
+            height="50"
+            viewBox="0 0 30 50"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ height: '30px' }}
+          >
+            <path
+              d="M2.76113 22.7864L6.91373 13.658L19.6839 40.8717L15.5313 50L2.76113 22.7864Z"
+              fill="#9BE7FF"
+            />
+            <path
+              d="M18.9256 30.458L28.6004 33.0977L15.8302 5.88402L6.15537 3.24431L18.9256 30.458Z"
+              fill="#64B5F6"
+            />
+          </svg>
+        </EuiHeaderSectionItemButton>
+        <EuiHeaderSectionItem border="none">
+          <span class="euiHeaderLogo__text" style={{ paddingLeft: 0 }}>
+            KubeDev
+          </span>
+        </EuiHeaderSectionItem>
+      </EuiHeaderSection>
+
+      <EuiHeaderSection side="right">
+        <EuiHeaderSectionItemButton>
+          <HeaderIcon onClick={handleHistoryIconClick}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path d="M0 0h24v24H0z" fill="none" />
+              <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
+            </svg>
+          </HeaderIcon>
+        </EuiHeaderSectionItemButton>
+        <EuiHeaderSectionItem>
+          <EuiPopover
+            id="guideHeaderUserMenuExample"
+            repositionOnScroll
+            button={
+              <EuiHeaderSectionItemButton
+                aria-controls="guideHeaderSpacesMenuExample"
+                aria-expanded={isUserMenuVisible}
+                aria-haspopup="true"
+                aria-label="Spaces menu"
+                onClick={() => setIsUserMenuVisible(!isUserMenuVisible)}
+              >
+                <EuiAvatar type="space" name="Default Space" size="s" />
+              </EuiHeaderSectionItemButton>
+            }
+            isOpen={isUserMenuVisible}
+            anchorPosition="downRight"
+            closePopover={() => setIsUserMenuVisible(false)}
+          >
+            <div>
+              <EuiText size="s" color="subdued">
+                <p>
+                  Please see the component page for{' '}
+                  <Link to="/layout/header">
+                    <strong>EuiHeader</strong>
+                  </Link>{' '}
+                  on how to configure your user menu.
+                </p>
+                {response && response.data && response.data.contexts && (
+                  <ul>
+                    {response.data.contexts.map(context => (
+                      <li onClick={() => handleContextSwitch(context.name)}>
+                        {context.name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </EuiText>
+            </div>
+          </EuiPopover>
+        </EuiHeaderSectionItem>
+      </EuiHeaderSection>
+    </EuiHeader>
+  );
 
   return (
     <Hotkeys
@@ -283,7 +403,36 @@ export default function Header({ location }) {
             />
           </Image>
 
-          <Title>KubeDev</Title>
+          <EuiPopover
+            id="guideHeaderUserMenuExample"
+            repositionOnScroll
+            button={
+              <EuiHeaderSectionItemButton
+                aria-controls="guideHeaderSpacesMenuExample"
+                aria-expanded={isUserMenuVisible}
+                aria-haspopup="true"
+                aria-label="Spaces menu"
+                onClick={() => setIsUserMenuVisible(!isUserMenuVisible)}
+              >
+                <EuiAvatar type="space" name="Default Space" size="s" />
+              </EuiHeaderSectionItemButton>
+            }
+            isOpen={isUserMenuVisible}
+            anchorPosition="downRight"
+            closePopover={() => setIsUserMenuVisible(false)}
+          >
+            <div>
+              <EuiText size="s" color="subdued">
+                <p>
+                  Please see the component page for{' '}
+                  <Link to="/layout/header">
+                    <strong>EuiHeader</strong>
+                  </Link>{' '}
+                  on how to configure your user menu.
+                </p>
+              </EuiText>
+            </div>
+          </EuiPopover>
         </LogoContainer>
 
         <Backdrop show={focus} />

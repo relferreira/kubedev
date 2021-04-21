@@ -35,6 +35,7 @@ import ErrorLoading from '../components/ErrorLoading';
 import { useConfigContext } from '../state-management/config-management';
 import SearchDialog from '../components/SearchDialog';
 import ScaledObjects from './ScaledObjects';
+import { EuiPageTemplate, EuiFlexGroup, EuiPageSideBar } from '@elastic/eui';
 
 const Home = React.lazy(() => import('./Home'));
 const Logs = React.lazy(() => import('./Logs'));
@@ -100,7 +101,7 @@ function App() {
   const { config, changeConfig } = useConfigContext();
   const [links, setLinks] = useState([]);
   const [namespaceSelectOpen, setNamespaceSelectOpen] = useState(false);
-  const { data: response } = useSWR(
+  const { data: response, revalidate } = useSWR(
     ['default', 'get namespaces'],
     kubectl.exec,
     { revalidateOnFocus: false }
@@ -128,6 +129,135 @@ function App() {
   const handleNamespaceSelection = () => setNamespaceSelectOpen(true);
 
   const handleNamespaceDismiss = () => setNamespaceSelectOpen(false);
+
+  const handleContextChange = () => revalidate();
+
+  return (
+    <ThemeProvider theme={themes[config.theme]}>
+      <Global
+        styles={css`
+          a {
+            color: inherit;
+          }
+
+          #app {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-direction: column;
+            flex-direction: column;
+            min-height: calc(100vh - 49px);
+          }
+
+          .euiBody--headerIsFixed {
+            padding-top: 49px;
+          }
+
+          .euiBody--headerIsFixed .euiPageSideBar--sticky {
+            max-height: calc(100vh - 49px);
+            top: 49px;
+          }
+        `}
+      />
+      <Location>
+        {({ location, navigate }) => (
+          <Fragment>
+            <Header location={location} onContextChange={handleContextChange} />
+            <EuiPageTemplate
+              restrictWidth={false}
+              pageSideBar={
+                <Sidebar
+                  namespaces={namespaces}
+                  links={links}
+                  onThemeChange={handleThemeChange}
+                  onNamespaceChange={handleNamespaceSelection}
+                />
+              }
+              // pageHeader={{
+              //   iconType: 'logoElastic',
+              //   pageTitle: 'Page title'
+              //   // rightSideItems: [button],
+              // }}
+            >
+              <Hotkeys keyName="g+n,g+n" onKeyUp={handleNamespaceSelection}>
+                <SearchDialog
+                  isOpen={namespaceSelectOpen}
+                  onDismiss={handleNamespaceDismiss}
+                  dialogItems={
+                    namespaces &&
+                    namespaces.map(namespace => ({
+                      value: namespace,
+                      callback: ({ value: selectedNamespace }) => {
+                        let [
+                          url,
+                          ui,
+                          namespace,
+                          type
+                        ] = location.pathname.split('/');
+                        navigate(`/ui/${selectedNamespace}/${type}`);
+                        handleNamespaceDismiss();
+                      }
+                    }))
+                  }
+                  selected="Namespaces"
+                  loading={false}
+                  onSelect={handleNamespaceDismiss}
+                />
+              </Hotkeys>
+              <Suspense fallback={<RouterLoading />}>
+                <ErrorBoundary key={location.href} fallback={<ErrorLoading />}>
+                  <CustomRouter basepath="/ui">
+                    <Redirect from="/" to="/ui/default/pods" noThrow />
+                    {/* <Home path="/:namespace" /> */}
+                    <Pods path=":namespace/pods" />
+                    <PodInfo path=":namespace/pods/:name/get" />
+                    <Services path=":namespace/services" />
+                    <ServiceInfo path=":namespace/services/:name/get" />
+                    <Deployments path=":namespace/deployments" />
+                    <DeploymentInfo
+                      path=":namespace/deployments/:name/get"
+                      type="deployments"
+                    />
+                    <Jobs path=":namespace/jobs" />
+                    <JobInfo path=":namespace/jobs/:name/get" />
+                    <CronJobs path=":namespace/cronjobs" />
+                    <CronJobInfo path=":namespace/cronjobs/:name/get" />
+                    <StatefulSets path=":namespace/statefulsets" />
+                    <DeploymentInfo
+                      path=":namespace/statefulsets/:name/get"
+                      type="statefulsets"
+                    />
+                    <Hpa path=":namespace/hpa" />
+                    <HpaInfo path=":namespace/hpa/:name/get" />
+                    <Pvc path=":namespace/pvc" />
+                    <PvcInfo path=":namespace/pvc/:name/get" />
+                    <Nodes path=":namespace/nodes" />
+                    <NodeInfo path=":namespace/nodes/:name/get" />
+                    <Ingress path=":namespace/ingress" />
+                    <Logs
+                      path=":namespace/pods/:name/logs"
+                      onLogInit={handleSidebarChange}
+                    />
+                    <Editor path=":namespace/new" type="new" action="get" />
+                    <Editor path=":namespace/:type/:name/edit" action="get" />
+                    <Editor
+                      path=":namespace/:type/:name/describe"
+                      action="describe"
+                    />
+                    <PortForward path=":namespace/port-forward" />
+                    <ConfigMap path=":namespace/configmaps" />
+                    <Secret path=":namespace/secrets" />
+                    <SecretInfo path=":namespace/secrets/:name/get" />
+                    <ScaledObjects path=":namespace/scaledobjects" />
+                    {/* <SecretInfo path=":namespace/secrets/:name/get" /> */}
+                  </CustomRouter>
+                </ErrorBoundary>
+              </Suspense>
+            </EuiPageTemplate>
+          </Fragment>
+        )}
+      </Location>
+    </ThemeProvider>
+  );
 
   return (
     <ThemeProvider theme={themes[config.theme]}>

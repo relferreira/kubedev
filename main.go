@@ -29,9 +29,10 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-func main() {
-	r := gin.Default()
-	var kubeconfigFile = flag.String("kubeconfig", filepath.Join(os.Getenv("HOME"), ".kube", "config"), "(optional) absolute path to the kubeconfig file")
+func getK8sClient() (*kubernetes.Clientset, error) {
+	fmt.Println("teste para ver")
+	fmt.Println("kubeconfig_" + time.Now().String())
+	var kubeconfigFile = flag.String("kubeconfig_"+time.Now().String(), filepath.Join(os.Getenv("HOME"), ".kube", "config"), "(optional) absolute path to the kubeconfig file")
 	flag.Parse()
 
 	var kubeConfig = *kubeconfigFile
@@ -45,7 +46,27 @@ func main() {
 		panic(err.Error())
 	}
 
-	clientset, err := kubernetes.NewForConfig(config)
+	return kubernetes.NewForConfig(config)
+}
+
+func main() {
+	r := gin.Default()
+	// var kubeconfigFile = flag.String("kubeconfig", filepath.Join(os.Getenv("HOME"), ".kube", "config"), "(optional) absolute path to the kubeconfig file")
+	// flag.Parse()
+
+	// var kubeConfig = *kubeconfigFile
+	// _, errKube := os.Stat(*kubeconfigFile)
+	// if os.IsNotExist(errKube) {
+	// 	kubeConfig = ""
+	// }
+
+	// config, err := clientcmd.BuildConfigFromFlags("", kubeConfig)
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
+
+	// clientset, err := kubernetes.NewForConfig(config)
+	var clientset, err = getK8sClient()
 
 	r.Use(cors.New(cors.Options{
 		AllowedOrigins:     []string{"http://localhost:1234"},
@@ -66,9 +87,17 @@ func main() {
 
 	r.NoRoute(utils.RedirectIndex())
 
+	r.POST("/api/:namespace/refresh-context", func(c *gin.Context) {
+		clientset, _ = getK8sClient()
+
+		c.JSON(200, nil)
+	})
+
 	r.GET("/api/:namespace/exec", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 		command := strings.Fields(c.Query("command"))
+		fmt.Println("oi")
+		fmt.Println(command)
 		jsonOutput, jsonErr := strconv.ParseBool(c.Query("json"))
 		if jsonErr != nil {
 			panic(err.Error())

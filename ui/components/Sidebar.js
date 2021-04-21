@@ -10,11 +10,11 @@ import CustomTooltip from './CustomTooltip';
 const SidebarContainer = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 0 0 200px;
-  width: 200px;
-  background: ${props => props.theme.sidebarBackground};
-  color: ${props => props.theme.sidebarFontColor};
-  overflow: auto;
+  // flex: 0 0 200px;
+  // width: 200px;
+  // background: ${props => props.theme.sidebarBackground};
+  // color: ${props => props.theme.sidebarFontColor};
+  // overflow: auto;
 `;
 
 const HistoryContainer = styled.div`
