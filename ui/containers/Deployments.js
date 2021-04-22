@@ -41,7 +41,13 @@ export default function Deployments({ namespace, navigate }) {
       namespace={namespace}
       command="get deployments"
       navigate={navigate}
-      formatHeader={() => ['Name', 'Ready', 'Up to Date', 'Available', 'Age']}
+      formatHeader={() => [
+        { label: 'Name', align: 'left', isSorted: true },
+        { label: 'Ready', align: 'center' },
+        { label: 'Up to Date', align: 'center' },
+        { label: 'Available', align: 'center' },
+        { label: 'Age', align: 'right' }
+      ]}
       formatItems={items =>
         items.map(({ metadata, status, spec }) => [
           metadata.name,

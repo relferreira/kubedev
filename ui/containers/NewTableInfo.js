@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useSWR from 'swr';
-import Fuse from 'fuse.js';
+import { EuiSearchBar, EuiSpacer } from '@elastic/eui';
 
 import * as kubectl from '../kubectl';
 import SearchDialog from '../components/SearchDialog';
@@ -46,14 +46,12 @@ export default function NewTableInfo({
 
   const { data } = response || {};
 
-  // TODO validate error
-
-  let fuse = new Fuse(data.items, {
-    keys: ['metadata.name']
-  });
-
   let headers = formatHeader();
-  let items = search ? fuse.search(search, { limit: 10 }) : data.items;
+
+  let options = {
+    defaultFields: ['metadata.name']
+  };
+  const items = EuiSearchBar.Query.execute(search, data.items, options);
 
   return (
     <div>
@@ -66,28 +64,15 @@ export default function NewTableInfo({
         onRefresh={() => revalidate()}
         onBlur={() => setTableFocus(!tableFocus)}
       />
+      <EuiSpacer size="m" />
       <Table
+        columns={headers}
+        items={formatItems(items)}
         onSelect={index => openDialog(items[index].metadata.name)}
         size={items.length}
         tableFocus={tableFocus}
-      >
-        <thead>
-          <tr>
-            {headers.map(header => (
-              <th key={header}>{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {formatItems(items).map(item => (
-            <tr key={item[0]} onClick={() => openDialog(item[0])}>
-              {item.map((value, i) => (
-                <td key={`${item[0]} ${headers[i]} ${value}`}>{value}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+        isDialogOpen={showDialog}
+      />
       <SearchDialog
         isOpen={showDialog}
         onDismiss={closeDialog}

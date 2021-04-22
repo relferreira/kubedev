@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef, useEffect, Fragment } from 'react';
 import styled from '@emotion/styled';
 import { useWorker } from 'react-hooks-worker';
 import Downshift from 'downshift';
@@ -27,7 +27,8 @@ import {
   EuiHeaderSection,
   EuiHeaderSectionItem,
   EuiHeaderLogo,
-  EuiBreadcrumbs
+  EuiBreadcrumbs,
+  EuiSelectable
 } from '@elastic/eui';
 import * as kubectl from '../kubectl';
 import useSWR from 'swr';
@@ -256,9 +257,10 @@ export default function Header({ location, onContextChange }) {
     }
   };
 
-  const handleContextSwitch = name => {
+  const handleContextSwitch = items => {
+    let item = items.find(item => item.checked === 'on');
     kubectl
-      .exec('default', `config use-context ${name}`, false)
+      .exec('default', `config use-context ${item.name}`, false)
       .then(() => kubectl.refreshContext())
       .then(() => {
         setIsUserMenuVisible(false);
@@ -353,26 +355,27 @@ export default function Header({ location, onContextChange }) {
             anchorPosition="downRight"
             closePopover={() => setIsUserMenuVisible(false)}
           >
-            <div>
-              <EuiText size="s" color="subdued">
-                <p>
-                  Please see the component page for{' '}
-                  <Link to="/layout/header">
-                    <strong>EuiHeader</strong>
-                  </Link>{' '}
-                  on how to configure your user menu.
-                </p>
-                {response && response.data && response.data.contexts && (
-                  <ul>
-                    {response.data.contexts.map(context => (
-                      <li onClick={() => handleContextSwitch(context.name)}>
-                        {context.name}
-                      </li>
-                    ))}
-                  </ul>
+            {response && response.data && response.data.contexts && (
+              <EuiSelectable
+                aria-label="Single selection example"
+                options={response.data.contexts.map(item => ({
+                  label: item.name,
+                  ...item
+                }))}
+                searchable={true}
+                onChange={handleContextSwitch}
+                singleSelection={true}
+                listProps={{ bordered: true }}
+                // isLoading={loading}
+              >
+                {(list, search) => (
+                  <Fragment>
+                    {search}
+                    {list}
+                  </Fragment>
                 )}
-              </EuiText>
-            </div>
+              </EuiSelectable>
+            )}
           </EuiPopover>
         </EuiHeaderSectionItem>
       </EuiHeaderSection>

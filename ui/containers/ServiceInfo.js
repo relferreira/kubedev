@@ -103,7 +103,7 @@ export default function ServiceInfo({ namespace, name, navigate }) {
         </DeleteButton>
       </PageHeader>
       <ServiceType>Type: {spec.type}</ServiceType>
-      <Table>
+      <table>
         <thead>
           <tr>
             <th>Cluster IP</th>
@@ -118,8 +118,8 @@ export default function ServiceInfo({ namespace, name, navigate }) {
             <td>{getPorts(spec.ports)}</td>
           </tr>
         </tbody>
-      </Table>
-      <Table>
+      </table>
+      <table>
         <thead>
           <tr>
             <th>From</th>
@@ -159,7 +159,7 @@ export default function ServiceInfo({ namespace, name, navigate }) {
             </td>
           </tr>
         </tbody>
-      </Table>
+      </table>
     </div>
   );
 }

@@ -1,49 +1,23 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Hotkeys from 'react-hot-keys';
-import styled from '@emotion/styled';
-import { primaryDark } from '../util/colors';
 
-const TableContainer = styled.table`
-  width: 100%;
-  display: table;
-  border-collapse: collapse;
-  border-spacing: 0;
-  color: ${props => props.theme.containerFont};
+import {
+  EuiTable,
+  EuiTableHeader,
+  EuiTableBody,
+  EuiTableRowCell,
+  EuiTableRow,
+  EuiTableHeaderCell
+} from '@elastic/eui';
 
-  tr {
-    border-bottom: 1px solid ${props => props.theme.tableBorder};
-    outline: none;
-  }
-
-  tr.selected {
-    border-left: 4px solid ${primaryDark};
-    outline: none;
-    background: ${props => props.theme.header};
-    color: ${props => props.theme.containerFont};
-  }
-
-  td,
-  th {
-    padding: 15px 10px;
-    display: table-cell;
-    text-align: left;
-    vertical-align: middle;
-    border-radius: 2px;
-  }
-
-  a {
-    text-decoration: none;
-  }
-`;
-
-function Table({ children, size, tableFocus, onSelect }) {
+function Table({ columns, items, size, tableFocus, onSelect }) {
   const [selected, setSelected] = useState(0);
   const tableEl = useRef(null);
   const [reset, setReset] = useState(false);
 
   useEffect(() => {
     if (tableEl && size > 0) {
-      let rows = tableEl.current.querySelectorAll('tbody tr');
+      let rows = tableEl.current.querySelectorAll('tr');
       rows.forEach((row, i) => {
         if (i === selected) {
           row.classList.add('selected');
@@ -80,13 +54,70 @@ function Table({ children, size, tableFocus, onSelect }) {
     setSelected(inc);
   };
 
+  const renderHeaderCells = () => {
+    const headers = [];
+
+    columns.forEach((column, columnIndex) => {
+      headers.push(
+        <EuiTableHeaderCell
+          key={column.id || column.label}
+          align={column.align}
+          width={column.width}
+          // onSort={(e, i) => {
+          //   console.log(e, i);
+          // }}
+          // isSorted={column.isSorted}
+          // isSortAscending={true}
+          // isSortAscending={this.sortableProperties.isAscendingByName(column.id)}
+          // mobileOptions={column.mobileOptions}
+        >
+          {column.label || column}
+        </EuiTableHeaderCell>
+      );
+    });
+    return headers.length ? headers : null;
+  };
+
+  const renderRows = () => {
+    const renderRow = (item, index) => {
+      const cells = columns.map((column, key) => (
+        <EuiTableRowCell
+          key={key}
+          align={column.align}
+          truncateText={false}
+          textOnly={true}
+        >
+          {item[key]}
+        </EuiTableRowCell>
+      ));
+
+      return (
+        <EuiTableRow
+          key={item.id}
+          isSelected={index === selected}
+          isSelectable={true}
+          hasActions={true}
+          onClick={() => onSelect(index)}
+        >
+          {cells}
+        </EuiTableRow>
+      );
+    };
+
+    return items.map(renderRow);
+  };
+
   return (
     <Hotkeys
       keyName="up,down,enter"
       allowRepeat={true}
       onKeyDown={handleShortcut}
     >
-      <TableContainer ref={tableEl}>{children}</TableContainer>
+      <EuiTable id="teste">
+        <EuiTableHeader>{renderHeaderCells()}</EuiTableHeader>
+
+        <EuiTableBody bodyRef={tableEl}>{renderRows()}</EuiTableBody>
+      </EuiTable>
     </Hotkeys>
   );
 }
