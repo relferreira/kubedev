@@ -45,7 +45,7 @@ const Sidebar = ({ namespaces, links, onNamespaceChange, onThemeChange }) => (
                 <strong>{namespace}</strong>
               </a>
             }
-            iconType="logoGCPMono"
+            iconType="dataVisualizer"
             iconSize="xl"
             isCollapsible={false}
             initialIsOpen={false}
@@ -53,7 +53,7 @@ const Sidebar = ({ namespaces, links, onNamespaceChange, onThemeChange }) => (
           ></EuiCollapsibleNavGroup>
           <EuiCollapsibleNavGroup
             title="Workloads"
-            iconType="logoKibana"
+            iconType="devToolsApp"
             isCollapsible={true}
             initialIsOpen={true}
           >
@@ -80,7 +80,7 @@ const Sidebar = ({ namespaces, links, onNamespaceChange, onThemeChange }) => (
           </EuiCollapsibleNavGroup>
           <EuiCollapsibleNavGroup
             title="Network"
-            iconType="logoKibana"
+            iconType="watchesApp"
             isCollapsible={true}
             initialIsOpen={false}
           >
@@ -98,7 +98,7 @@ const Sidebar = ({ namespaces, links, onNamespaceChange, onThemeChange }) => (
           </EuiCollapsibleNavGroup>
           <EuiCollapsibleNavGroup
             title="Configurations"
-            iconType="logoKibana"
+            iconType="advancedSettingsApp"
             isCollapsible={true}
             initialIsOpen={false}
           >

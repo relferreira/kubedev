@@ -348,7 +348,23 @@ export default function Header({ location, onContextChange }) {
                 aria-label="Spaces menu"
                 onClick={() => setIsUserMenuVisible(!isUserMenuVisible)}
               >
-                <EuiAvatar type="space" name="Default Space" size="s" />
+                <EuiAvatar
+                  type="space"
+                  name={
+                    response &&
+                    response.data &&
+                    response.data['current-context']
+                      ? response.data['current-context']
+                          .replace(/-|_/, ' ')
+                          .replace('k8s', '')
+                          .split('')
+                          .join(' ')
+                          .toUpperCase()
+                      : ''
+                  }
+                  initialsLength={2}
+                  size="s"
+                />
               </EuiHeaderSectionItemButton>
             }
             isOpen={isUserMenuVisible}

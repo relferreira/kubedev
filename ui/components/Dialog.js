@@ -3,9 +3,7 @@ import {
   EuiModal,
   EuiModalHeader,
   EuiModalHeaderTitle,
-  EuiModalBody,
-  EuiModalFooter,
-  EuiButton
+  EuiModalBody
 } from '@elastic/eui';
 
 const CustomDialog = ({ title, isOpen, onDismiss, children, width }) => {

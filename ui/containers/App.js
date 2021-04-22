@@ -36,6 +36,35 @@ import { useConfigContext } from '../state-management/config-management';
 import SearchDialog from '../components/SearchDialog';
 import ScaledObjects from './ScaledObjects';
 import { EuiPageTemplate, EuiFlexGroup, EuiPageSideBar } from '@elastic/eui';
+import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon';
+
+import { icon as EuiIconArrowUp } from '@elastic/eui/es/components/icon/assets/arrow_up';
+import { icon as EuiIconArrowDown } from '@elastic/eui/es/components/icon/assets/arrow_down';
+import { icon as EuiIconArrowLeft } from '@elastic/eui/es/components/icon/assets/arrow_left';
+import { icon as EuiIconArrowRight } from '@elastic/eui/es/components/icon/assets/arrow_right';
+import { icon as EuiIconSearch } from '@elastic/eui/es/components/icon/assets/search';
+import { icon as EuiIconReturnKey } from '@elastic/eui/es/components/icon/assets/return_key';
+import { icon as EuiIconCross } from '@elastic/eui/es/components/icon/assets/cross';
+import { icon as EuiIconEmpty } from '@elastic/eui/es/components/icon/assets/empty';
+import { icon as EuiIconAppAdvancedSettings } from '@elastic/eui/es/components/icon/assets/app_advanced_settings';
+import { icon as EuiIconAppDevtools } from '@elastic/eui/es/components/icon/assets/app_devtools';
+import { icon as EuiIconAppWatches } from '@elastic/eui/es/components/icon/assets/app_watches';
+import { icon as EuiIconMlDataVisualizer } from '@elastic/eui/es/components/icon/assets/ml_data_visualizer';
+
+appendIconComponentCache({
+  arrowUp: EuiIconArrowUp,
+  arrowDown: EuiIconArrowDown,
+  arrowLeft: EuiIconArrowLeft,
+  arrowRight: EuiIconArrowRight,
+  search: EuiIconSearch,
+  returnKey: EuiIconReturnKey,
+  cross: EuiIconCross,
+  empty: EuiIconEmpty,
+  advancedSettingsApp: EuiIconAppAdvancedSettings,
+  devToolsApp: EuiIconAppDevtools,
+  watchesApp: EuiIconAppWatches,
+  dataVisualizer: EuiIconMlDataVisualizer
+});
 
 const Home = React.lazy(() => import('./Home'));
 const Logs = React.lazy(() => import('./Logs'));
@@ -155,6 +184,10 @@ function App() {
           .euiBody--headerIsFixed .euiPageSideBar--sticky {
             max-height: calc(100vh - 49px);
             top: 49px;
+          }
+
+          .euiIcon--app .euiIcon__fillSecondary {
+            fill: #64b5f6;
           }
         `}
       />

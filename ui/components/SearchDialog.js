@@ -43,7 +43,7 @@ function SearchDialog({
         searchable={true}
         onChange={handleOnSelect}
         singleSelection={true}
-        listProps={{ bordered: true }}
+        listProps={{ bordered: false }}
         isLoading={loading}
       >
         {(list, search) => (
