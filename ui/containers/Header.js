@@ -316,7 +316,7 @@ export default function Header({ location, onContextChange }) {
           </svg>
         </EuiHeaderSectionItemButton>
         <EuiHeaderSectionItem border="none">
-          <span class="euiHeaderLogo__text" style={{ paddingLeft: 0 }}>
+          <span className="euiHeaderLogo__text" style={{ paddingLeft: 0 }}>
             KubeDev
           </span>
         </EuiHeaderSectionItem>

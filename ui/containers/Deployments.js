@@ -26,7 +26,7 @@ export default function Deployments({ namespace, navigate }) {
           .finally(() => setDialogLoading(false));
       }
     },
-    { value: 'Info', type: 'deployments', href: 'get' },
+    // { value: 'Info', type: 'deployments', href: 'get' },
     { value: 'Edit', type: 'deployments', href: 'edit' },
     { value: 'Describe', type: 'deployments', href: 'describe' }
   ];

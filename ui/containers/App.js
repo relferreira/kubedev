@@ -50,8 +50,10 @@ import { icon as EuiIconAppAdvancedSettings } from '@elastic/eui/es/components/i
 import { icon as EuiIconAppDevtools } from '@elastic/eui/es/components/icon/assets/app_devtools';
 import { icon as EuiIconAppWatches } from '@elastic/eui/es/components/icon/assets/app_watches';
 import { icon as EuiIconMlDataVisualizer } from '@elastic/eui/es/components/icon/assets/ml_data_visualizer';
+import { icon as EuiIconDot } from '@elastic/eui/es/components/icon/assets/dot';
 
 appendIconComponentCache({
+  dot: EuiIconDot,
   arrowUp: EuiIconArrowUp,
   arrowDown: EuiIconArrowDown,
   arrowLeft: EuiIconArrowLeft,
@@ -205,11 +207,6 @@ function App() {
                   onNamespaceChange={handleNamespaceSelection}
                 />
               }
-              // pageHeader={{
-              //   iconType: 'logoElastic',
-              //   pageTitle: 'Page title'
-              //   // rightSideItems: [button],
-              // }}
             >
               <Hotkeys keyName="g+n,g+n" onKeyUp={handleNamespaceSelection}>
                 <SearchDialog

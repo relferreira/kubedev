@@ -3,6 +3,7 @@ import { Link, Location, navigate } from '@reach/router';
 import { getSelectedNamespace } from '../state-management/general-managements';
 import Hotkeys from 'react-hot-keys';
 import { EuiCollapsibleNavGroup, EuiListGroup } from '@elastic/eui';
+import LocationHistoryController from './LocationHistoryController';
 
 function CustomLink({ className, shortcut, children, ...rest }) {
   const linkRef = useRef(null);
@@ -37,16 +38,27 @@ const Sidebar = ({ namespaces, links, onNamespaceChange, onThemeChange }) => (
         <div>
           <EuiCollapsibleNavGroup
             title={
-              <a
-                className="euiListGroupItem-isClickable"
-                onClick={onNamespaceChange}
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}
               >
-                <small style={{ fontWeight: 'normal' }}>Namespace</small> <br />
-                <strong>{namespace}</strong>
-              </a>
+                <a
+                  className="euiListGroupItem-isClickable"
+                  onClick={onNamespaceChange}
+                  style={{ flex: 1 }}
+                >
+                  <small style={{ fontWeight: 'normal' }}>Namespace</small>{' '}
+                  <br />
+                  <strong>{namespace}</strong>
+                </a>
+                <LocationHistoryController />
+              </div>
             }
             iconType="dataVisualizer"
-            iconSize="xl"
+            iconSize="l"
             isCollapsible={false}
             initialIsOpen={false}
             background="dark"
@@ -54,6 +66,7 @@ const Sidebar = ({ namespaces, links, onNamespaceChange, onThemeChange }) => (
           <EuiCollapsibleNavGroup
             title="Workloads"
             iconType="devToolsApp"
+            iconSize="l"
             isCollapsible={true}
             initialIsOpen={true}
           >

@@ -7,7 +7,8 @@ import {
   EuiTableBody,
   EuiTableRowCell,
   EuiTableRow,
-  EuiTableHeaderCell
+  EuiTableHeaderCell,
+  EuiLink
 } from '@elastic/eui';
 
 function Table({ columns, items, size, tableFocus, onSelect }) {
@@ -18,17 +19,17 @@ function Table({ columns, items, size, tableFocus, onSelect }) {
   useEffect(() => {
     if (tableEl && size > 0) {
       let rows = tableEl.current.querySelectorAll('tr');
-      rows.forEach((row, i) => {
-        if (i === selected) {
-          row.classList.add('selected');
-          row.tabIndex = -1;
-          row.focus();
-        } else {
-          row.classList.remove('selected');
-          row.tabIndex = 0;
-          row.blur();
-        }
-      });
+      // rows.forEach((row, i) => {
+      //   if (i === selected) {
+      //     row.classList.add('selected');
+      //     row.tabIndex = -1;
+      //     row.focus();
+      //   } else {
+      //     row.classList.remove('selected');
+      //     row.tabIndex = 0;
+      //     row.blur();
+      //   }
+      // });
     }
   }, [tableEl, selected, reset]);
 
@@ -36,10 +37,10 @@ function Table({ columns, items, size, tableFocus, onSelect }) {
     if (!!selected) setSelected(null);
   }, [size]);
 
-  useEffect(() => {
-    if (!selected || selected > 0) setSelected(0);
-    setReset(!reset);
-  }, [tableFocus]);
+  // useEffect(() => {
+  //   if (!selected || selected > 0) setSelected(0);
+  //   setReset(!reset);
+  // }, [tableFocus]);
 
   const handleShortcut = keyName => {
     if (keyName === 'enter') {
@@ -52,6 +53,11 @@ function Table({ columns, items, size, tableFocus, onSelect }) {
     else if (keyName === 'up' && selected > 0) inc -= 1;
 
     setSelected(inc);
+  };
+
+  const handleClick = index => {
+    setSelected(index);
+    onSelect(index);
   };
 
   const renderHeaderCells = () => {
@@ -86,8 +92,9 @@ function Table({ columns, items, size, tableFocus, onSelect }) {
           align={column.align}
           truncateText={false}
           textOnly={true}
+          onClick={() => key === 0 && handleClick(index)}
         >
-          {item[key]}
+          {key === 0 ? <EuiLink color="text">{item[key]}</EuiLink> : item[key]}
         </EuiTableRowCell>
       ));
 
@@ -97,7 +104,6 @@ function Table({ columns, items, size, tableFocus, onSelect }) {
           isSelected={index === selected}
           isSelectable={true}
           hasActions={true}
-          onClick={() => onSelect(index)}
         >
           {cells}
         </EuiTableRow>
