@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Hotkeys from 'react-hot-keys';
-import { EuiFieldSearch, EuiSearchBar } from '@elastic/eui';
+import { EuiFieldSearch, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 
 import { useConfigContext } from '../state-management/config-management';
 
@@ -36,25 +36,31 @@ const PageHeader = ({
             keyName="ctrl+shift+f,command+shift+f"
             onKeyUp={() => inputRef.current.focus()}
           >
-            <EuiFieldSearch
-              type="text"
-              placeholder="Search"
-              fullWidth={true}
-              isClearable={true}
-              incremental={true}
-              append="ctrl+shift+f"
-              onSearch={event => onSearch(event)}
-              inputRef={measuredRef}
-              onKeyDown={event => {
-                if (event.key === 'Escape' || event.key === 'ArrowDown') {
-                  inputRef.current.blur();
-                }
-              }}
-            />
+            <EuiFlexGroup direction="row" alignItems="center">
+              <EuiFlexItem>
+                <EuiFieldSearch
+                  type="text"
+                  placeholder="Search"
+                  fullWidth={true}
+                  isClearable={true}
+                  incremental={true}
+                  append="ctrl+shift+f"
+                  onSearch={event => onSearch(event)}
+                  inputRef={measuredRef}
+                  onKeyDown={event => {
+                    if (event.key === 'Escape' || event.key === 'ArrowDown') {
+                      inputRef.current.blur();
+                    }
+                  }}
+                />
+              </EuiFlexItem>
+              {/* <EuiFlexItem grow={false}>
+                <EuiFlexGroup direction="row">{children}</EuiFlexGroup>
+              </EuiFlexItem> */}
+            </EuiFlexGroup>
           </Hotkeys>
         </Fragment>
       )}
-      {children}
     </div>
   );
 };

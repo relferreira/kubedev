@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 
 const CustomRouter = styled(Router)`
   flex: 1;
-  overflow: auto;
+  // overflow: auto;
 
   h1 {
     font-size: 24px;

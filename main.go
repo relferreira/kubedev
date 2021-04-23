@@ -51,21 +51,6 @@ func getK8sClient() (*kubernetes.Clientset, error) {
 
 func main() {
 	r := gin.Default()
-	// var kubeconfigFile = flag.String("kubeconfig", filepath.Join(os.Getenv("HOME"), ".kube", "config"), "(optional) absolute path to the kubeconfig file")
-	// flag.Parse()
-
-	// var kubeConfig = *kubeconfigFile
-	// _, errKube := os.Stat(*kubeconfigFile)
-	// if os.IsNotExist(errKube) {
-	// 	kubeConfig = ""
-	// }
-
-	// config, err := clientcmd.BuildConfigFromFlags("", kubeConfig)
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-
-	// clientset, err := kubernetes.NewForConfig(config)
 	var clientset, err = getK8sClient()
 
 	r.Use(cors.New(cors.Options{
@@ -96,8 +81,6 @@ func main() {
 	r.GET("/api/:namespace/exec", func(c *gin.Context) {
 		namespace := c.Param("namespace")
 		command := strings.Fields(c.Query("command"))
-		fmt.Println("oi")
-		fmt.Println(command)
 		jsonOutput, jsonErr := strconv.ParseBool(c.Query("json"))
 		if jsonErr != nil {
 			panic(err.Error())
@@ -207,6 +190,7 @@ func main() {
 		}
 
 		proc.Kill()
+		syscall.Kill(-pid, syscall.SIGKILL)
 
 		c.JSON(200, nil)
 	})
@@ -229,7 +213,7 @@ func main() {
 		}
 		output := string(out[:])
 		fmt.Printf(output)
-		if strings.Contains(output, "(kubectl)") {
+		if !strings.Contains(output, "kubectl") {
 			c.AbortWithError(422, errors.New("port-forward killed"))
 		}
 		c.JSON(200, nil)

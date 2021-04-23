@@ -51,6 +51,10 @@ import { icon as EuiIconAppDevtools } from '@elastic/eui/es/components/icon/asse
 import { icon as EuiIconAppWatches } from '@elastic/eui/es/components/icon/assets/app_watches';
 import { icon as EuiIconMlDataVisualizer } from '@elastic/eui/es/components/icon/assets/ml_data_visualizer';
 import { icon as EuiIconDot } from '@elastic/eui/es/components/icon/assets/dot';
+import { icon as EuiIconDocumentEdit } from '@elastic/eui/es/components/icon/assets/documentEdit';
+import { icon as EuiIconTrash } from '@elastic/eui/es/components/icon/assets/trash';
+import { icon as EuiIconPlay } from '@elastic/eui/es/components/icon/assets/play';
+import { icon as EuiIconPause } from '@elastic/eui/es/components/icon/assets/pause';
 
 appendIconComponentCache({
   dot: EuiIconDot,
@@ -65,7 +69,11 @@ appendIconComponentCache({
   advancedSettingsApp: EuiIconAppAdvancedSettings,
   devToolsApp: EuiIconAppDevtools,
   watchesApp: EuiIconAppWatches,
-  dataVisualizer: EuiIconMlDataVisualizer
+  dataVisualizer: EuiIconMlDataVisualizer,
+  documentEdit: EuiIconDocumentEdit,
+  trash: EuiIconTrash,
+  play: EuiIconPlay,
+  pause: EuiIconPause
 });
 
 const Home = React.lazy(() => import('./Home'));

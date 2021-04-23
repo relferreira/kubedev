@@ -16,33 +16,19 @@ export default function PortForward() {
   return (
     <div>
       <PageHeader title="Port Forward" showSearch={false} />
-      <Table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Namespace</th>
-            <th>From</th>
-            <th>To</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pids &&
-            pids.map(({ pid, namespace, type, name, from, to }) => (
-              <tr key={pid}>
-                <td>
-                  <Link to={`/ui/${namespace}/${type}/${name}/get`}>
-                    {name}
-                  </Link>
-                </td>
-                <td>{type}</td>
-                <td>{namespace}</td>
-                <td>{from}</td>
-                <td>{to}</td>
-              </tr>
-            ))}
-        </tbody>
-      </Table>
+      <Table
+        columns={['Name', 'Type', 'Namespace', 'From', 'To']}
+        items={
+          pids &&
+          pids.map(({ pid, namespace, type, name, from, to }) => [
+            <Link to={`/ui/${namespace}/${type}/${name}/get`}>{name}</Link>,
+            type,
+            namespace,
+            from,
+            to
+          ])
+        }
+      />
     </div>
   );
 }

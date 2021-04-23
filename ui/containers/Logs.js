@@ -12,9 +12,10 @@ const LogsContainer = styled.div`
   width: 100%;
   height: 100%;
   height: calc(100vh - 100px);
-  margin: -16px;
+  padding: -24px;
   color: white;
   background: ${props => props.theme.background};
+  overflow: hidden;
 `;
 
 const LogText = styled(LazyLog)`
@@ -65,7 +66,7 @@ export default function Logs({ namespace, name, onLogInit }) {
           />
         )}
       />
-      <LogsControl
+      {/* <LogsControl
         selected={container}
         containers={containers.map(container => container.name)}
         following={following}
@@ -77,7 +78,7 @@ export default function Logs({ namespace, name, onLogInit }) {
             )
           )
         }
-      />
+      /> */}
     </LogsContainer>
   );
 }

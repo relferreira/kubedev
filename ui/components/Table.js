@@ -11,8 +11,15 @@ import {
   EuiLink
 } from '@elastic/eui';
 
-function Table({ columns, items, size, tableFocus, onSelect }) {
-  const [selected, setSelected] = useState(0);
+function Table({
+  columns,
+  items,
+  size,
+  tableFocus,
+  isSelectable = true,
+  onSelect
+}) {
+  const [selected, setSelected] = useState(isSelectable ? 0 : -1);
   const tableEl = useRef(null);
   const [reset, setReset] = useState(false);
 
@@ -43,6 +50,7 @@ function Table({ columns, items, size, tableFocus, onSelect }) {
   // }, [tableFocus]);
 
   const handleShortcut = keyName => {
+    if (!isSelectable) return;
     if (keyName === 'enter') {
       onSelect(selected);
       return;
@@ -56,6 +64,7 @@ function Table({ columns, items, size, tableFocus, onSelect }) {
   };
 
   const handleClick = index => {
+    if (!isSelectable) return true;
     setSelected(index);
     onSelect(index);
   };
