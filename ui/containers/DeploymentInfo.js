@@ -151,7 +151,7 @@ export default function DeploymentInfo({ namespace, type, name, navigate }) {
           dialogItems={[
             { value: 'Logs', type: `/ui/${namespace}/pods`, href: 'logs' },
             { value: 'Edit', type: `/ui/${namespace}/pods`, href: 'edit' },
-            { value: 'Info', type: `/ui/${namespace}/pods`, href: 'get' },
+            // { value: 'Info', type: `/ui/${namespace}/pods`, href: 'get' },
             {
               value: 'Describe',
               type: `/ui/${namespace}/pods`,

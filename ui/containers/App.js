@@ -101,6 +101,7 @@ const Ingress = React.lazy(() => import('./Ingress'));
 const ConfigMap = React.lazy(() => import('./ConfigMap'));
 const Secret = React.lazy(() => import('./Secret'));
 const SecretInfo = React.lazy(() => import('./SecretInfo'));
+const DefaultPage = React.lazy(() => import('./DefaultPage'));
 
 const themes = {
   light: {
@@ -247,29 +248,29 @@ function App() {
                     <Redirect from="/" to="/ui/default/pods" noThrow />
                     {/* <Home path="/:namespace" /> */}
                     <Pods path=":namespace/pods" />
-                    <PodInfo path=":namespace/pods/:name/get" />
+                    {/* <PodInfo path=":namespace/pods/:name/get" /> */}
                     <Services path=":namespace/services" />
-                    <ServiceInfo path=":namespace/services/:name/get" />
+                    {/* <ServiceInfo path=":namespace/services/:name/get" /> */}
                     <Deployments path=":namespace/deployments" />
-                    <DeploymentInfo
+                    {/* <DeploymentInfo
                       path=":namespace/deployments/:name/get"
                       type="deployments"
-                    />
+                    /> */}
                     <Jobs path=":namespace/jobs" />
-                    <JobInfo path=":namespace/jobs/:name/get" />
+                    {/* <JobInfo path=":namespace/jobs/:name/get" /> */}
                     <CronJobs path=":namespace/cronjobs" />
-                    <CronJobInfo path=":namespace/cronjobs/:name/get" />
-                    <StatefulSets path=":namespace/statefulsets" />
-                    <DeploymentInfo
+                    {/* <CronJobInfo path=":namespace/cronjobs/:name/get" /> */}
+                    {/* <StatefulSets path=":namespace/statefulsets" /> */}
+                    {/* <DeploymentInfo
                       path=":namespace/statefulsets/:name/get"
                       type="statefulsets"
-                    />
+                    /> */}
                     <Hpa path=":namespace/hpa" />
                     <HpaInfo path=":namespace/hpa/:name/get" />
                     <Pvc path=":namespace/pvc" />
-                    <PvcInfo path=":namespace/pvc/:name/get" />
-                    <Nodes path=":namespace/nodes" />
-                    <NodeInfo path=":namespace/nodes/:name/get" />
+                    {/* <PvcInfo path=":namespace/pvc/:name/get" /> */}
+                    {/* <Nodes path=":namespace/nodes" />
+                    <NodeInfo path=":namespace/nodes/:name/get" /> */}
                     <Ingress path=":namespace/ingress" />
                     <Logs
                       path=":namespace/pods/:name/logs"
@@ -284,9 +285,10 @@ function App() {
                     <PortForward path=":namespace/port-forward" />
                     <ConfigMap path=":namespace/configmaps" />
                     <Secret path=":namespace/secrets" />
-                    <SecretInfo path=":namespace/secrets/:name/get" />
-                    <ScaledObjects path=":namespace/scaledobjects" />
                     {/* <SecretInfo path=":namespace/secrets/:name/get" /> */}
+                    {/* <ScaledObjects path=":namespace/scaledobjects" /> */}
+                    {/* <SecretInfo path=":namespace/secrets/:name/get" /> */}
+                    <DefaultPage path=":namespace/:type" />
                   </CustomRouter>
                 </ErrorBoundary>
               </Suspense>

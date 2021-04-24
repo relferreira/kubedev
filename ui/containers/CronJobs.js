@@ -28,7 +28,7 @@ export default function CronJobs({ namespace, navigate }) {
         ])
       }
       dialogItems={[
-        { value: 'Info', type: 'cronjobs', href: 'get' },
+        // { value: 'Info', type: 'cronjobs', href: 'get' },
         { value: 'Edit', type: 'cronjobs', href: 'edit' },
         { value: 'Describe', type: 'cronjobs', href: 'describe' }
       ]}

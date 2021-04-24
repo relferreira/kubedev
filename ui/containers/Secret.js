@@ -19,7 +19,7 @@ export default function Secret({ namespace, navigate }) {
         ])
       }
       dialogItems={[
-        { value: 'Info', type: 'secrets', href: 'get' },
+        // { value: 'Info', type: 'secrets', href: 'get' },
         { value: 'Edit', type: 'secrets', href: 'edit' },
         { value: 'Describe', type: 'secrets', href: 'describe' }
       ]}

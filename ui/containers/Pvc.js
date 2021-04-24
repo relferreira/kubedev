@@ -19,7 +19,7 @@ export default function Pvc({ namespace, navigate }) {
         ])
       }
       dialogItems={[
-        { value: 'Info', type: 'pvc', href: 'get' },
+        // { value: 'Info', type: 'pvc', href: 'get' },
         { value: 'Edit', type: 'pvc', href: 'edit' },
         { value: 'Describe', type: 'pvc', href: 'describe' }
       ]}

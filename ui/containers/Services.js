@@ -30,7 +30,7 @@ export default function Services({ namespace, navigate }) {
       }
       dialogItems={[
         { value: 'Port Forward', type: 'services', href: 'get' },
-        { value: 'Info', type: 'services', href: 'get' },
+        // { value: 'Info', type: 'services', href: 'get' },
         { value: 'Edit', type: 'services', href: 'edit' },
         { value: 'Describe', type: 'services', href: 'describe' }
       ]}

@@ -22,7 +22,7 @@ export default function Hpa({ namespace, navigate }) {
         ])
       }
       dialogItems={[
-        { value: 'Info', type: 'hpa', href: 'get' },
+        // { value: 'Info', type: 'hpa', href: 'get' },
         { value: 'Describe', type: 'hpa', href: 'describe' },
         { value: 'Edit', type: 'hpa', href: 'edit' }
       ]}

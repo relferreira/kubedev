@@ -21,7 +21,7 @@ export default function Jobs({ namespace, navigate }) {
         ])
       }
       dialogItems={[
-        { value: 'Info', type: 'jobs', href: 'get' },
+        // { value: 'Info', type: 'jobs', href: 'get' },
         { value: 'Edit', type: 'jobs', href: 'edit' },
         { value: 'Describe', type: 'jobs', href: 'describe' }
       ]}
