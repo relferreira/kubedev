@@ -18,7 +18,8 @@ export default function NewTableInfo({
   dialogLoading,
   navigate,
   onDialogClose,
-  children
+  children,
+  filterFields = ['metadata.name']
 }) {
   const [search, setSearch] = useState('');
   const [showDialog, setShowDialog] = useState(false);
@@ -49,7 +50,7 @@ export default function NewTableInfo({
   let headers = formatHeader();
 
   let options = {
-    defaultFields: ['metadata.name']
+    defaultFields: filterFields
   };
   const items = EuiSearchBar.Query.execute(search, data.items, options);
 

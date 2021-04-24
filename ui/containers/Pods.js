@@ -35,6 +35,7 @@ export default function Pods({ namespace, navigate }) {
         namespace={namespace}
         command="get pods"
         navigate={navigate}
+        filterFields={['metadata.name', 'status.phase']}
         formatHeader={() => [
           'Name',
           { label: 'Ready', align: 'center' },

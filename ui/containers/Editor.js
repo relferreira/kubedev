@@ -1,18 +1,11 @@
-import React, { useState, useMemo } from 'react';
-import styled from '@emotion/styled';
-import { ControlledEditor, DiffEditor } from '@monaco-editor/react';
+import React, { useState, useMemo, useEffect } from 'react';
+import ControlledEditor, { DiffEditor } from '@monaco-editor/react';
 import useSWR from 'swr';
 
 import * as kubectl from '../kubectl';
 import EditControl from '../components/EditControl';
 
 const yaml = require('js-yaml');
-
-const EditorContainer = styled.div`
-  position: relative;
-  height: calc(100vh - 100px);
-  margin: -16px;
-`;
 
 function Editor(props) {
   const [text, setText] = useState('');
@@ -31,6 +24,24 @@ function Editor(props) {
       ),
     { suspense: true }
   );
+
+  const handleEditorWillMount = monaco => {
+    monaco.editor.defineTheme('my-cool-theme', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [
+        {
+          token: 'type',
+          foreground: '4fc1ff'
+        },
+        {
+          token: 'string.yaml',
+          foreground: 'ce9178'
+        }
+      ],
+      colors: { 'editor.background': '#1D1E24' }
+    });
+  };
 
   const handleDiff = () => {
     if (props.type === 'new') {
@@ -81,16 +92,25 @@ function Editor(props) {
   const EditorComponent = original ? DiffEditor : ControlledEditor;
 
   return (
-    <EditorContainer>
+    <div
+      style={{
+        position: 'relative',
+        margin: '-24px',
+        height: 'calc(100vh - 49px)',
+        overflow: 'hidden'
+      }}
+    >
       <EditorComponent
         height="100%"
         language="yaml"
-        theme="vs-dark"
+        theme="my-cool-theme"
         original={original}
         modified={text}
         value={text}
-        onChange={(ev, value) => setText(value)}
+        beforeMount={handleEditorWillMount}
+        onChange={(value, e) => setText(ev)}
       />
+
       {props.action !== 'describe' && (
         <EditControl
           onDiff={handleDiff}
@@ -100,7 +120,7 @@ function Editor(props) {
           onConfirm={() => handleSave()}
         />
       )}
-    </EditorContainer>
+    </div>
   );
 }
 

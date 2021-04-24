@@ -263,6 +263,7 @@ export default function Header({ location, onContextChange }) {
       .exec('default', `config use-context ${item.name}`, false)
       .then(() => kubectl.refreshContext())
       .then(() => {
+        revalidate();
         setIsUserMenuVisible(false);
         onContextChange();
         navigate(`/ui/${getSelectedNamespace(location)}/pods`);
