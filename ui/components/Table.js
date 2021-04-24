@@ -109,7 +109,7 @@ function Table({
 
       return (
         <EuiTableRow
-          key={item.id}
+          key={item[0]}
           isSelected={index === selected}
           isSelectable={true}
           hasActions={true}

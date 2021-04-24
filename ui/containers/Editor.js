@@ -108,7 +108,7 @@ function Editor(props) {
         modified={text}
         value={text}
         beforeMount={handleEditorWillMount}
-        onChange={(value, e) => setText(ev)}
+        onChange={(value, e) => setText(value)}
       />
 
       {props.action !== 'describe' && (

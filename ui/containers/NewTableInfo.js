@@ -21,7 +21,7 @@ export default function NewTableInfo({
   children,
   filterFields = ['metadata.name']
 }) {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(sessionStorage.getItem('search') || '');
   const [showDialog, setShowDialog] = useState(false);
   const [selected, setSelected] = useState(null);
   const [tableFocus, setTableFocus] = useState(true);
@@ -45,6 +45,11 @@ export default function NewTableInfo({
     onDialogClose && onDialogClose();
   };
 
+  const handleSearch = text => {
+    setSearch(text);
+    sessionStorage.setItem('search', text);
+  };
+
   const { data } = response || {};
 
   let headers = formatHeader();
@@ -61,7 +66,7 @@ export default function NewTableInfo({
         title={title}
         showSearch={true}
         search={search}
-        onSearch={text => setSearch(text)}
+        onSearch={handleSearch}
         onRefresh={() => revalidate()}
         onBlur={() => setTableFocus(!tableFocus)}
       />

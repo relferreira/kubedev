@@ -45,6 +45,8 @@ const PageHeader = ({
                   isClearable={true}
                   incremental={true}
                   append="ctrl+shift+f"
+                  value={search}
+                  onChange={event => onSearch(event.target.value)}
                   onSearch={event => onSearch(event)}
                   inputRef={measuredRef}
                   onKeyDown={event => {
