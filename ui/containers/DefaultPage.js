@@ -6,7 +6,7 @@ export default function DefaultPage({ namespace, type, navigate }) {
   return (
     <Fragment>
       <NewTableInfo
-        title={type}
+        title={type.charAt(0).toUpperCase() + type.slice(1)}
         namespace={namespace}
         command={`get ${type}`}
         navigate={navigate}
