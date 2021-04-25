@@ -149,10 +149,26 @@ function App() {
     { revalidateOnFocus: false }
   );
 
+  const { data: responseCRDs, revalidate: revalidateCRDs } = useSWR(
+    ['default', 'get crd'],
+    kubectl.exec,
+    { revalidateOnFocus: false }
+  );
+
   const { data } = response || {};
   let namespaces = [];
   if (data) {
     namespaces = data.items.map(({ metadata }) => metadata.name);
+  }
+
+  let crds = [];
+  if (responseCRDs && responseCRDs.data) {
+    crds = responseCRDs.data.items.reduce((acc, value) => {
+      if (!acc[value.spec.group]) acc[value.spec.group] = [];
+
+      acc[value.spec.group].push(value);
+      return acc;
+    }, {});
   }
 
   const handleSidebarChange = newLink => {
@@ -172,7 +188,10 @@ function App() {
 
   const handleNamespaceDismiss = () => setNamespaceSelectOpen(false);
 
-  const handleContextChange = () => revalidate();
+  const handleContextChange = () => {
+    revalidate();
+    revalidateCRDs();
+  };
 
   return (
     <ThemeProvider theme={themes[config.theme]}>
@@ -214,6 +233,7 @@ function App() {
                 <Sidebar
                   namespaces={namespaces}
                   links={links}
+                  crds={crds}
                   onThemeChange={handleThemeChange}
                   onNamespaceChange={handleNamespaceSelection}
                 />

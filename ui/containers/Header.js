@@ -163,7 +163,7 @@ export default function Header({ location, onContextChange }) {
   const { data: response, revalidate, isValidating } = useSWR(
     ['default', 'config view'],
     kubectl.exec,
-    { suspense: false }
+    { revalidateOnFocus: false, suspense: false }
   );
 
   useEffect(() => {
