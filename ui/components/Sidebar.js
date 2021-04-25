@@ -131,6 +131,16 @@ const Sidebar = ({ namespaces, links, onNamespaceChange, onThemeChange }) => (
               </CustomLink>
             </EuiListGroup>
           </EuiCollapsibleNavGroup>
+          <EuiCollapsibleNavGroup
+            title="CRDs"
+            iconType="discoverApp"
+            isCollapsible={true}
+            initialIsOpen={false}
+          >
+            <EuiListGroup color="subdued" size="s">
+              <CustomLink to={`/ui/${namespace}/so`}>Scaled Objects</CustomLink>
+            </EuiListGroup>
+          </EuiCollapsibleNavGroup>
         </div>
       );
     }}

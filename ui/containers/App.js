@@ -55,6 +55,7 @@ import { icon as EuiIconDocumentEdit } from '@elastic/eui/es/components/icon/ass
 import { icon as EuiIconTrash } from '@elastic/eui/es/components/icon/assets/trash';
 import { icon as EuiIconPlay } from '@elastic/eui/es/components/icon/assets/play';
 import { icon as EuiIconPause } from '@elastic/eui/es/components/icon/assets/pause';
+import { icon as EuiIconDiscoverApp } from '@elastic/eui/es/components/icon/assets/app_discover';
 
 appendIconComponentCache({
   dot: EuiIconDot,
@@ -73,7 +74,8 @@ appendIconComponentCache({
   documentEdit: EuiIconDocumentEdit,
   trash: EuiIconTrash,
   play: EuiIconPlay,
-  pause: EuiIconPause
+  pause: EuiIconPause,
+  discoverApp: EuiIconDiscoverApp
 });
 
 const Home = React.lazy(() => import('./Home'));

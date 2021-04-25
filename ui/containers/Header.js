@@ -266,7 +266,7 @@ export default function Header({ location, onContextChange }) {
         revalidate();
         setIsUserMenuVisible(false);
         onContextChange();
-        navigate(`/ui/${getSelectedNamespace(location)}/pods`);
+        navigate(`/ui`);
       })
       .catch(console.error);
   };

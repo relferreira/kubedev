@@ -30,7 +30,7 @@ export default function NewTableInfo({
     kubectl.exec,
     { suspense: true }
   );
-
+  console.log(response);
   useEffect(() => {
     setTableFocus(!tableFocus);
   }, [dialogItems]);
