@@ -56,6 +56,7 @@ import { icon as EuiIconTrash } from '@elastic/eui/es/components/icon/assets/tra
 import { icon as EuiIconPlay } from '@elastic/eui/es/components/icon/assets/play';
 import { icon as EuiIconPause } from '@elastic/eui/es/components/icon/assets/pause';
 import { icon as EuiIconDiscoverApp } from '@elastic/eui/es/components/icon/assets/app_discover';
+import { icon as EuiIconRefresh } from '@elastic/eui/es/components/icon/assets/refresh';
 
 appendIconComponentCache({
   dot: EuiIconDot,
@@ -75,7 +76,8 @@ appendIconComponentCache({
   trash: EuiIconTrash,
   play: EuiIconPlay,
   pause: EuiIconPause,
-  discoverApp: EuiIconDiscoverApp
+  discoverApp: EuiIconDiscoverApp,
+  refresh: EuiIconRefresh
 });
 
 const Home = React.lazy(() => import('./Home'));
@@ -272,7 +274,7 @@ function App() {
                     <Pods path=":namespace/pods" />
                     {/* <PodInfo path=":namespace/pods/:name/get" /> */}
                     <Services path=":namespace/services" />
-                    {/* <ServiceInfo path=":namespace/services/:name/get" /> */}
+                    <ServiceInfo path=":namespace/services/:name/get" />
                     <Deployments path=":namespace/deployments" />
                     {/* <DeploymentInfo
                       path=":namespace/deployments/:name/get"

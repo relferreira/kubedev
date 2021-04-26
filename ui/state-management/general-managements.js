@@ -17,12 +17,25 @@ export const formatSearchResponse = (info, namespace, type) => {
         return items.map(({ metadata: { name, namespace } }) => ({
           type: key,
           namespace,
-          name
+          name,
+          label: name,
+          meta: [
+            {
+              text: key,
+              type: 'deployment',
+              highlightSearchString: true
+            },
+            {
+              text: namespace,
+              type: 'application',
+              highlightSearchString: true
+            }
+          ]
         }));
       })
       .reduce((a, b) => a.concat(b), [])
-      .filter(a => (namespace ? a.namespace === namespace : a))
-      .filter(a => (type ? a.type === type : a));
+      .filter(a => (namespace ? a.namespace === namespace : a));
+    // .filter(a => (type ? a.type === type : a));
   }
 
   return [];

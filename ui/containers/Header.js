@@ -1,4 +1,11 @@
-import React, { useState, useMemo, useRef, useEffect, Fragment } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useRef,
+  useEffect,
+  Fragment,
+  useCallback
+} from 'react';
 import styled from '@emotion/styled';
 import { useWorker } from 'react-hooks-worker';
 import Downshift from 'downshift';
@@ -26,13 +33,20 @@ import {
   EuiHeader,
   EuiHeaderSection,
   EuiHeaderSectionItem,
-  EuiHeaderLogo,
-  EuiBreadcrumbs,
-  EuiSelectable
+  EuiSelectable,
+  EuiSelectableTemplateSitewide,
+  EuiSelectableMessage,
+  EuiIcon,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiBadge,
+  EuiFieldSearch,
+  EuiSearchBar
 } from '@elastic/eui';
 import * as kubectl from '../kubectl';
 import useSWR from 'swr';
 import SearchBar from '../components/SearchBar';
+import SearchDialog from '../components/SearchDialog';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -150,7 +164,7 @@ const worker = new Worker('../workers/search.js');
 export default function Header({ location, onContextChange }) {
   const [searchDate, setSearchDate] = useState(new Date());
   const [historyDate, setHistoryDate] = useState(new Date());
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState('api');
   const [searchInput, setSearchInput] = useState('');
   const [namespace, setNamespace] = useState('');
   const [type, setType] = useState('pods');
@@ -158,13 +172,24 @@ export default function Header({ location, onContextChange }) {
   const [historyMode, setHistoryMode] = useState(false);
   const [history, setHistory] = useState([]);
   const { result } = useWorker(worker, searchDate);
+  // const [inputRef, setInputRef] = useState(null);
   const inputRef = useRef(null);
+  const buttonRef = useRef(null);
+  const popoverRef = useRef(null);
   const [isUserMenuVisible, setIsUserMenuVisible] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [selected, setSelected] = useState({});
   const { data: response, revalidate, isValidating } = useSWR(
     ['default', 'config view'],
     kubectl.exec,
     { revalidateOnFocus: false, suspense: false }
   );
+
+  // const measuredRef = useCallback(input => {
+  //   if (input !== null) {
+  //     inputRef.current = input;
+  //   }
+  // }, []);
 
   useEffect(() => {
     setHistory(getHistory());
@@ -179,7 +204,7 @@ export default function Header({ location, onContextChange }) {
   };
 
   const handleBlur = () => {
-    inputRef.current.blur();
+    // inputRef.current.blur();
     setFocus(false);
     setHistoryMode(false);
   };
@@ -196,19 +221,28 @@ export default function Header({ location, onContextChange }) {
   };
 
   const handleShortcut = keyName => {
-    inputRef.current.focus();
-    if (keyName === 'command+shift+k' || keyName === 'ctrl+shift+k') {
-      setSearchInput(`kubectl -n ${getSelectedNamespace(location)} `);
-    } else if (keyName === 'command+shift+y' || keyName === 'ctrl+shift+y') {
-      resetInput();
-      setHistoryMode(true);
-    } else {
-      resetInput();
+    buttonRef.current.click();
+    if (inputRef && inputRef.current) {
+      console.log(inputRef.current);
+      inputRef.current.props.onFocus();
     }
+    // inputRef.current.focus();
+    // if (keyName === 'command+shift+k' || keyName === 'ctrl+shift+k') {
+    //   setSearchInput(`kubectl -n ${getSelectedNamespace(location)} `);
+    // } else if (keyName === 'command+shift+y' || keyName === 'ctrl+shift+y') {
+    //   resetInput();
+    //   setHistoryMode(true);
+    // } else {
+    //   resetInput();
+    // }
   };
 
-  const handleSelect = selection => {
-    inputRef.current.blur();
+  const handleSelect = items => {
+    let selection = items.find(item => item.checked === 'on');
+
+    setSelected(selection);
+    popoverRef.current.closePopover();
+    // setShowDialog(true);
 
     let {
       namespace = getSelectedNamespace(location),
@@ -223,7 +257,7 @@ export default function Header({ location, onContextChange }) {
 
     name = selection ? selection.name : name;
 
-    if (selection && !action) action = 'get';
+    if (selection && !action) action = 'edit';
 
     if (name && action) {
       path = `${path}/${name}/${action}`;
@@ -267,6 +301,7 @@ export default function Header({ location, onContextChange }) {
         setIsUserMenuVisible(false);
         onContextChange();
         navigate(`/ui`);
+        setSearchDate(new Date());
       })
       .catch(console.error);
   };
@@ -285,14 +320,6 @@ export default function Header({ location, onContextChange }) {
   ]);
 
   let searchItems = historyMode ? history : items;
-
-  let fuse = new Fuse(searchItems, {
-    keys: ['type', 'namespace', 'name']
-  });
-
-  let searchResults = fuse.search(search, { limit: 10 });
-
-  if (historyMode && searchResults.length === 0) searchResults = history;
 
   return (
     <EuiHeader position="fixed">
@@ -324,23 +351,62 @@ export default function Header({ location, onContextChange }) {
       </EuiHeaderSection>
 
       <EuiHeaderSection side="right">
-        <EuiHeaderSectionItemButton>
-          <HeaderIcon onClick={handleHistoryIconClick}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path d="M0 0h24v24H0z" fill="none" />
-              <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
-            </svg>
-          </HeaderIcon>
-        </EuiHeaderSectionItemButton>
+        <EuiHeaderSectionItem>
+          <Hotkeys
+            keyName="ctrl+k,ctrl+shift+k,ctrl+shift+y,command+k,command+shift+k,command+shift+y"
+            onKeyUp={handleShortcut}
+          >
+            <EuiSelectableTemplateSitewide
+              options={searchItems}
+              onChange={handleSelect}
+              // isPreFiltered={true}
+              searchProps={{
+                compressed: true
+                // inputRef: measuredRef,
+                // incremental: true,
+                // value: search,
+                // onChange: event =>
+                //   console.log('oi') || setSearch(event.target.value)
+                // onSearch: value => setSearch(value)
+              }}
+              popoverProps={{
+                initialFocus: 'input[type=search]',
+                hasArrow: false,
+                ownFocus: true,
+                ref: popoverRef
+              }}
+              popoverButton={
+                <EuiHeaderSectionItemButton
+                  aria-label="Sitewide search"
+                  ref={buttonRef}
+                >
+                  <EuiIcon type="search" size="m" />
+                </EuiHeaderSectionItemButton>
+              }
+              popoverFooter={
+                <EuiText color="subdued" size="xs">
+                  <EuiFlexGroup
+                    alignItems="center"
+                    gutterSize="s"
+                    responsive={false}
+                    wrap
+                  >
+                    <EuiFlexItem />
+                    <EuiFlexItem grow={false}>Quickly search using</EuiFlexItem>
+                    <EuiFlexItem grow={false}>
+                      <EuiBadge>Command + K</EuiBadge>
+                    </EuiFlexItem>
+                  </EuiFlexGroup>
+                </EuiText>
+              }
+            />
+          </Hotkeys>
+        </EuiHeaderSectionItem>
         <EuiHeaderSectionItem>
           <EuiPopover
             id="guideHeaderUserMenuExample"
             repositionOnScroll
+            hasArrow={false}
             button={
               <EuiHeaderSectionItemButton
                 aria-controls="guideHeaderSpacesMenuExample"
@@ -396,195 +462,17 @@ export default function Header({ location, onContextChange }) {
           </EuiPopover>
         </EuiHeaderSectionItem>
       </EuiHeaderSection>
+      <SearchDialog
+        isOpen={showDialog}
+        // onDismiss={closeDialog}
+        dialogItems={[
+          { value: 'Edit', type: selected.type, href: 'edit' },
+          { value: 'Describe', type: selected.type, href: 'describe' }
+        ]}
+        selected={selected.name}
+        // loading={dialogLoading}
+        // data={data}
+      />
     </EuiHeader>
-  );
-
-  return (
-    <Hotkeys
-      keyName="ctrl+k,ctrl+shift+k,ctrl+shift+y,command+k,command+shift+k,command+shift+y"
-      onKeyUp={handleShortcut}
-    >
-      <HeaderContainer>
-        <LogoContainer>
-          <Image
-            width="29"
-            height="50"
-            viewBox="0 0 29 50"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M2.76113 22.7864L6.91373 13.658L19.6839 40.8717L15.5313 50L2.76113 22.7864Z"
-              fill="#9BE7FF"
-            />
-            <path
-              d="M18.9256 30.458L28.6004 33.0977L15.8302 5.88402L6.15537 3.24431L18.9256 30.458Z"
-              fill="#64B5F6"
-            />
-          </Image>
-
-          <EuiPopover
-            id="guideHeaderUserMenuExample"
-            repositionOnScroll
-            button={
-              <EuiHeaderSectionItemButton
-                aria-controls="guideHeaderSpacesMenuExample"
-                aria-expanded={isUserMenuVisible}
-                aria-haspopup="true"
-                aria-label="Spaces menu"
-                onClick={() => setIsUserMenuVisible(!isUserMenuVisible)}
-              >
-                <EuiAvatar type="space" name="Default Space" size="s" />
-              </EuiHeaderSectionItemButton>
-            }
-            isOpen={isUserMenuVisible}
-            anchorPosition="downRight"
-            closePopover={() => setIsUserMenuVisible(false)}
-          >
-            <div>
-              <EuiText size="s" color="subdued">
-                <p>
-                  Please see the component page for{' '}
-                  <Link to="/layout/header">
-                    <strong>EuiHeader</strong>
-                  </Link>{' '}
-                  on how to configure your user menu.
-                </p>
-              </EuiText>
-            </div>
-          </EuiPopover>
-        </LogoContainer>
-
-        <Backdrop show={focus} />
-        <AutoCompleteContainer>
-          <Downshift
-            onChange={handleSelect}
-            itemToString={item => (item ? item.name : '')}
-          >
-            {({
-              getInputProps,
-              getItemProps,
-              getLabelProps,
-              highlightedIndex,
-              selectedItem
-            }) => (
-              <div>
-                <InputContainer
-                  focus={focus}
-                  onSubmit={event => {
-                    event.preventDefault();
-                    handleSelect();
-                  }}
-                >
-                  <SearchIcon {...getLabelProps({ 'aria-label': 'search' })}>
-                    {!isSearchCommand(searchInput) && !historyMode ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-                        <path d="M0 0h24v24H0z" fill="none" />
-                      </svg>
-                    ) : !historyMode ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-                        <path fill="none" d="M0 0h24v24H0V0z" />
-                      </svg>
-                    ) : (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M0 0h24v24H0z" fill="none" />
-                        <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
-                      </svg>
-                    )}
-                  </SearchIcon>
-                  <Input
-                    {...getInputProps({
-                      placeholder: 'Search',
-                      onFocus: handleFocus,
-                      onBlur: handleBlur,
-                      value: searchInput,
-                      onChange: handleSearchInput,
-                      onKeyDown: handleInputKeyDown
-                    })}
-                    ref={inputRef}
-                  />
-                  {focus ? (
-                    <AutoComplete>
-                      {searchResults.map((item, index) => (
-                        <SearchItem
-                          {...getItemProps({
-                            key: `${item.type}-${item.namespace}-${item.name}`,
-                            index,
-                            item,
-                            highlighted: highlightedIndex === index,
-                            selected: selectedItem === item
-                          })}
-                        >
-                          <strong>{item.name || item.search}</strong>
-                          <span>
-                            {item.namespace} - {item.type}
-                          </span>
-                        </SearchItem>
-                      ))}
-                    </AutoComplete>
-                  ) : null}
-                </InputContainer>
-              </div>
-            )}
-          </Downshift>
-        </AutoCompleteContainer>
-        <CustomTooltip label="History">
-          <HeaderIcon onClick={handleHistoryIconClick}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path d="M0 0h24v24H0z" fill="none" />
-              <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
-            </svg>
-          </HeaderIcon>
-        </CustomTooltip>
-        <CustomTooltip label="Run Command">
-          <HeaderIcon onClick={handleCommandIconClick}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-              <path fill="none" d="M0 0h24v24H0V0z" />
-            </svg>
-          </HeaderIcon>
-        </CustomTooltip>
-        <CustomTooltip label="New Resource">
-          <HeaderIcon onClick={handleAddIconClick}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-              <path d="M0 0h24v24H0z" fill="none" />
-            </svg>
-          </HeaderIcon>
-        </CustomTooltip>
-      </HeaderContainer>
-    </Hotkeys>
   );
 }

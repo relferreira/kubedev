@@ -16,7 +16,7 @@ function SearchDialog({
 
   const handleOnSelect = selections => {
     let selection = selections.find(item => item.checked === 'on');
-    console.log(selection);
+
     if (selection && selection.callback) {
       let selectedItem = null;
       if (data) {

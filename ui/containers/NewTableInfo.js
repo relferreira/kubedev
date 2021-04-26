@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useSWR from 'swr';
-import { EuiSearchBar, EuiSpacer } from '@elastic/eui';
+import { EuiSearchBar, EuiSpacer, EuiButtonIcon } from '@elastic/eui';
 
 import * as kubectl from '../kubectl';
 import SearchDialog from '../components/SearchDialog';
@@ -30,7 +30,7 @@ export default function NewTableInfo({
     kubectl.exec,
     { suspense: true }
   );
-  console.log(response);
+
   useEffect(() => {
     setTableFocus(!tableFocus);
   }, [dialogItems]);
@@ -69,7 +69,15 @@ export default function NewTableInfo({
         onSearch={handleSearch}
         onRefresh={() => revalidate()}
         onBlur={() => setTableFocus(!tableFocus)}
-      />
+      >
+        <EuiButtonIcon
+          iconType="refresh"
+          iconSize="l"
+          size="l"
+          color="text"
+          onClick={() => revalidate()}
+        />
+      </PageHeader>
       <EuiSpacer size="m" />
       <Table
         columns={headers}

@@ -56,9 +56,9 @@ const PageHeader = ({
                   }}
                 />
               </EuiFlexItem>
-              {/* <EuiFlexItem grow={false}>
+              <EuiFlexItem grow={false}>
                 <EuiFlexGroup direction="row">{children}</EuiFlexGroup>
-              </EuiFlexItem> */}
+              </EuiFlexItem>
             </EuiFlexGroup>
           </Hotkeys>
         </Fragment>
