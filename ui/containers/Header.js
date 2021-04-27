@@ -242,7 +242,7 @@ export default function Header({ location, onContextChange }) {
 
     setSelected(selection);
     popoverRef.current.closePopover();
-    // setShowDialog(true);
+    setShowDialog(true);
 
     let {
       namespace = getSelectedNamespace(location),
@@ -263,7 +263,7 @@ export default function Header({ location, onContextChange }) {
       path = `${path}/${name}/${action}`;
     }
 
-    navigate(path);
+    // navigate(path);
 
     if (selection) {
       let searchArgs = searchInput.split(' ');
@@ -274,6 +274,10 @@ export default function Header({ location, onContextChange }) {
 
     let search = selection && selection.search ? selection.search : searchInput;
     addHistory({ namespace, type, name, action, search });
+  };
+
+  const closeDialog = () => {
+    setShowDialog(false);
   };
 
   const handleCommandIconClick = () => handleShortcut('command+shift+k');
@@ -464,7 +468,7 @@ export default function Header({ location, onContextChange }) {
       </EuiHeaderSection>
       <SearchDialog
         isOpen={showDialog}
-        // onDismiss={closeDialog}
+        onDismiss={closeDialog}
         dialogItems={[
           { value: 'Edit', type: selected.type, href: 'edit' },
           { value: 'Describe', type: selected.type, href: 'describe' }

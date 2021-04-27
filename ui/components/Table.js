@@ -23,22 +23,22 @@ function Table({
   const tableEl = useRef(null);
   const [reset, setReset] = useState(false);
 
-  useEffect(() => {
-    if (tableEl && size > 0) {
-      let rows = tableEl.current.querySelectorAll('tr');
-      // rows.forEach((row, i) => {
-      //   if (i === selected) {
-      //     row.classList.add('selected');
-      //     row.tabIndex = -1;
-      //     row.focus();
-      //   } else {
-      //     row.classList.remove('selected');
-      //     row.tabIndex = 0;
-      //     row.blur();
-      //   }
-      // });
-    }
-  }, [tableEl, selected, reset]);
+  // useEffect(() => {
+  //   if (tableEl && size > 0) {
+  //     let rows = tableEl.current.querySelectorAll('tr');
+  //     // rows.forEach((row, i) => {
+  //     //   if (i === selected) {
+  //     //     row.classList.add('selected');
+  //     //     row.tabIndex = -1;
+  //     //     row.focus();
+  //     //   } else {
+  //     //     row.classList.remove('selected');
+  //     //     row.tabIndex = 0;
+  //     //     row.blur();
+  //     //   }
+  //     // });
+  //   }
+  // }, [tableEl, selected, reset]);
 
   useEffect(() => {
     if (!!selected) setSelected(null);
@@ -50,7 +50,11 @@ function Table({
   // }, [tableFocus]);
 
   const handleShortcut = keyName => {
-    if (!isSelectable) return;
+    if (
+      !isSelectable ||
+      !document.activeElement.classList.contains('euiBody--headerIsFixed')
+    )
+      return;
     if (keyName === 'enter') {
       onSelect(selected);
       return;

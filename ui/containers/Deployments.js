@@ -9,6 +9,12 @@ export default function Deployments({ namespace, navigate }) {
   const originalItems = [
     {
       value: 'Logs',
+      meta: [
+        {
+          text: 'teste',
+          type: 'deployment'
+        }
+      ],
       callback: (_, { spec }) => {
         setDialogLoading(true);
         setItems([]);
@@ -27,8 +33,28 @@ export default function Deployments({ namespace, navigate }) {
       }
     },
     // { value: 'Info', type: 'deployments', href: 'get' },
-    { value: 'Edit', type: 'deployments', href: 'edit' },
-    { value: 'Describe', type: 'deployments', href: 'describe' }
+    {
+      value: 'Edit',
+      type: 'deployments',
+      href: 'edit',
+      meta: [
+        {
+          text: 'teste',
+          type: 'deployment'
+        }
+      ]
+    },
+    {
+      value: 'Describe',
+      type: 'deployments',
+      href: 'describe',
+      meta: [
+        {
+          text: 'teste',
+          type: 'deployment'
+        }
+      ]
+    }
   ];
 
   useEffect(() => {

@@ -42,6 +42,7 @@ export default function NewTableInfo({
 
   const closeDialog = () => {
     setShowDialog(false);
+    setSelected(null);
     onDialogClose && onDialogClose();
   };
 
@@ -86,6 +87,7 @@ export default function NewTableInfo({
         size={items.length}
         tableFocus={tableFocus}
         isDialogOpen={showDialog}
+        isSelectable={!selected}
       />
       <SearchDialog
         isOpen={showDialog}

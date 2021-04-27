@@ -3,13 +3,15 @@ import {
   EuiModal,
   EuiModalHeader,
   EuiModalHeaderTitle,
-  EuiModalBody
+  EuiModalBody,
+  EuiFlyout
 } from '@elastic/eui';
 
 const CustomDialog = ({ title, isOpen, onDismiss, children, width }) => {
   return (
     isOpen && (
-      <EuiModal
+      <EuiFlyout
+        ownFocus={true}
         onClose={onDismiss}
         initialFocus="[type=search]"
         style={{ minHeight: '365px' }}
@@ -21,7 +23,7 @@ const CustomDialog = ({ title, isOpen, onDismiss, children, width }) => {
         </EuiModalHeader>
 
         <EuiModalBody>{children}</EuiModalBody>
-      </EuiModal>
+      </EuiFlyout>
     )
   );
 };
