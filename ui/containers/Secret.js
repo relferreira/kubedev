@@ -6,6 +6,7 @@ export default function Secret({ namespace, navigate }) {
   return (
     <NewTableInfo
       title="Secrets"
+      type="secrets"
       namespace={namespace}
       command="get secrets"
       navigate={navigate}

@@ -6,6 +6,7 @@ export default function Pvc({ namespace, navigate }) {
   return (
     <NewTableInfo
       title="Persistent Volume Claims"
+      type="pvc"
       namespace={namespace}
       command="get pvc"
       navigate={navigate}

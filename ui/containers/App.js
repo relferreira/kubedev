@@ -60,6 +60,7 @@ import { icon as EuiIconRefresh } from '@elastic/eui/es/components/icon/assets/r
 import { icon as EuiIconFilebeat } from '@elastic/eui/es/components/icon/assets/app_filebeat';
 import { icon as EuiIconManagement } from '@elastic/eui/es/components/icon/assets/app_management';
 import { icon as EuiIconMonitoring } from '@elastic/eui/es/components/icon/assets/app_monitoring';
+import { icon as EuiIconBoxesVertical } from '@elastic/eui/es/components/icon/assets/boxes_vertical';
 
 appendIconComponentCache({
   dot: EuiIconDot,
@@ -83,7 +84,8 @@ appendIconComponentCache({
   refresh: EuiIconRefresh,
   managementApp: EuiIconManagement,
   filebeatApp: EuiIconFilebeat,
-  monitoringApp: EuiIconMonitoring
+  monitoringApp: EuiIconMonitoring,
+  boxesVertical: EuiIconBoxesVertical
 });
 
 const Home = React.lazy(() => import('./Home'));

@@ -65,7 +65,6 @@ function SearchDialog({
         onChange={handleOnSelect}
         singleSelection={true}
         listProps={{ bordered: false }}
-        // renderOption={renderOption}
         isLoading={loading}
         tabIndex={1}
         listProps={{ rowHeight: 64, showIcons: false }}

@@ -7,6 +7,7 @@ export default function ScaledObjects({ namespace, navigate }) {
   return (
     <NewTableInfo
       title="Scaled Objects"
+      type="scaledobjects"
       namespace={namespace}
       command="get scaledobjects"
       navigate={navigate}

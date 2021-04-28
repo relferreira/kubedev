@@ -8,7 +8,10 @@ import {
   EuiTableRowCell,
   EuiTableRow,
   EuiTableHeaderCell,
-  EuiLink
+  EuiLink,
+  EuiTableHeaderCellCheckbox,
+  EuiTableRowCellCheckbox,
+  EuiCheckbox
 } from '@elastic/eui';
 
 function Table({
@@ -17,7 +20,10 @@ function Table({
   size,
   tableFocus,
   isSelectable = true,
-  onSelect
+  onSelect,
+  selectedItems,
+  setSelectedItems,
+  showCheckbox = true
 }) {
   const [selected, setSelected] = useState(isSelectable ? 0 : -1);
   const tableEl = useRef(null);
@@ -73,8 +79,47 @@ function Table({
     onSelect(index);
   };
 
+  const isItemSelected = item => {
+    return (
+      selectedItems &&
+      selectedItems.length > 0 &&
+      selectedItems.find(i => i === item[0])
+    );
+  };
+
+  const toggleItem = (e, item) => {
+    e.stopPropagation();
+    if (isItemSelected(item))
+      setSelectedItems(selectedItems.filter(i => i !== item[0]));
+    else setSelectedItems(selectedItems.concat(item[0]));
+  };
+
+  const areAllItemsSelected = () => {
+    return (
+      selectedItems &&
+      selectedItems.length > 0 &&
+      selectedItems.length === items.length
+    );
+  };
+
+  const toggleAll = () => {
+    if (areAllItemsSelected()) setSelectedItems([]);
+    else setSelectedItems(items.map(item => item[0]));
+  };
+
   const renderHeaderCells = () => {
     const headers = [];
+    if (showCheckbox)
+      headers.push([
+        <EuiTableHeaderCellCheckbox key="select-all">
+          <EuiCheckbox
+            id="selectAllCheckbox"
+            checked={areAllItemsSelected()}
+            onChange={toggleAll}
+            type="inList"
+          />
+        </EuiTableHeaderCellCheckbox>
+      ]);
 
     columns.forEach((column, columnIndex) => {
       headers.push(
@@ -99,17 +144,35 @@ function Table({
 
   const renderRows = () => {
     const renderRow = (item, index) => {
-      const cells = columns.map((column, key) => (
-        <EuiTableRowCell
-          key={key}
-          align={column.align}
-          truncateText={false}
-          textOnly={true}
-          onClick={() => key === 0 && handleClick(index)}
-        >
-          {key === 0 ? <EuiLink color="text">{item[key]}</EuiLink> : item[key]}
-        </EuiTableRowCell>
-      ));
+      let cells = [];
+      if (showCheckbox)
+        cells.push([
+          <EuiTableRowCellCheckbox key={`${item[0]}-checkbox`}>
+            <EuiCheckbox
+              // id={`${item.id}-checkbox`}
+              checked={isItemSelected(item)}
+              onChange={e => toggleItem(e, item)}
+              type="inList"
+            />
+          </EuiTableRowCellCheckbox>
+        ]);
+      columns.forEach((column, key) =>
+        cells.push(
+          <EuiTableRowCell
+            key={key}
+            align={column.align}
+            truncateText={false}
+            textOnly={true}
+            onClick={() => key === 0 && handleClick(index)}
+          >
+            {key === 0 ? (
+              <EuiLink color="text">{item[key]}</EuiLink>
+            ) : (
+              item[key]
+            )}
+          </EuiTableRowCell>
+        )
+      );
 
       return (
         <EuiTableRow

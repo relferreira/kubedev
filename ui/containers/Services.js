@@ -7,6 +7,7 @@ export default function Services({ namespace, navigate }) {
   return (
     <NewTableInfo
       title="Services"
+      type="services"
       namespace={namespace}
       command="get services"
       navigate={navigate}

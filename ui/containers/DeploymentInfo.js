@@ -127,6 +127,7 @@ export default function DeploymentInfo({ namespace, type, name, navigate }) {
       {spec && (
         <NewTableInfo
           title="Pods"
+          type="pods"
           namespace={namespace}
           command={`get pods -l=app=${spec.selector.matchLabels.app}`}
           navigate={navigate}

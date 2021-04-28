@@ -6,6 +6,7 @@ export default function CronJobs({ namespace, navigate }) {
   return (
     <NewTableInfo
       title="Cron Jobs"
+      type="cronjobs"
       namespace={namespace}
       command="get cronjobs"
       navigate={navigate}

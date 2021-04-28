@@ -7,6 +7,7 @@ export default function Hpa({ namespace, navigate }) {
   return (
     <NewTableInfo
       title="Horizontal Pod Autoscaler"
+      type="hpa"
       namespace={namespace}
       command="get hpa"
       navigate={navigate}

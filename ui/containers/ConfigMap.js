@@ -6,6 +6,7 @@ export default function ConfigMap({ namespace, navigate }) {
   return (
     <NewTableInfo
       title="Config Maps"
+      type="configmaps"
       namespace={namespace}
       command="get configmaps"
       navigate={navigate}

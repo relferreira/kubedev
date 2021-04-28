@@ -113,6 +113,7 @@ export default function ServiceInfo({ namespace, name, navigate }) {
                   iconSize="m"
                   color="text"
                   iconType="documentEdit"
+                  aria-label="Edit"
                   onClick={handleEdit}
                 />
               </EuiToolTip>
@@ -124,6 +125,7 @@ export default function ServiceInfo({ namespace, name, navigate }) {
                   iconSize="m"
                   iconType="trash"
                   color="danger"
+                  aria-label="Delete"
                   name={metadata.name}
                   onClick={handleDelete}
                 />
@@ -136,6 +138,7 @@ export default function ServiceInfo({ namespace, name, navigate }) {
       <EuiSpacer />
       <Table
         isSelectable={false}
+        showCheckbox={false}
         columns={['Cluster IP', 'Public IP', 'Ports']}
         items={[
           [
@@ -167,6 +170,7 @@ export default function ServiceInfo({ namespace, name, navigate }) {
                 <EuiButtonIcon
                   color="success"
                   iconType="play"
+                  aria-label="Start Port-forward"
                   onClick={handlePortForward}
                 />
               </EuiToolTip>
@@ -175,6 +179,7 @@ export default function ServiceInfo({ namespace, name, navigate }) {
                 <EuiButtonIcon
                   color="danger"
                   iconType="pause"
+                  aria-label="Stop Port-forward"
                   onClick={handleStopPortForward}
                 />
               </EuiToolTip>

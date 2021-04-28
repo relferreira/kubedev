@@ -8,6 +8,7 @@ export default function Jobs({ namespace, navigate }) {
   return (
     <NewTableInfo
       title="Jobs"
+      type="jobs"
       namespace={namespace}
       command="get jobs"
       navigate={navigate}

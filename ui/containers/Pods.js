@@ -32,6 +32,7 @@ export default function Pods({ namespace, navigate }) {
     <Fragment>
       <NewTableInfo
         title="Pods"
+        type="pods"
         namespace={namespace}
         command="get pods"
         navigate={navigate}

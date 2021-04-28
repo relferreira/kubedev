@@ -9,12 +9,6 @@ export default function Deployments({ namespace, navigate }) {
   const originalItems = [
     {
       value: 'Logs',
-      meta: [
-        {
-          text: 'teste',
-          type: 'deployment'
-        }
-      ],
       callback: (_, { spec }) => {
         setDialogLoading(true);
         setItems([]);
@@ -33,28 +27,8 @@ export default function Deployments({ namespace, navigate }) {
       }
     },
     // { value: 'Info', type: 'deployments', href: 'get' },
-    {
-      value: 'Edit',
-      type: 'deployments',
-      href: 'edit',
-      meta: [
-        {
-          text: 'teste',
-          type: 'deployment'
-        }
-      ]
-    },
-    {
-      value: 'Describe',
-      type: 'deployments',
-      href: 'describe',
-      meta: [
-        {
-          text: 'teste',
-          type: 'deployment'
-        }
-      ]
-    }
+    { value: 'Edit', type: 'deployments', href: 'edit' },
+    { value: 'Describe', type: 'deployments', href: 'describe' }
   ];
 
   useEffect(() => {
@@ -64,6 +38,7 @@ export default function Deployments({ namespace, navigate }) {
   return (
     <NewTableInfo
       title="Deployments"
+      type="deployments"
       namespace={namespace}
       command="get deployments"
       navigate={navigate}

@@ -7,6 +7,7 @@ export default function Ingress({ namespace, navigate }) {
   return (
     <NewTableInfo
       title="Ingress"
+      type="ingress"
       namespace={namespace}
       command="get ingress"
       navigate={navigate}
