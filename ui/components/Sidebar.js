@@ -142,6 +142,24 @@ function Sidebar({
               </EuiListGroup>
             </EuiCollapsibleNavGroup>
             <EuiCollapsibleNavGroup
+              title="Security"
+              iconType="usersRolesApp"
+              isCollapsible={true}
+              initialIsOpen={false}
+            >
+              <EuiListGroup color="subdued" size="s">
+                <CustomLink to={`/ui/${namespace}/serviceaccount`}>
+                  Service Account
+                </CustomLink>
+                <CustomLink to={`/ui/${namespace}/clusterrole`}>
+                  Cluster Role
+                </CustomLink>
+                <CustomLink to={`/ui/${namespace}/clusterrolebinding`}>
+                  Cluster Role Binding
+                </CustomLink>
+              </EuiListGroup>
+            </EuiCollapsibleNavGroup>
+            <EuiCollapsibleNavGroup
               title="CRDs"
               iconType="discoverApp"
               isCollapsible={true}
