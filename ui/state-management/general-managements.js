@@ -19,6 +19,7 @@ export const formatSearchResponse = (info, namespace, type) => {
           namespace,
           name,
           label: name,
+          searchableLabel: `${key} ${name} ${key} `,
           meta: [
             {
               text: key,
