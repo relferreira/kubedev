@@ -10,13 +10,17 @@ export default function ConfigMap({ namespace, navigate }) {
       namespace={namespace}
       command="get configmaps"
       navigate={navigate}
-      formatHeader={() => ['Name', 'Data', 'Age']}
+      formatHeader={() => [
+        { id: 'name', label: 'Name', sorted: true },
+        { id: 'data', label: 'Data' },
+        { id: 'age', label: 'Age', align: 'right', sorted: true, type: 'date' }
+      ]}
       formatItems={items =>
-        items.map(({ metadata, data }) => [
-          metadata.name,
-          data && Object.keys(data).length,
-          metadata.creationTimestamp
-        ])
+        items.map(({ metadata, data }) => ({
+          name: metadata.name,
+          data: data && Object.keys(data).length,
+          age: metadata.creationTimestamp
+        }))
       }
       dialogItems={[
         { value: 'Edit', type: 'configmaps', href: 'edit' },

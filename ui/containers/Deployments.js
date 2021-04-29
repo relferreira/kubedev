@@ -43,20 +43,20 @@ export default function Deployments({ namespace, navigate }) {
       command="get deployments"
       navigate={navigate}
       formatHeader={() => [
-        { label: 'Name', align: 'left', isSorted: true },
-        { label: 'Ready', align: 'center' },
-        { label: 'Up to Date', align: 'center' },
-        { label: 'Available', align: 'center' },
-        { label: 'Age', align: 'right' }
+        { id: 'name', label: 'Name', align: 'left', sorted: true },
+        { id: 'ready', label: 'Ready', align: 'center' },
+        { id: 'upToDate', label: 'Up to Date', align: 'center' },
+        { id: 'available', label: 'Available', align: 'center' },
+        { id: 'age', label: 'Age', align: 'right', sorted: true, type: 'date' }
       ]}
       formatItems={items =>
-        items.map(({ metadata, status, spec }) => [
-          metadata.name,
-          spec.replicas && `${status.replicas}/${spec.replicas}`,
-          status.updatedReplicas,
-          status.availableReplicas,
-          metadata.creationTimestamp
-        ])
+        items.map(({ metadata, status, spec }) => ({
+          name: metadata.name,
+          ready: spec.replicas && `${status.replicas}/${spec.replicas}`,
+          upToDate: status.updatedReplicas,
+          available: status.availableReplicas,
+          age: metadata.creationTimestamp
+        }))
       }
       dialogLoading={dialogLoading}
       dialogItems={items}

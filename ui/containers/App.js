@@ -34,7 +34,6 @@ import ErrorLoading from '../components/ErrorLoading';
 
 import { useConfigContext } from '../state-management/config-management';
 import SearchDialog from '../components/SearchDialog';
-import ScaledObjects from './ScaledObjects';
 import { EuiPageTemplate, EuiFlexGroup, EuiPageSideBar } from '@elastic/eui';
 import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon';
 
@@ -62,9 +61,13 @@ import { icon as EuiIconManagement } from '@elastic/eui/es/components/icon/asset
 import { icon as EuiIconMonitoring } from '@elastic/eui/es/components/icon/assets/app_monitoring';
 import { icon as EuiIconBoxesVertical } from '@elastic/eui/es/components/icon/assets/boxes_vertical';
 import { icon as EuiIconAppUsersRoles } from '@elastic/eui/es/components/icon/assets/app_users_roles';
+import { icon as EuiIconSortDown } from '@elastic/eui/es/components/icon/assets/sort_down';
+import { icon as EuiIconSortUp } from '@elastic/eui/es/components/icon/assets/sort_up';
 
 appendIconComponentCache({
   dot: EuiIconDot,
+  sortDown: EuiIconSortDown,
+  sortUp: EuiIconSortUp,
   arrowUp: EuiIconArrowUp,
   arrowDown: EuiIconArrowDown,
   arrowLeft: EuiIconArrowLeft,
@@ -320,7 +323,6 @@ function App() {
                     <ConfigMap path=":namespace/configmaps" />
                     <Secret path=":namespace/secrets" />
                     {/* <SecretInfo path=":namespace/secrets/:name/get" /> */}
-                    {/* <ScaledObjects path=":namespace/scaledobjects" /> */}
                     {/* <SecretInfo path=":namespace/secrets/:name/get" /> */}
                     <DefaultPage path=":namespace/:type" />
                   </CustomRouter>
@@ -429,7 +431,6 @@ function App() {
                     <ConfigMap path=":namespace/configmaps" />
                     <Secret path=":namespace/secrets" />
                     <SecretInfo path=":namespace/secrets/:name/get" />
-                    <ScaledObjects path=":namespace/scaledobjects" />
                     {/* <SecretInfo path=":namespace/secrets/:name/get" /> */}
                   </CustomRouter>
                 </ErrorBoundary>

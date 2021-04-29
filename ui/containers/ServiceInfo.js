@@ -139,33 +139,42 @@ export default function ServiceInfo({ namespace, name, navigate }) {
       <Table
         isSelectable={false}
         showCheckbox={false}
-        columns={['Cluster IP', 'Public IP', 'Ports']}
+        isSortable={false}
+        columns={[
+          { id: 'clusterIp', label: 'Cluster IP' },
+          { id: 'publicIp', label: 'Public IP' },
+          { id: 'ports', label: 'Ports' }
+        ]}
         items={[
-          [
-            spec.clusterIP,
-            getPublicIP(status.loadBalancer),
-            getPorts(spec.ports)
-          ],
-          [
-            <EuiFieldText
-              type="text"
-              placeholder="From"
-              value={from}
-              onChange={event => setFrom(+event.target.value)}
-              disabled={pid}
-            />,
-            <EuiSelect
-              disabled={pid}
-              value={to}
-              options={[{ text: 'Select port', value: '' }].concat(
-                spec.ports.map(portInfo => ({
-                  value: portInfo.port,
-                  text: getPort(portInfo)
-                }))
-              )}
-              onChange={handlePortSelection}
-            />,
-            !pid ? (
+          {
+            clusterIp: spec.clusterIP,
+            publicIp: getPublicIP(status.loadBalancer),
+            ports: getPorts(spec.ports)
+          },
+          {
+            clusterIp: (
+              <EuiFieldText
+                type="text"
+                placeholder="From"
+                value={from}
+                onChange={event => setFrom(+event.target.value)}
+                disabled={pid}
+              />
+            ),
+            publicIp: (
+              <EuiSelect
+                disabled={pid}
+                value={to}
+                options={[{ text: 'Select port', value: '' }].concat(
+                  spec.ports.map(portInfo => ({
+                    value: portInfo.port,
+                    text: getPort(portInfo)
+                  }))
+                )}
+                onChange={handlePortSelection}
+              />
+            ),
+            ports: !pid ? (
               <EuiToolTip position="bottom" content="Port Forward">
                 <EuiButtonIcon
                   color="success"
@@ -184,7 +193,7 @@ export default function ServiceInfo({ namespace, name, navigate }) {
                 />
               </EuiToolTip>
             )
-          ]
+          }
         ]}
       />
     </div>

@@ -17,16 +17,26 @@ export default function PortForward() {
     <div>
       <PageHeader title="Port Forward" showSearch={false} />
       <Table
-        columns={['Name', 'Type', 'Namespace', 'From', 'To']}
+        columns={[
+          { id: 'name', label: 'Name', sorted: true },
+          { id: 'type', label: 'Type' },
+          { id: 'namespace', label: 'Namespace' },
+          { id: 'from', label: 'From' },
+          { id: 'to', label: 'To' }
+        ]}
         items={
           pids &&
-          pids.map(({ pid, namespace, type, name, from, to }) => [
-            <Link to={`/ui/${namespace}/${type}/${name}/get`}>{name}</Link>,
-            type,
-            namespace,
-            from,
-            to
-          ])
+          pids.map(({ pid, namespace, type, name, from, to }) => ({
+            // TODO transfer to column render
+            // name: (
+            //   <Link to={`/ui/${namespace}/${type}/${name}/get`}>{name}</Link>
+            // ),
+            name,
+            type: type,
+            namespace: namespace,
+            from: from,
+            to: to
+          }))
         }
       />
     </div>

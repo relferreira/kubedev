@@ -12,12 +12,21 @@ export default function DefaultPage({ namespace, type, navigate }) {
         command={`get ${type}`}
         navigate={navigate}
         filterFields={['metadata.name', 'status.phase']}
-        formatHeader={() => ['Name', { label: 'Age', align: 'right' }]}
+        formatHeader={() => [
+          { id: 'name', label: 'Name', sorted: true },
+          {
+            id: 'age',
+            label: 'Age',
+            align: 'right',
+            sorted: true,
+            type: 'date'
+          }
+        ]}
         formatItems={items =>
-          items.map(({ metadata, status, spec }) => [
-            metadata.name,
-            metadata.creationTimestamp
-          ])
+          items.map(({ metadata, status, spec }) => ({
+            name: metadata.name,
+            age: metadata.creationTimestamp
+          }))
         }
         dialogItems={[
           { value: 'Edit', type, href: 'edit' },

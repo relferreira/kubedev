@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Hotkeys from 'react-hot-keys';
+import moment from 'moment';
 
 import {
   EuiTable,
@@ -11,7 +12,8 @@ import {
   EuiLink,
   EuiTableHeaderCellCheckbox,
   EuiTableRowCellCheckbox,
-  EuiCheckbox
+  EuiCheckbox,
+  SortableProperties
 } from '@elastic/eui';
 
 function Table({
@@ -23,11 +25,34 @@ function Table({
   onSelect,
   selectedItems,
   setSelectedItems,
-  showCheckbox = true
+  showCheckbox = true,
+  sortProperties,
+  isSortable = true
 }) {
   const [selected, setSelected] = useState(isSelectable ? 0 : -1);
   const tableEl = useRef(null);
+  const [sortedColumn, setSortedColumn] = useState('name');
   const [reset, setReset] = useState(false);
+  const [sortableProperties, setSortableProperties] = useState(
+    isSortable &&
+      (sortProperties ||
+        new SortableProperties(
+          [
+            {
+              name: 'name',
+              getValue: item => item.name.toLowerCase(),
+              isAscending: true
+            },
+            {
+              name: 'age',
+              getValue: item => item.age.toLowerCase(),
+              isAscending: false
+            }
+          ],
+          'name'
+        ))
+  );
+  const [_, rerender] = useState({});
 
   // useEffect(() => {
   //   if (tableEl && size > 0) {
@@ -83,15 +108,15 @@ function Table({
     return (
       selectedItems &&
       selectedItems.length > 0 &&
-      selectedItems.find(i => i === item[0])
+      selectedItems.find(i => i === item.name)
     );
   };
 
   const toggleItem = (e, item) => {
     e.stopPropagation();
     if (isItemSelected(item))
-      setSelectedItems(selectedItems.filter(i => i !== item[0]));
-    else setSelectedItems(selectedItems.concat(item[0]));
+      setSelectedItems(selectedItems.filter(i => i !== item.name));
+    else setSelectedItems(selectedItems.concat(item.name));
   };
 
   const areAllItemsSelected = () => {
@@ -104,7 +129,7 @@ function Table({
 
   const toggleAll = () => {
     if (areAllItemsSelected()) setSelectedItems([]);
-    else setSelectedItems(items.map(item => item[0]));
+    else setSelectedItems(items.map(item => item.name));
   };
 
   const renderHeaderCells = () => {
@@ -127,12 +152,11 @@ function Table({
           key={column.id || column.label}
           align={column.align}
           width={column.width}
-          // onSort={(e, i) => {
-          //   console.log(e, i);
-          // }}
-          // isSorted={column.isSorted}
-          // isSortAscending={true}
-          // isSortAscending={this.sortableProperties.isAscendingByName(column.id)}
+          onSort={() => column.sorted && onSort(column.id)}
+          isSorted={sortedColumn === column.id}
+          isSortAscending={
+            isSortable && sortableProperties.isAscendingByName(column.id)
+          }
           // mobileOptions={column.mobileOptions}
         >
           {column.label || column}
@@ -147,7 +171,7 @@ function Table({
       let cells = [];
       if (showCheckbox)
         cells.push([
-          <EuiTableRowCellCheckbox key={`${item[0]}-checkbox`}>
+          <EuiTableRowCellCheckbox key={`${item.name}-checkbox`}>
             <EuiCheckbox
               // id={`${item.id}-checkbox`}
               checked={isItemSelected(item)}
@@ -156,27 +180,56 @@ function Table({
             />
           </EuiTableRowCellCheckbox>
         ]);
-      columns.forEach((column, key) =>
-        cells.push(
-          <EuiTableRowCell
-            key={key}
-            align={column.align}
-            truncateText={false}
-            textOnly={true}
-            onClick={() => key === 0 && handleClick(index)}
-          >
-            {key === 0 ? (
-              <EuiLink color="text">{item[key]}</EuiLink>
-            ) : (
-              item[key]
-            )}
-          </EuiTableRowCell>
-        )
-      );
+      columns.forEach((column, key) => {
+        let newCell;
+        if (column.render) {
+          newCell = (
+            <EuiTableRowCell
+              key={key}
+              align={column.align}
+              truncateText={false}
+              textOnly={true}
+              onClick={() => key === 0 && handleClick(index)}
+            >
+              {column.render(item[column.id])}
+            </EuiTableRowCell>
+          );
+        } else if (column.type === 'date') {
+          newCell = (
+            <EuiTableRowCell
+              key={key}
+              align={column.align}
+              truncateText={false}
+              textOnly={true}
+              onClick={() => key === 0 && handleClick(index)}
+            >
+              {moment(item[column.id]).fromNow(true)}
+            </EuiTableRowCell>
+          );
+        } else {
+          newCell = (
+            <EuiTableRowCell
+              key={key}
+              align={column.align}
+              truncateText={false}
+              textOnly={true}
+              onClick={() => key === 0 && handleClick(index)}
+            >
+              {key === 0 ? (
+                <EuiLink color="text">{item[column.id]}</EuiLink>
+              ) : (
+                item[column.id]
+              )}
+            </EuiTableRowCell>
+          );
+        }
+
+        cells.push(newCell);
+      });
 
       return (
         <EuiTableRow
-          key={item[0]}
+          key={item.name}
           isSelected={index === selected}
           isSelectable={true}
           hasActions={true}
@@ -186,7 +239,17 @@ function Table({
       );
     };
 
-    return items.map(renderRow);
+    let sortedItems = isSortable ? sortableProperties.sortItems(items) : items;
+
+    return sortedItems.map(renderRow);
+  };
+
+  const onSort = prop => {
+    sortableProperties.sortOn(prop);
+    setSortedColumn(prop);
+    setSelectedItems([]);
+    setSelected(0);
+    rerender({});
   };
 
   return (

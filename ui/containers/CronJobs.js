@@ -11,22 +11,22 @@ export default function CronJobs({ namespace, navigate }) {
       command="get cronjobs"
       navigate={navigate}
       formatHeader={() => [
-        'Name',
-        'Schedule',
-        'Suspend',
-        'Active',
-        'Last Schedule',
-        'Age'
+        { id: 'name', label: 'Name', sorted: true },
+        { id: 'schedule', label: 'Schedule' },
+        { id: 'suspend', label: 'Suspend' },
+        { id: 'active', label: 'Active' },
+        { id: 'lastSchedule', label: 'Last Schedule' },
+        { id: 'age', label: 'Age', align: 'right', sorted: true, type: 'date' }
       ]}
       formatItems={items =>
-        items.map(({ metadata, status, spec }) => [
-          metadata.name,
-          spec.schedule,
-          spec.suspend.toString().toUpperCase(),
-          getActiveJobs(status),
-          status.lastScheduleTime,
-          metadata.creationTimestamp
-        ])
+        items.map(({ metadata, status, spec }) => ({
+          name: metadata.name,
+          schedule: spec.schedule,
+          suspend: spec.suspend.toString().toUpperCase(),
+          active: getActiveJobs(status),
+          lastSchedule: status.lastScheduleTime,
+          age: metadata.creationTimestamp
+        }))
       }
       dialogItems={[
         // { value: 'Info', type: 'cronjobs', href: 'get' },

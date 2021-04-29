@@ -131,23 +131,29 @@ export default function DeploymentInfo({ namespace, type, name, navigate }) {
           namespace={namespace}
           command={`get pods -l=app=${spec.selector.matchLabels.app}`}
           navigate={navigate}
-          formatHeader={() => ['Name', 'State', 'Info']}
+          formatHeader={() => [
+            { id: 'name', label: 'Name', sorted: true },
+            { id: 'state', label: 'State' },
+            { id: 'info', label: 'Info' }
+          ]}
           formatItems={items =>
-            items.map(({ metadata, status, spec }) => [
-              metadata.name,
-              <PodStatusIcon state={status.phase} />,
-              <Link to={`/ui/${namespace}/pods/${metadata.name}/get`}>
-                <Icon
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
-                  <path fill="none" d="M0 0h24v24H0V0z" />
-                  <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-                </Icon>
-              </Link>
-            ])
+            items.map(({ metadata, status, spec }) => ({
+              name: metadata.name,
+              state: <PodStatusIcon state={status.phase} />,
+              info: (
+                <Link to={`/ui/${namespace}/pods/${metadata.name}/get`}>
+                  <Icon
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path fill="none" d="M0 0h24v24H0V0z" />
+                    <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                  </Icon>
+                </Link>
+              )
+            }))
           }
           dialogItems={[
             { value: 'Logs', type: `/ui/${namespace}/pods`, href: 'logs' },
