@@ -106,7 +106,7 @@ export default function NewTableInfo({
               <EuiButtonIcon
                 display="empty"
                 iconSize="l"
-                size="l"
+                size="m"
                 iconType="boxesVertical"
                 color="text"
                 aria-label="More"
@@ -141,7 +141,7 @@ export default function NewTableInfo({
         <EuiButtonIcon
           iconType="refresh"
           iconSize="l"
-          size="l"
+          size="m"
           color="text"
           aria-label="Refresh"
           onClick={() => revalidate()}

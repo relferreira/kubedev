@@ -13,7 +13,6 @@ const CustomDialog = ({ title, isOpen, onDismiss, children, width }) => {
       <EuiFlyout
         ownFocus={true}
         onClose={onDismiss}
-        initialFocus="[type=search]"
         style={{ minHeight: '365px' }}
       >
         <EuiModalHeader>

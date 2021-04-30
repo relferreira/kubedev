@@ -4,12 +4,10 @@ import React, {
   useRef,
   useEffect,
   Fragment,
-  useCallback
+  useCallback,
+  useLayoutEffect
 } from 'react';
-import styled from '@emotion/styled';
 import { useWorker } from 'react-hooks-worker';
-import Downshift from 'downshift';
-import Fuse from 'fuse.js';
 import { navigate, Link } from '@reach/router';
 import Hotkeys from 'react-hot-keys';
 
@@ -48,117 +46,6 @@ import useSWR from 'swr';
 import SearchBar from '../components/SearchBar';
 import SearchDialog from '../components/SearchDialog';
 
-const HeaderContainer = styled.div`
-  display: flex;
-  align-items: center;
-  position: relative;
-  height: 60px;
-  padding: 16px;
-  background: ${props => props.theme.header};
-  color: white;
-  box-shadow: 0 0 0.4rem rgba(0, 0, 0, 0.1), 0 0.1rem 0.8rem rgba(0, 0, 0, 0.2);
-  overflow: inherit;
-`;
-
-const LogoContainer = styled.div`
-  display: flex;
-  align-items: center;
-  width: 204px;
-  height: 100%;
-`;
-
-const Image = styled.svg`
-  height: 100%;
-`;
-
-const Title = styled.h1`
-  margin-left: 16px;
-  font-size: 24px;
-`;
-
-const InputContainer = styled.form`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: ${({ focus }) => (focus ? '90%' : '500px')};
-  border-radius: 3px;
-  background: ${props => props.theme.background};
-
-  box-shadow: ${({ focus }) =>
-    focus ? '0px 2px 2px rgba(0, 0, 0, 0.25)' : null};
-
-  input {
-    width: 100%;
-    height: 40px;
-    padding: 16px;
-    border: none;
-    background: transparent;
-    color: ${props => props.theme.sidebarFontColor};
-    outline: none;
-  }
-
-  svg {
-    margin-left: 7px;
-    fill: ${props => props.theme.sidebarFontColor};
-    opacity: 0.54;
-  }
-`;
-
-const SearchIcon = styled.button`
-  background: none;
-  border: none;
-`;
-
-const AutoCompleteContainer = styled.div`
-  flex: 1;
-  z-index: 1;
-`;
-
-const AutoComplete = styled.div`
-  position: absolute;
-  width: 100%;
-  max-height: 500px;
-  top: 38px;
-  background: ${props => props.theme.background};
-  color: ${props => props.theme.sidebarFontColor};
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 3px;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
-  overflow: auto;
-`;
-
-const SearchItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  background: ${props =>
-    props.highlighted ? primaryDark : props.theme.background};
-  color: ${props =>
-    props.highlighted ? fontColorWhite : props.theme.sidebarFontColor};
-  font-size: 14px;
-
-  span {
-    font-size: 12px;
-  }
-`;
-
-const Backdrop = styled.div`
-  display: ${props => (props.show ? 'inherit' : 'none')};
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-  top: 0;
-  left: 0;
-  background: #000;
-  opacity: 0.8;
-`;
-
-const HeaderIcon = styled(Icon)`
-  margin-left: 16px;
-  fill: ${props => props.theme.headerIcon};
-`;
-
 const worker = new Worker('../workers/search.js');
 
 export default function Header({ location, onContextChange }) {
@@ -172,7 +59,6 @@ export default function Header({ location, onContextChange }) {
   const [historyMode, setHistoryMode] = useState(false);
   const [history, setHistory] = useState([]);
   const { result } = useWorker(worker, searchDate);
-  // const [inputRef, setInputRef] = useState(null);
   const inputRef = useRef(null);
   const buttonRef = useRef(null);
   const popoverRef = useRef(null);
@@ -185,11 +71,12 @@ export default function Header({ location, onContextChange }) {
     { revalidateOnFocus: false, suspense: false }
   );
 
-  // const measuredRef = useCallback(input => {
-  //   if (input !== null) {
-  //     inputRef.current = input;
-  //   }
-  // }, []);
+  useLayoutEffect(() => {
+    if (popoverRef.current.props.isOpen && inputRef.current) {
+      // TODO find better way
+      setTimeout(() => inputRef.current.focus(), 100);
+    }
+  }, [searchDate]);
 
   useEffect(() => {
     setHistory(getHistory());
@@ -204,7 +91,6 @@ export default function Header({ location, onContextChange }) {
   };
 
   const handleBlur = () => {
-    // inputRef.current.blur();
     setFocus(false);
     setHistoryMode(false);
   };
@@ -223,8 +109,7 @@ export default function Header({ location, onContextChange }) {
   const handleShortcut = keyName => {
     buttonRef.current.click();
     if (inputRef && inputRef.current) {
-      console.log(inputRef.current);
-      inputRef.current.props.onFocus();
+      setSearchDate(new Date());
     }
     // inputRef.current.focus();
     // if (keyName === 'command+shift+k' || keyName === 'ctrl+shift+k') {
@@ -363,20 +248,13 @@ export default function Header({ location, onContextChange }) {
             <EuiSelectableTemplateSitewide
               options={searchItems}
               onChange={handleSelect}
-              // isPreFiltered={true}
               searchProps={{
-                compressed: true
-                // inputRef: measuredRef,
-                // incremental: true,
-                // value: search,
-                // onChange: event =>
-                //   console.log('oi') || setSearch(event.target.value)
-                // onSearch: value => setSearch(value)
+                compressed: true,
+                inputRef: e => (inputRef.current = e)
               }}
               popoverProps={{
-                initialFocus: 'input[type=search]',
                 hasArrow: false,
-                ownFocus: true,
+                ownFocus: false,
                 ref: popoverRef
               }}
               popoverButton={

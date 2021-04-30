@@ -169,6 +169,7 @@ function Sidebar({
                 {crds &&
                   Object.keys(crds).map(key => (
                     <EuiCollapsibleNavGroup
+                      key={key}
                       title={key}
                       paddingSize="none"
                       titleSize="xs"
@@ -178,8 +179,9 @@ function Sidebar({
                       titleSize="xxs"
                     >
                       <EuiListGroup color="subdued" size="xs">
-                        {crds[key].map(item => (
+                        {crds[key].map((item, i) => (
                           <CustomLink
+                            key={item.metadata.name + i}
                             to={`/ui/${namespace}/${item.spec.names.plural}`}
                           >
                             {item.spec.names.kind + item.metadata.name}

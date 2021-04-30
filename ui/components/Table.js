@@ -173,7 +173,7 @@ function Table({
         cells.push([
           <EuiTableRowCellCheckbox key={`${item.name}-checkbox`}>
             <EuiCheckbox
-              // id={`${item.id}-checkbox`}
+              id={`${item.name}-checkbox`}
               checked={isItemSelected(item)}
               onChange={e => toggleItem(e, item)}
               type="inList"

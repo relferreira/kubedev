@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useRef } from 'react';
 
 import Dialog from './Dialog';
 import { useNavigate } from '@reach/router';
@@ -13,6 +13,14 @@ function SearchDialog({
   onDismiss
 }) {
   const navigate = useNavigate();
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      if (isOpen) inputRef.current.focus();
+      else inputRef.current.blur();
+    }
+  }, [isOpen]);
 
   const handleOnSelect = selections => {
     let selection = selections.find(item => item.checked === 'on');
@@ -49,7 +57,7 @@ function SearchDialog({
         break;
     }
 
-    return <EuiIcon type={type} size="l" style={{ marginRight: '8px' }} />;
+    return <EuiIcon type={type} size="m" style={{ marginRight: '8px' }} />;
   };
 
   return (
@@ -69,6 +77,9 @@ function SearchDialog({
         tabIndex={1}
         listProps={{ rowHeight: 64, showIcons: false }}
         height="full"
+        searchProps={{
+          inputRef: e => (inputRef.current = e)
+        }}
       >
         {(list, search) => (
           <Fragment>
