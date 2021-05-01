@@ -63,6 +63,9 @@ import { icon as EuiIconBoxesVertical } from '@elastic/eui/es/components/icon/as
 import { icon as EuiIconAppUsersRoles } from '@elastic/eui/es/components/icon/assets/app_users_roles';
 import { icon as EuiIconSortDown } from '@elastic/eui/es/components/icon/assets/sort_down';
 import { icon as EuiIconSortUp } from '@elastic/eui/es/components/icon/assets/sort_up';
+import { icon as EuiIconSave } from '@elastic/eui/es/components/icon/assets/save';
+import { icon as EuiIconCheck } from '@elastic/eui/es/components/icon/assets/check';
+import { icon as EuiIconAlert } from '@elastic/eui/es/components/icon/assets/alert';
 
 appendIconComponentCache({
   dot: EuiIconDot,
@@ -90,7 +93,10 @@ appendIconComponentCache({
   filebeatApp: EuiIconFilebeat,
   monitoringApp: EuiIconMonitoring,
   boxesVertical: EuiIconBoxesVertical,
-  usersRolesApp: EuiIconAppUsersRoles
+  usersRolesApp: EuiIconAppUsersRoles,
+  save: EuiIconSave,
+  check: EuiIconCheck,
+  alert: EuiIconAlert
 });
 
 const Home = React.lazy(() => import('./Home'));
@@ -287,6 +293,7 @@ function App() {
                     {/* <PodInfo path=":namespace/pods/:name/get" /> */}
                     <ServiceInfo path=":namespace/services/:name/get" />
                     <Deployments path=":namespace/deployments" />
+                    <DeploymentInfo path=":namespace/deployments/:name/get" />
                     {/* <JobInfo path=":namespace/jobs/:name/get" /> */}
                     {/* <CronJobInfo path=":namespace/cronjobs/:name/get" /> */}
                     <HpaInfo path=":namespace/hpa/:name/get" />
