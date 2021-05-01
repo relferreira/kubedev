@@ -46,6 +46,8 @@ import useSWR from 'swr';
 import SearchBar from '../components/SearchBar';
 import SearchDialog from '../components/SearchDialog';
 
+import * as componentProps from './configs';
+
 const worker = new Worker('../workers/search.js');
 
 export default function Header({ location, onContextChange }) {
@@ -64,6 +66,7 @@ export default function Header({ location, onContextChange }) {
   const popoverRef = useRef(null);
   const [isUserMenuVisible, setIsUserMenuVisible] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
+  const [dialogProps, setDialogProps] = useState({});
   const [selected, setSelected] = useState({});
   const { data: response, revalidate, isValidating } = useSWR(
     ['default', 'config view'],
@@ -127,6 +130,10 @@ export default function Header({ location, onContextChange }) {
 
     setSelected(selection);
     popoverRef.current.closePopover();
+    let compProps = componentProps[selection.type];
+    let dialogProps = { namespace: selection.namespace };
+    if (compProps) dialogProps['dialogItems'] = compProps.dialogItems;
+    setDialogProps(dialogProps);
     setShowDialog(true);
 
     let {
@@ -352,6 +359,7 @@ export default function Header({ location, onContextChange }) {
           { value: 'Describe', type: selected.type, href: 'describe' }
         ]}
         selected={selected.name}
+        {...dialogProps}
         // loading={dialogLoading}
         // data={data}
       />

@@ -25,6 +25,7 @@ export default function NewTableInfo({
   formatHeader,
   formatItems,
   dialogItems,
+  dialogRender,
   dialogLoading,
   navigate,
   onDialogClose,
@@ -160,9 +161,11 @@ export default function NewTableInfo({
         setSelectedItems={setSelectedItems}
       />
       <SearchDialog
+        namespace={namespace}
         isOpen={showDialog}
         onDismiss={closeDialog}
         dialogItems={dialogItems}
+        dialogRender={dialogRender}
         selected={selected}
         loading={dialogLoading}
         data={data}

@@ -2,14 +2,16 @@ import React, { Fragment, useEffect, useRef } from 'react';
 
 import Dialog from './Dialog';
 import { useNavigate } from '@reach/router';
-import { EuiSelectable, EuiHighlight, EuiIcon } from '@elastic/eui';
+import { EuiSelectable, EuiHorizontalRule, EuiIcon } from '@elastic/eui';
 
 function SearchDialog({
+  namespace,
   isOpen,
   dialogItems,
   selected,
   loading,
   data,
+  dialogRender,
   onDismiss
 }) {
   const navigate = useNavigate();
@@ -36,7 +38,9 @@ function SearchDialog({
       navigate(`${selection.href}`);
       onDismiss();
     } else if (selection) {
-      navigate(`${selection.type}/${selected}/${selection.href}`);
+      navigate(
+        `/ui/${namespace}/${selection.type}/${selected}/${selection.href}`
+      );
       onDismiss();
     } else {
       onDismiss();
@@ -64,11 +68,14 @@ function SearchDialog({
     <Dialog isOpen={isOpen} onDismiss={onDismiss} title={selected}>
       <EuiSelectable
         aria-label="Single selection example"
-        options={dialogItems.map(item => ({
-          label: item.value,
-          ...item,
-          prepend: renderIcon(item)
-        }))}
+        options={
+          dialogItems &&
+          dialogItems.map(item => ({
+            label: item.value,
+            ...item,
+            prepend: renderIcon(item)
+          }))
+        }
         searchable={true}
         onChange={handleOnSelect}
         singleSelection={true}

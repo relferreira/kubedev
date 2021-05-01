@@ -2,7 +2,11 @@ import React, { useState, Fragment } from 'react';
 
 import NewTableInfo from './NewTableInfo';
 
+import * as componentProps from './configs';
+
 export default function DefaultPage({ namespace, type, navigate }) {
+  let compProps = componentProps[type] || {};
+
   return (
     <Fragment>
       <NewTableInfo
@@ -32,6 +36,7 @@ export default function DefaultPage({ namespace, type, navigate }) {
           { value: 'Edit', type, href: 'edit' },
           { value: 'Describe', type, href: 'describe' }
         ]}
+        {...compProps}
       />
     </Fragment>
   );
