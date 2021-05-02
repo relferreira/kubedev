@@ -6,6 +6,15 @@ import * as componentProps from './configs';
 
 export default function DefaultPage({ namespace, type, navigate }) {
   let compProps = componentProps[type] || {};
+  const [dialogItems, setDialogItems] = useState(
+    (compProps && compProps.dialogItems) || [
+      { value: 'Edit', type, href: 'edit' },
+      { value: 'Describe', type, href: 'describe' }
+    ]
+  );
+  const [dialogLoading, setDialogLoading] = useState(
+    (compProps && compProps.dialogLoading) || false
+  );
 
   return (
     <Fragment>
@@ -32,11 +41,11 @@ export default function DefaultPage({ namespace, type, navigate }) {
             age: metadata.creationTimestamp
           }))
         }
-        dialogItems={[
-          { value: 'Edit', type, href: 'edit' },
-          { value: 'Describe', type, href: 'describe' }
-        ]}
         {...compProps}
+        dialogLoading={dialogLoading}
+        dialogItems={dialogItems}
+        setDialogItems={i => console.log(i) || setDialogItems(i)}
+        setDialogLoading={setDialogLoading}
       />
     </Fragment>
   );

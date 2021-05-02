@@ -66,6 +66,7 @@ import { icon as EuiIconSortUp } from '@elastic/eui/es/components/icon/assets/so
 import { icon as EuiIconSave } from '@elastic/eui/es/components/icon/assets/save';
 import { icon as EuiIconCheck } from '@elastic/eui/es/components/icon/assets/check';
 import { icon as EuiIconAlert } from '@elastic/eui/es/components/icon/assets/alert';
+import { icon as EuiIconPlus } from '@elastic/eui/es/components/icon/assets/plus';
 
 appendIconComponentCache({
   dot: EuiIconDot,
@@ -96,7 +97,8 @@ appendIconComponentCache({
   usersRolesApp: EuiIconAppUsersRoles,
   save: EuiIconSave,
   check: EuiIconCheck,
-  alert: EuiIconAlert
+  alert: EuiIconAlert,
+  plus: EuiIconPlus
 });
 
 const Home = React.lazy(() => import('./Home'));
@@ -292,7 +294,6 @@ function App() {
                     {/* <Home path="/:namespace" /> */}
                     {/* <PodInfo path=":namespace/pods/:name/get" /> */}
                     <ServiceInfo path=":namespace/services/:name/get" />
-                    <Deployments path=":namespace/deployments" />
                     <DeploymentInfo path=":namespace/deployments/:name/get" />
                     {/* <JobInfo path=":namespace/jobs/:name/get" /> */}
                     {/* <CronJobInfo path=":namespace/cronjobs/:name/get" /> */}

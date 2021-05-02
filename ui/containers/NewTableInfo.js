@@ -30,7 +30,9 @@ export default function NewTableInfo({
   navigate,
   onDialogClose,
   children,
-  filterFields = ['metadata.name']
+  filterFields = ['metadata.name'],
+  setDialogItems,
+  setDialogLoading
 }) {
   const [search, setSearch] = useState(sessionStorage.getItem('search') || '');
   const [showDialog, setShowDialog] = useState(false);
@@ -165,9 +167,11 @@ export default function NewTableInfo({
         isOpen={showDialog}
         onDismiss={closeDialog}
         dialogItems={dialogItems}
+        setDialogItems={setDialogItems}
         dialogRender={dialogRender}
         selected={selected}
         loading={dialogLoading}
+        setDialogLoading={setDialogLoading}
         data={data}
       />
       {confirmModalOpen && (

@@ -1,5 +1,6 @@
 import React from 'react';
 import { EuiBadge } from '@elastic/eui';
+
 import {
   getContainersReady,
   getContainersRestarts,
@@ -17,6 +18,8 @@ import {
 } from '../state-management/node-management';
 import { getHosts } from '../state-management/ingress-management';
 import { getMetrics } from '../state-management/hpa-management';
+
+import * as kubectl from '../kubectl';
 
 export const pods = {
   filterFields: ['metadata.name', 'status.phase'],
@@ -53,6 +56,49 @@ export const pods = {
     { value: 'Edit', type: 'pods', href: 'edit' },
     // { value: 'Info', type: 'pods', href: 'get' },
     { value: 'Describe', type: 'pods', href: 'describe' }
+  ]
+};
+
+export const deployments = {
+  formatHeader: () => [
+    { id: 'name', label: 'Name', align: 'left', sorted: true },
+    { id: 'ready', label: 'Ready', align: 'center' },
+    { id: 'upToDate', label: 'Up to Date', align: 'center' },
+    { id: 'available', label: 'Available', align: 'center' },
+    { id: 'age', label: 'Age', align: 'right', sorted: true, type: 'date' }
+  ],
+  formatItems: items =>
+    items.map(({ metadata, status, spec }) => ({
+      name: metadata.name,
+      ready: spec.replicas && `${status.replicas}/${spec.replicas}`,
+      upToDate: status.updatedReplicas,
+      available: status.availableReplicas,
+      age: metadata.creationTimestamp
+    })),
+  dialogItems: [
+    // {
+    //   value: 'Logs',
+    //   callback: (namespace, { spec }, setDialogItems, setDialogLoading) => {
+    //     setDialogLoading(true);
+    //     setDialogItems([]);
+    //     kubectl
+    //       .exec(namespace, `get pods -l=app=${spec.selector.matchLabels.app}`)
+    //       .then(resp => {
+    //         const { items } = resp.data;
+    //         setDialogItems(
+    //           items.map(({ metadata }) => ({
+    //             value: metadata.name,
+    //             href: `pods/${metadata.name}/logs`
+    //           }))
+    //         );
+    //       })
+    //       .catch(console.error)
+    //       .finally(() => setDialogLoading(false));
+    //   }
+    // },
+    { value: 'Info', type: 'deployments', href: 'get' },
+    { value: 'Edit', type: 'deployments', href: 'edit' },
+    { value: 'Describe', type: 'deployments', href: 'describe' }
   ]
 };
 
