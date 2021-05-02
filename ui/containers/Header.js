@@ -57,8 +57,6 @@ export default function Header({ location, onContextChange }) {
   const [isUserMenuVisible, setIsUserMenuVisible] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [dialogProps, setDialogProps] = useState({});
-  const [dialogItems, setDialogItems] = useState([]);
-  const [dialogLoading, setDialogLoading] = useState(false);
   const [selected, setSelected] = useState({});
   const { data: response, revalidate, isValidating } = useSWR(
     ['default', 'config view'],
@@ -123,13 +121,9 @@ export default function Header({ location, onContextChange }) {
     setSelected(selection);
     popoverRef.current.closePopover();
     let compProps = componentProps[selection.type];
-    let dialogProps = {
-      namespace: selection.namespace,
-      dialogItems: compProps.dialogItems
-    };
-    // let dialogProps[] = compProps.dialogItems;
+    let dialogProps = { namespace: selection.namespace };
+    if (compProps) dialogProps['dialogItems'] = compProps.dialogItems;
     setDialogProps(dialogProps);
-    setDialogItems(compProps.dialogItems);
     setShowDialog(true);
 
     let {
@@ -355,15 +349,12 @@ export default function Header({ location, onContextChange }) {
       <SearchDialog
         isOpen={showDialog}
         onDismiss={closeDialog}
-        // dialogItems={[
-        //   { value: 'Edit', type: selected.type, href: 'edit' },
-        //   { value: 'Describe', type: selected.type, href: 'describe' }
-        // ]}
+        dialogItems={[
+          { value: 'Edit', type: selected.type, href: 'edit' },
+          { value: 'Describe', type: selected.type, href: 'describe' }
+        ]}
         selected={selected.name}
         {...dialogProps}
-        dialogItems={dialogItems}
-        setDialogItems={setDialogItems}
-        setDialogLoading={setDialogLoading}
         // loading={dialogLoading}
         // data={data}
       />

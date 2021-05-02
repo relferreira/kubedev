@@ -12,9 +12,7 @@ function SearchDialog({
   loading,
   data,
   dialogRender,
-  onDismiss,
-  setDialogItems,
-  setDialogLoading
+  onDismiss
 }) {
   const navigate = useNavigate();
   const inputRef = useRef(null);
@@ -35,12 +33,8 @@ function SearchDialog({
         const { items } = data;
         selectedItem = items.find(({ metadata }) => metadata.name === selected);
       }
-      selection.callback(
-        namespace,
-        selectedItem,
-        setDialogItems,
-        setDialogLoading
-      );
+
+      selection.callback(selection, selectedItem);
     } else if (selection && !selection.type) {
       navigate(`${selection.href}`);
       onDismiss();

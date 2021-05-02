@@ -1,8 +1,13 @@
-import React, { useRef } from 'react';
+import React, { useRef, Fragment } from 'react';
 import useSWR from 'swr';
 import { Link, Location, navigate } from '@reach/router';
 import Hotkeys from 'react-hot-keys';
-import { EuiCollapsibleNavGroup, EuiListGroup } from '@elastic/eui';
+import {
+  EuiCollapsibleNavGroup,
+  EuiListGroup,
+  EuiToolTip,
+  EuiBadge
+} from '@elastic/eui';
 
 import * as kubectl from '../kubectl';
 import LocationHistoryController from './LocationHistoryController';
@@ -11,25 +16,31 @@ import { getSelectedNamespace } from '../state-management/general-managements';
 function CustomLink({ className, shortcut, children, ...rest }) {
   const linkRef = useRef(null);
   return (
-    <Hotkeys keyName={`${shortcut}`} onKeyUp={() => linkRef.current.click()}>
-      <Link
-        {...rest}
-        ref={linkRef}
-        getProps={({ isCurrent }) => {
-          return {
-            className: `euiListGroupItem euiListGroupItem--small euiListGroupItem-isClickable ${
-              isCurrent ? ' euiListGroupItem-isActive' : ''
-            }`
-          };
-        }}
-      >
-        <span className="euiListGroupItem__button">
-          <span className="euiListGroupItem__label" title="Item">
-            {children}
+    <EuiToolTip
+      display="block"
+      position="right"
+      content={<EuiBadge color="#333">{shortcut}</EuiBadge>}
+    >
+      <Hotkeys keyName={`${shortcut}`} onKeyUp={() => linkRef.current.click()}>
+        <Link
+          {...rest}
+          ref={linkRef}
+          getProps={({ isCurrent }) => {
+            return {
+              className: `euiListGroupItem euiListGroupItem--small euiListGroupItem-isClickable ${
+                isCurrent ? ' euiListGroupItem-isActive' : ''
+              }`
+            };
+          }}
+        >
+          <span className="euiListGroupItem__button">
+            <span className="euiListGroupItem__label" title="Item">
+              {children}
+            </span>
           </span>
-        </span>
-      </Link>
-    </Hotkeys>
+        </Link>
+      </Hotkeys>
+    </EuiToolTip>
   );
 }
 
@@ -60,9 +71,15 @@ function Sidebar({
                     onClick={onNamespaceChange}
                     style={{ flex: 1 }}
                   >
-                    <small style={{ fontWeight: 'normal' }}>Namespace</small>{' '}
-                    <br />
-                    <strong>{namespace}</strong>
+                    <EuiToolTip position="right" content="Change namespace">
+                      <Fragment>
+                        <small style={{ fontWeight: 'normal' }}>
+                          Namespace
+                        </small>{' '}
+                        <br />
+                        <strong>{namespace}</strong>
+                      </Fragment>
+                    </EuiToolTip>
                   </a>
                   <LocationHistoryController />
                 </div>
