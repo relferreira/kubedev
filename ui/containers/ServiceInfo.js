@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import styled from '@emotion/styled';
 import useSWR from 'swr';
+import {
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiToolTip,
+  EuiButtonIcon,
+  EuiFieldText,
+  EuiSelect,
+  EuiSpacer,
+  EuiTitle
+} from '@elastic/eui/';
 
 import * as kubectl from '../kubectl';
 import Table from '../components/Table';
@@ -9,22 +18,12 @@ import {
   getPorts,
   getPort
 } from '../state-management/services-management';
-import PageHeader from '../components/PageHeader';
-import Button from '../components/Button';
-import Input from '../components/Input';
 import {
   storePid,
   formatPidKeyName,
   findPid,
   removePid
 } from '../state-management/port-forward-management';
-import Select from '../components/Select';
-import setPrototypeOf from 'setprototypeof';
-import DeleteButton from '../components/DeleteButton';
-
-const ServiceType = styled.h3`
-  margin-bottom: 16px;
-`;
 
 export default function ServiceInfo({ namespace, name, navigate }) {
   const [from, setFrom] = useState('');
@@ -96,70 +95,111 @@ export default function ServiceInfo({ namespace, name, navigate }) {
 
   return (
     <div>
-      <PageHeader title={metadata.name}>
-        <Button onClick={handleEdit}>EDIT</Button>
-        <DeleteButton name={metadata.name} onClick={handleDelete}>
-          DELETE
-        </DeleteButton>
-      </PageHeader>
-      <ServiceType>Type: {spec.type}</ServiceType>
-      <Table>
-        <thead>
-          <tr>
-            <th>Cluster IP</th>
-            <th>Public IP</th>
-            <th>Ports</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{spec.clusterIP}</td>
-            <td>{getPublicIP(status.loadBalancer)}</td>
-            <td>{getPorts(spec.ports)}</td>
-          </tr>
-        </tbody>
-      </Table>
-      <Table>
-        <thead>
-          <tr>
-            <th>From</th>
-            <th>To</th>
-            <th>Port-Forward</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <Input
+      <EuiFlexGroup
+        direction="row"
+        alignItems="center"
+        gutterSize="none"
+        responsive={false}
+        wrap={true}
+      >
+        <EuiFlexItem>
+          <EuiTitle>
+            <h1>Service: {metadata.name}</h1>
+          </EuiTitle>
+          <EuiSpacer size="s" />
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <EuiFlexGroup direction="row" gutterSize="s">
+            <EuiFlexItem>
+              <EuiToolTip position="bottom" content="Edit">
+                <EuiButtonIcon
+                  size="m"
+                  iconSize="m"
+                  color="text"
+                  iconType="documentEdit"
+                  aria-label="Edit"
+                  onClick={handleEdit}
+                />
+              </EuiToolTip>
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <EuiToolTip position="bottom" content="Delete">
+                <EuiButtonIcon
+                  size="m"
+                  iconSize="m"
+                  iconType="trash"
+                  color="danger"
+                  aria-label="Delete"
+                  name={metadata.name}
+                  onClick={handleDelete}
+                />
+              </EuiToolTip>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+      <span>Type: {spec.type}</span>
+      <EuiSpacer />
+      <Table
+        isSelectable={false}
+        showCheckbox={false}
+        isSortable={false}
+        columns={[
+          { id: 'clusterIp', label: 'Cluster IP' },
+          { id: 'publicIp', label: 'Public IP' },
+          { id: 'ports', label: 'Ports' }
+        ]}
+        items={[
+          {
+            clusterIp: spec.clusterIP,
+            publicIp: getPublicIP(status.loadBalancer),
+            ports: getPorts(spec.ports)
+          },
+          {
+            clusterIp: (
+              <EuiFieldText
                 type="text"
                 placeholder="From"
                 value={from}
                 onChange={event => setFrom(+event.target.value)}
                 disabled={pid}
               />
-            </td>
-            <td>
-              <Select disabled={pid} value={to} onChange={handlePortSelection}>
-                <option value={null}>Select Port</option>
-                {spec.ports.map(portInfo => (
-                  <option key={portInfo.port} value={portInfo.port}>
-                    {getPort(portInfo)}
-                  </option>
-                ))}
-              </Select>
-            </td>
-            <td>
-              {!pid ? (
-                <Button onClick={handlePortForward}>START</Button>
-              ) : (
-                <Button type="error" onClick={handleStopPortForward}>
-                  STOP
-                </Button>
-              )}
-            </td>
-          </tr>
-        </tbody>
-      </Table>
+            ),
+            publicIp: (
+              <EuiSelect
+                disabled={pid}
+                value={to}
+                options={[{ text: 'Select port', value: '' }].concat(
+                  spec.ports.map(portInfo => ({
+                    value: portInfo.port,
+                    text: getPort(portInfo)
+                  }))
+                )}
+                onChange={handlePortSelection}
+              />
+            ),
+            ports: !pid ? (
+              <EuiToolTip position="bottom" content="Port Forward">
+                <EuiButtonIcon
+                  color="success"
+                  iconType="play"
+                  aria-label="Start Port-forward"
+                  onClick={handlePortForward}
+                />
+              </EuiToolTip>
+            ) : (
+              <EuiToolTip position="bottom" content="Stop Port Forward">
+                <EuiButtonIcon
+                  color="danger"
+                  iconType="pause"
+                  aria-label="Stop Port-forward"
+                  onClick={handleStopPortForward}
+                />
+              </EuiToolTip>
+            )
+          }
+        ]}
+      />
     </div>
   );
 }

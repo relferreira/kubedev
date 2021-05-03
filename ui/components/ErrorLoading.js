@@ -1,16 +1,15 @@
 import React from 'react';
-import styled from '@emotion/styled';
 
-const ErrorLoadingContainer = styled.div`
-  flex: 1;
-  height: 100%;
-  background: ${props => props.theme.background};
-  padding: 16px;
-  color: ${props => props.theme.containerFont};
-`;
+import { EuiErrorBoundary } from '@elastic/eui';
 
-const ErrorLoading = () => (
-  <ErrorLoadingContainer>Something exploded :(</ErrorLoadingContainer>
+const BadComponent = () => {
+  throw new Error(
+    "I'm here to kick butt and chew bubblegum. And I'm all out of gum."
+  );
+};
+
+export default () => (
+  <EuiErrorBoundary>
+    <BadComponent />
+  </EuiErrorBoundary>
 );
-
-export default ErrorLoading;

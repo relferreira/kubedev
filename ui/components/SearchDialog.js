@@ -1,136 +1,101 @@
-import React from 'react';
-import styled from '@emotion/styled';
-import Downshift from 'downshift';
+import React, { Fragment, useEffect, useRef } from 'react';
 
 import Dialog from './Dialog';
-import Input from './Input';
-import { primaryDark, fontColorWhite } from '../util/colors';
 import { useNavigate } from '@reach/router';
-
-const DialogContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  button {
-    width: 100%;
-  }
-
-  a {
-    margin-bottom: 16px;
-  }
-`;
-
-const ModalSearch = styled(Input)`
-  width: 100%;
-`;
-
-const ModalList = styled.ul`
-  margin: 0;
-  padding: 0;
-  max-height: 500px;
-  list-style: none;
-  cursor: pointer;
-  overflow: auto;
-`;
-
-const ModalListItem = styled.li`
-  padding: 16px;
-  background: ${props =>
-    props.highlighted ? primaryDark : props.theme.background};
-  color: ${props =>
-    props.highlighted ? fontColorWhite : props.theme.sidebarFontColor};
-  font-size: 14px;
-`;
+import { EuiSelectable, EuiHorizontalRule, EuiIcon } from '@elastic/eui';
 
 function SearchDialog({
+  namespace,
   isOpen,
   dialogItems,
   selected,
   loading,
   data,
+  dialogRender,
   onDismiss
 }) {
   const navigate = useNavigate();
+  const inputRef = useRef(null);
 
-  const handleOnSelect = selection => {
+  useEffect(() => {
+    if (inputRef.current) {
+      if (isOpen) inputRef.current.focus();
+      else inputRef.current.blur();
+    }
+  }, [isOpen]);
+
+  const handleOnSelect = selections => {
+    let selection = selections.find(item => item.checked === 'on');
+
     if (selection && selection.callback) {
       let selectedItem = null;
       if (data) {
         const { items } = data;
         selectedItem = items.find(({ metadata }) => metadata.name === selected);
       }
+
       selection.callback(selection, selectedItem);
     } else if (selection && !selection.type) {
       navigate(`${selection.href}`);
       onDismiss();
     } else if (selection) {
-      navigate(`${selection.type}/${selected}/${selection.href}`);
+      navigate(
+        `/ui/${namespace}/${selection.type}/${selected}/${selection.href}`
+      );
       onDismiss();
     } else {
       onDismiss();
     }
   };
 
+  const renderIcon = option => {
+    let type = 'dot';
+    switch (option.value) {
+      case 'Logs':
+        type = 'filebeatApp';
+        break;
+      case 'Edit':
+        type = 'managementApp';
+        break;
+      case 'Describe':
+        type = 'monitoringApp';
+        break;
+    }
+
+    return <EuiIcon type={type} size="m" style={{ marginRight: '8px' }} />;
+  };
+
   return (
-    <Dialog
-      isOpen={isOpen}
-      onDismiss={onDismiss}
-      title={selected}
-      width="500px"
-    >
-      <DialogContainer>
-        <Downshift
-          key={JSON.stringify(dialogItems)}
-          onChange={handleOnSelect}
-          itemToString={item => (item ? item.value : '')}
-        >
-          {({
-            getInputProps,
-            getItemProps,
-            getLabelProps,
-            getMenuProps,
-            inputValue,
-            highlightedIndex
-          }) => (
-            <div>
-              <label {...getLabelProps()}></label>
-              <ModalSearch
-                {...getInputProps({
-                  placeholder: loading ? 'Loading...' : 'Search',
-                  onKeyDown: event => {
-                    if (event.key === 'Escape') {
-                      event.nativeEvent.preventDownshiftDefault = true;
-                    }
-                  }
-                })}
-              />
-              <ModalList {...getMenuProps()}>
-                {!loading &&
-                  dialogItems
-                    .filter(
-                      item =>
-                        !inputValue ||
-                        item.value
-                          .toLowerCase()
-                          .includes(inputValue.toLowerCase())
-                    )
-                    .map((item, index) => (
-                      <ModalListItem
-                        {...getItemProps({
-                          key: item.value,
-                          index,
-                          item,
-                          highlighted: highlightedIndex === index
-                        })}
-                      >
-                        {item.value}
-                      </ModalListItem>
-                    ))}
-              </ModalList>
-            </div>
-          )}
-        </Downshift>
-      </DialogContainer>
+    <Dialog isOpen={isOpen} onDismiss={onDismiss} title={selected}>
+      <EuiSelectable
+        aria-label="Single selection example"
+        options={
+          dialogItems &&
+          dialogItems.map(item => ({
+            label: item.value,
+            ...item,
+            prepend: renderIcon(item)
+          }))
+        }
+        searchable={true}
+        onChange={handleOnSelect}
+        singleSelection={true}
+        listProps={{ bordered: false }}
+        isLoading={loading}
+        tabIndex={1}
+        listProps={{ rowHeight: 64, showIcons: false }}
+        height="full"
+        searchProps={{
+          inputRef: e => (inputRef.current = e)
+        }}
+      >
+        {(list, search) => (
+          <Fragment>
+            {search}
+            {list}
+          </Fragment>
+        )}
+      </EuiSelectable>
     </Dialog>
   );
 }

@@ -1,24 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import styled from '@emotion/styled';
 import { LazyLog, ScrollFollow } from 'react-lazylog';
 import useSWR from 'swr';
 
 import * as kubectl from '../kubectl';
 import LogsControl from '../components/LogsControl';
-import { navigate } from '@reach/router';
-
-const LogsContainer = styled.div`
-  position: relative;
-  height: 100%;
-  height: calc(100% + 32px);
-  margin: -16px;
-  color: white;
-  background: ${props => props.theme.background};
-`;
-
-const LogText = styled(LazyLog)`
-  background: ${props => props.theme.background};
-`;
 
 export default function Logs({ namespace, name, onLogInit }) {
   const [selectedContainer, selectContainer] = useState(0);
@@ -46,7 +31,14 @@ export default function Logs({ namespace, name, onLogInit }) {
   if (!container) return null;
 
   return (
-    <LogsContainer>
+    <div
+      style={{
+        position: 'relative',
+        margin: '-24px',
+        height: 'calc(100vh - 49px)',
+        overflow: 'hidden'
+      }}
+    >
       <ScrollFollow
         startFollowing={true}
         render={({ follow, onScroll }) => (
@@ -61,6 +53,8 @@ export default function Logs({ namespace, name, onLogInit }) {
             enableSearch={true}
             follow={following}
             extraLines={5}
+            containerStyle={{ background: '#1D1E24' }}
+            style={{ background: '#1D1E24' }}
           />
         )}
       />
@@ -77,6 +71,6 @@ export default function Logs({ namespace, name, onLogInit }) {
           )
         }
       />
-    </LogsContainer>
+    </div>
   );
 }

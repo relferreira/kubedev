@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import useSWR from 'swr';
-import Fuse from 'fuse.js';
+import {
+  EuiSearchBar,
+  EuiSpacer,
+  EuiButtonIcon,
+  EuiButton,
+  EuiPopover,
+  EuiContextMenuPanel,
+  EuiConfirmModal,
+  EuiContextMenuItem
+} from '@elastic/eui';
 
 import * as kubectl from '../kubectl';
 import SearchDialog from '../components/SearchDialog';
@@ -10,20 +19,29 @@ import Table from '../components/Table';
 
 export default function NewTableInfo({
   title,
+  type,
   namespace,
   command,
   formatHeader,
   formatItems,
   dialogItems,
+  dialogRender,
   dialogLoading,
   navigate,
   onDialogClose,
-  children
+  children,
+  filterFields = ['metadata.name'],
+  setDialogItems,
+  setDialogLoading
 }) {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(sessionStorage.getItem('search') || '');
   const [showDialog, setShowDialog] = useState(false);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [selected, setSelected] = useState(null);
   const [tableFocus, setTableFocus] = useState(true);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [isContextMenuOpen, setContextMenuOpen] = useState(false);
   const { data: response, revalidate, isValidating } = useSWR(
     [namespace, command],
     kubectl.exec,
@@ -41,19 +59,37 @@ export default function NewTableInfo({
 
   const closeDialog = () => {
     setShowDialog(false);
+    setSelected(null);
     onDialogClose && onDialogClose();
+  };
+
+  const handleSearch = text => {
+    setSearch(text);
+    sessionStorage.setItem('search', text);
+  };
+
+  const handleDelete = () => {
+    console.log(`delete ${type} ${selectedItems.join(' ')}`);
+    setDeleting(true);
+    kubectl
+      .exec(namespace, `delete ${type} ${selectedItems.join(' ')}`, false)
+      .then(() => {
+        setConfirmModalOpen(false);
+        setSelectedItems([]);
+        revalidate();
+      })
+      .catch(alert)
+      .finally(() => setDeleting(false));
   };
 
   const { data } = response || {};
 
-  // TODO validate error
-
-  let fuse = new Fuse(data.items, {
-    keys: ['metadata.name']
-  });
-
   let headers = formatHeader();
-  let items = search ? fuse.search(search, { limit: 10 }) : data.items;
+
+  let options = {
+    defaultFields: filterFields
+  };
+  const items = EuiSearchBar.Query.execute(search, data.items, options);
 
   return (
     <div>
@@ -62,40 +98,100 @@ export default function NewTableInfo({
         title={title}
         showSearch={true}
         search={search}
-        onSearch={text => setSearch(text)}
+        onSearch={handleSearch}
         onRefresh={() => revalidate()}
         onBlur={() => setTableFocus(!tableFocus)}
-      />
+      >
+        {selectedItems && selectedItems.length > 0 && (
+          <EuiPopover
+            id="contextMenuExample"
+            button={
+              <EuiButtonIcon
+                display="empty"
+                iconSize="l"
+                size="m"
+                iconType="boxesVertical"
+                color="text"
+                aria-label="More"
+                onClick={() => setContextMenuOpen(true)}
+              />
+            }
+            isOpen={isContextMenuOpen}
+            closePopover={() => setContextMenuOpen(false)}
+            panelPaddingSize="none"
+            anchorPosition="downLeft"
+          >
+            <EuiContextMenuPanel
+              initialPanelId={0}
+              size="m"
+              items={[
+                <EuiContextMenuItem
+                  key="trash"
+                  icon="trash"
+                  iconColor="danger"
+                  onClick={() => {
+                    setContextMenuOpen(false);
+                    setConfirmModalOpen(true);
+                  }}
+                >
+                  Delete
+                </EuiContextMenuItem>
+              ]}
+            />
+          </EuiPopover>
+        )}
+
+        <EuiButtonIcon
+          iconType="refresh"
+          iconSize="l"
+          size="m"
+          color="text"
+          aria-label="Refresh"
+          onClick={() => revalidate()}
+        />
+      </PageHeader>
+      <EuiSpacer size="m" />
       <Table
+        columns={headers}
+        items={formatItems(items)}
         onSelect={index => openDialog(items[index].metadata.name)}
         size={items.length}
         tableFocus={tableFocus}
-      >
-        <thead>
-          <tr>
-            {headers.map(header => (
-              <th key={header}>{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {formatItems(items).map(item => (
-            <tr key={item[0]} onClick={() => openDialog(item[0])}>
-              {item.map((value, i) => (
-                <td key={`${item[0]} ${headers[i]} ${value}`}>{value}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+        isDialogOpen={showDialog}
+        isSelectable={!selected}
+        selectedItems={selectedItems}
+        setSelectedItems={setSelectedItems}
+      />
       <SearchDialog
+        namespace={namespace}
         isOpen={showDialog}
         onDismiss={closeDialog}
         dialogItems={dialogItems}
+        setDialogItems={setDialogItems}
+        dialogRender={dialogRender}
         selected={selected}
         loading={dialogLoading}
+        setDialogLoading={setDialogLoading}
         data={data}
       />
+      {confirmModalOpen && (
+        <EuiConfirmModal
+          title={`Delete ${type}`}
+          onCancel={() => setConfirmModalOpen(false)}
+          onConfirm={handleDelete}
+          cancelButtonText="No, don't do it"
+          confirmButtonText="Yes, do it"
+          buttonColor="danger"
+          isLoading={deleting}
+        >
+          <p>Are you sure you want to do this?</p>
+          <ul>
+            {selectedItems.map(item => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </EuiConfirmModal>
+      )}
     </div>
   );
 }
