@@ -29,9 +29,10 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-func main() {
-	r := gin.Default()
-	var kubeconfigFile = flag.String("kubeconfig", filepath.Join(os.Getenv("HOME"), ".kube", "config"), "(optional) absolute path to the kubeconfig file")
+func getK8sClient() (*kubernetes.Clientset, error) {
+	fmt.Println("teste para ver")
+	fmt.Println("kubeconfig_" + time.Now().String())
+	var kubeconfigFile = flag.String("kubeconfig_"+time.Now().String(), filepath.Join(os.Getenv("HOME"), ".kube", "config"), "(optional) absolute path to the kubeconfig file")
 	flag.Parse()
 
 	var kubeConfig = *kubeconfigFile
@@ -45,7 +46,12 @@ func main() {
 		panic(err.Error())
 	}
 
-	clientset, err := kubernetes.NewForConfig(config)
+	return kubernetes.NewForConfig(config)
+}
+
+func main() {
+	r := gin.Default()
+	var clientset, err = getK8sClient()
 
 	r.Use(cors.New(cors.Options{
 		AllowedOrigins:     []string{"http://localhost:1234"},
@@ -65,6 +71,12 @@ func main() {
 	}
 
 	r.NoRoute(utils.RedirectIndex())
+
+	r.POST("/api/:namespace/refresh-context", func(c *gin.Context) {
+		clientset, _ = getK8sClient()
+
+		c.JSON(200, nil)
+	})
 
 	r.GET("/api/:namespace/exec", func(c *gin.Context) {
 		namespace := c.Param("namespace")
@@ -178,6 +190,7 @@ func main() {
 		}
 
 		proc.Kill()
+		syscall.Kill(-pid, syscall.SIGKILL)
 
 		c.JSON(200, nil)
 	})
@@ -200,7 +213,7 @@ func main() {
 		}
 		output := string(out[:])
 		fmt.Printf(output)
-		if strings.Contains(output, "(kubectl)") {
+		if !strings.Contains(output, "kubectl") {
 			c.AbortWithError(422, errors.New("port-forward killed"))
 		}
 		c.JSON(200, nil)
@@ -211,7 +224,7 @@ func main() {
 		name := c.Param("name")
 		logOptions := v1.PodLogOptions{}
 		req := clientset.CoreV1().Pods(namespace).GetLogs(name, &logOptions)
-		podLogs, err := req.Stream()
+		podLogs, err := req.Stream(c)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -237,7 +250,7 @@ func main() {
 			Follow:    true,
 		}
 		req := clientset.CoreV1().Pods(namespace).GetLogs(name, &logOptions)
-		podLogs, err := req.Stream()
+		podLogs, err := req.Stream(c)
 		if err != nil {
 			panic(err.Error())
 		}

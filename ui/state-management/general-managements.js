@@ -17,12 +17,26 @@ export const formatSearchResponse = (info, namespace, type) => {
         return items.map(({ metadata: { name, namespace } }) => ({
           type: key,
           namespace,
-          name
+          name,
+          label: name,
+          searchableLabel: `${key} ${name} ${key} `,
+          meta: [
+            {
+              text: key,
+              type: 'deployment',
+              highlightSearchString: true
+            },
+            {
+              text: namespace,
+              type: 'application',
+              highlightSearchString: true
+            }
+          ]
         }));
       })
       .reduce((a, b) => a.concat(b), [])
-      .filter(a => (namespace ? a.namespace === namespace : a))
-      .filter(a => (type ? a.type === type : a));
+      .filter(a => (namespace ? a.namespace === namespace : a));
+    // .filter(a => (type ? a.type === type : a));
   }
 
   return [];
@@ -58,7 +72,7 @@ export const formatSearchCommand = search => {
 
 export const getSearchCmdType = search => {
   if (!search) return {};
-  let regex = /\b(svc|service|services|deployments|deployment|deploy|pods|pod|cronjobs|cronjob|jobs|job|statefulsets|statefulset|sts|hpa|pvc|nodes|node|ingress|configmaps|configmap|secrets|secret)\b/;
+  let regex = /\b(svc|service|services|deployments|deployment|deploy|pods|pod|cronjobs|cronjob|jobs|job|statefulsets|statefulset|sts|hpa|pvc|nodes|node|ingress|configmaps|configmap|secrets|secret|scaledobjects|so)\b/;
   let matches = search.match(regex);
   if (matches) {
     let type = matches[1];

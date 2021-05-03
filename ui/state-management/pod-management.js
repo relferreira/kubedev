@@ -20,3 +20,20 @@ export function getContainersRestarts(status) {
 
   return restarts;
 }
+
+export function getPodState(state) {
+  switch (state) {
+    case 'Succeeded':
+      return 'primary';
+    case 'Running':
+      return 'secondary';
+    case 'Failed':
+      return 'danger';
+    case 'Pending':
+      return 'warning';
+    case 'Unknown':
+      return 'subdued';
+    default:
+      return 'subdued';
+  }
+}

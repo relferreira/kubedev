@@ -1,20 +1,12 @@
 import React from 'react';
-import styled from '@emotion/styled';
 import ProgressBar from './ProgressBar';
-
-const RouterLoadingContainer = styled.div`
-  flex: 1;
-  height: 100%;
-  background: ${props => props.theme.background};
-  padding: 16px;
-  color: ${props => props.theme.containerFont};
-`;
+import { EuiLoadingContent } from '@elastic/eui';
 
 const RouterLoading = () => (
-  <RouterLoadingContainer>
-    Loading...
+  <div>
+    <EuiLoadingContent lines={6} />
     <ProgressBar />
-  </RouterLoadingContainer>
+  </div>
 );
 
 export default RouterLoading;
