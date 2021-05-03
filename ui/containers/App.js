@@ -1,16 +1,13 @@
 import React, { useState, Suspense, Fragment } from 'react';
-import { Redirect, Location } from '@reach/router';
-import { Global, css } from '@emotion/core';
-import { ThemeProvider } from 'emotion-theming';
+import { Redirect, Location, Router } from '@reach/router';
 import useSWR from 'swr';
 import Hotkeys from 'react-hot-keys';
 import '@elastic/eui/dist/eui_theme_dark.css';
+import '../styles.css';
 
 import * as kubectl from '../kubectl';
 import Sidebar from '../components/Sidebar';
 import Header from './Header';
-import AppContainer from '../components/AppContainer';
-import CustomRouter from '../components/CustomRouter';
 import {
   primary,
   primaryDark,
@@ -103,29 +100,10 @@ appendIconComponentCache({
 
 const Home = React.lazy(() => import('./Home'));
 const Logs = React.lazy(() => import('./Logs'));
-const PodInfo = React.lazy(() => import('./PodInfo'));
-const Deployments = React.lazy(() => import('./Deployments'));
-const Services = React.lazy(() => import('./Services'));
 const ServiceInfo = React.lazy(() => import('./ServiceInfo'));
 const DeploymentInfo = React.lazy(() => import('./DeploymentInfo'));
-const Jobs = React.lazy(() => import('./Jobs'));
-const CronJobs = React.lazy(() => import('./CronJobs'));
-const JobInfo = React.lazy(() => import('./JobInfo'));
-const CronJobInfo = React.lazy(() => import('./CronJobInfo'));
-const Pods = React.lazy(() => import('./Pods'));
-const StatefulSets = React.lazy(() => import('./StatefulSets'));
-const Hpa = React.lazy(() => import('./Hpa'));
-const HpaInfo = React.lazy(() => import('./HpaInfo'));
-const Pvc = React.lazy(() => import('./Pvc'));
-const PvcInfo = React.lazy(() => import('./PvcInfo'));
-const Nodes = React.lazy(() => import('./Nodes'));
-const NodeInfo = React.lazy(() => import('./NodeInfo'));
 const Editor = React.lazy(() => import('./Editor'));
 const PortForward = React.lazy(() => import('./PortForward'));
-const Ingress = React.lazy(() => import('./Ingress'));
-const ConfigMap = React.lazy(() => import('./ConfigMap'));
-const Secret = React.lazy(() => import('./Secret'));
-const SecretInfo = React.lazy(() => import('./SecretInfo'));
 const DefaultPage = React.lazy(() => import('./DefaultPage'));
 
 const themes = {
@@ -217,111 +195,70 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={themes[config.theme]}>
-      <Global
-        styles={css`
-          a {
-            color: inherit;
-          }
-
-          #app {
-            display: -webkit-flex;
-            display: flex;
-            -webkit-flex-direction: column;
-            flex-direction: column;
-            min-height: calc(100vh - 49px);
-          }
-
-          .euiBody--headerIsFixed {
-            padding-top: 49px;
-          }
-
-          .euiBody--headerIsFixed .euiPageSideBar--sticky {
-            max-height: calc(100vh - 49px);
-            top: 49px;
-          }
-
-          .euiIcon--app .euiIcon__fillSecondary {
-            fill: #64b5f6;
-          }
-        `}
-      />
-      <Location>
-        {({ location, navigate }) => (
-          <Fragment>
-            <Header location={location} onContextChange={handleContextChange} />
-            <EuiPageTemplate
-              restrictWidth={false}
-              pageSideBar={
-                <Sidebar
-                  namespaces={namespaces}
-                  links={links}
-                  crds={crds}
-                  onThemeChange={handleThemeChange}
-                  onNamespaceChange={handleNamespaceSelection}
-                />
-              }
-            >
-              <Hotkeys keyName="g+n,g+n" onKeyUp={handleNamespaceSelection}>
-                <SearchDialog
-                  isOpen={namespaceSelectOpen}
-                  onDismiss={handleNamespaceDismiss}
-                  dialogItems={
-                    namespaces &&
-                    namespaces.map(namespace => ({
-                      value: namespace,
-                      callback: ({ value: selectedNamespace }) => {
-                        let [
-                          url,
-                          ui,
-                          namespace,
-                          type
-                        ] = location.pathname.split('/');
-                        navigate(`/ui/${selectedNamespace}/${type}`);
-                        handleNamespaceDismiss();
-                      }
-                    }))
-                  }
-                  selected="Namespaces"
-                  loading={false}
-                  onSelect={handleNamespaceDismiss}
-                />
-              </Hotkeys>
-              <Suspense fallback={<RouterLoading />}>
-                <ErrorBoundary key={location.href} fallback={<ErrorLoading />}>
-                  <CustomRouter basepath="/ui">
-                    <Redirect from="/" to="/ui/default/pods" noThrow />
-                    {/* <Home path="/:namespace" /> */}
-                    {/* <PodInfo path=":namespace/pods/:name/get" /> */}
-                    <ServiceInfo path=":namespace/services/:name/get" />
-                    <DeploymentInfo path=":namespace/deployments/:name/get" />
-                    {/* <JobInfo path=":namespace/jobs/:name/get" /> */}
-                    {/* <CronJobInfo path=":namespace/cronjobs/:name/get" /> */}
-                    <HpaInfo path=":namespace/hpa/:name/get" />
-                    {/* <PvcInfo path=":namespace/pvc/:name/get" /> */}
-                    {/*  <NodeInfo path=":namespace/nodes/:name/get" /> */}
-                    <Logs
-                      path=":namespace/pods/:name/logs"
-                      onLogInit={handleSidebarChange}
-                    />
-                    <Editor path=":namespace/new" type="new" action="get" />
-                    <Editor path=":namespace/:type/:name/edit" action="get" />
-                    <Editor
-                      path=":namespace/:type/:name/describe"
-                      action="describe"
-                    />
-                    <PortForward path=":namespace/port-forward" />
-                    {/* <SecretInfo path=":namespace/secrets/:name/get" /> */}
-                    {/* <SecretInfo path=":namespace/secrets/:name/get" /> */}
-                    <DefaultPage path=":namespace/:type" />
-                  </CustomRouter>
-                </ErrorBoundary>
-              </Suspense>
-            </EuiPageTemplate>
-          </Fragment>
-        )}
-      </Location>
-    </ThemeProvider>
+    <Location>
+      {({ location, navigate }) => (
+        <Fragment>
+          <Header location={location} onContextChange={handleContextChange} />
+          <EuiPageTemplate
+            restrictWidth={false}
+            pageSideBar={
+              <Sidebar
+                namespaces={namespaces}
+                links={links}
+                crds={crds}
+                onThemeChange={handleThemeChange}
+                onNamespaceChange={handleNamespaceSelection}
+              />
+            }
+          >
+            <Hotkeys keyName="g+n,g+n" onKeyUp={handleNamespaceSelection}>
+              <SearchDialog
+                isOpen={namespaceSelectOpen}
+                onDismiss={handleNamespaceDismiss}
+                dialogItems={
+                  namespaces &&
+                  namespaces.map(namespace => ({
+                    value: namespace,
+                    callback: ({ value: selectedNamespace }) => {
+                      let [url, ui, namespace, type] = location.pathname.split(
+                        '/'
+                      );
+                      navigate(`/ui/${selectedNamespace}/${type}`);
+                      handleNamespaceDismiss();
+                    }
+                  }))
+                }
+                selected="Namespaces"
+                loading={false}
+                onSelect={handleNamespaceDismiss}
+              />
+            </Hotkeys>
+            <Suspense fallback={<RouterLoading />}>
+              <ErrorBoundary key={location.href} fallback={<ErrorLoading />}>
+                <Router basepath="/ui">
+                  <Redirect from="/" to="/ui/default/pods" noThrow />
+                  {/* <Home path="/:namespace" /> */}
+                  <ServiceInfo path=":namespace/services/:name/get" />
+                  <DeploymentInfo path=":namespace/deployments/:name/get" />
+                  <Logs
+                    path=":namespace/pods/:name/logs"
+                    onLogInit={handleSidebarChange}
+                  />
+                  <Editor path=":namespace/new" type="new" action="get" />
+                  <Editor path=":namespace/:type/:name/edit" action="get" />
+                  <Editor
+                    path=":namespace/:type/:name/describe"
+                    action="describe"
+                  />
+                  <PortForward path=":namespace/port-forward" />
+                  <DefaultPage path=":namespace/:type" />
+                </Router>
+              </ErrorBoundary>
+            </Suspense>
+          </EuiPageTemplate>
+        </Fragment>
+      )}
+    </Location>
   );
 }
 

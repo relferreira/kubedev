@@ -7,7 +7,8 @@ import {
   EuiToolTip,
   EuiButtonIcon,
   EuiFieldText,
-  EuiGlobalToastList
+  EuiGlobalToastList,
+  EuiTitle
 } from '@elastic/eui';
 
 import NewTableInfo from './NewTableInfo';
@@ -105,7 +106,9 @@ export default function DeploymentInfo({ namespace, name, navigate }) {
         wrap={true}
       >
         <EuiFlexItem>
-          <h1>Deployment: {metadata.name}</h1>
+          <EuiTitle>
+            <h1>Deployment: {metadata.name}</h1>
+          </EuiTitle>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiFlexGroup direction="row" gutterSize="s">

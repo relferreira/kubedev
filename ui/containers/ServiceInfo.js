@@ -7,7 +7,8 @@ import {
   EuiButtonIcon,
   EuiFieldText,
   EuiSelect,
-  EuiSpacer
+  EuiSpacer,
+  EuiTitle
 } from '@elastic/eui/';
 
 import * as kubectl from '../kubectl';
@@ -102,7 +103,10 @@ export default function ServiceInfo({ namespace, name, navigate }) {
         wrap={true}
       >
         <EuiFlexItem>
-          <h1>Service: {metadata.name}</h1>
+          <EuiTitle>
+            <h1>Service: {metadata.name}</h1>
+          </EuiTitle>
+          <EuiSpacer size="s" />
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiFlexGroup direction="row" gutterSize="s">

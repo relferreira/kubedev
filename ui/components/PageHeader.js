@@ -1,7 +1,13 @@
 import React, { Fragment, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Hotkeys from 'react-hot-keys';
-import { EuiFieldSearch, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
+import {
+  EuiFieldSearch,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiTitle,
+  EuiSpacer
+} from '@elastic/eui';
 
 import { useConfigContext } from '../state-management/config-management';
 
@@ -29,7 +35,10 @@ const PageHeader = ({
 
   return (
     <div>
-      <h1>{title}</h1>
+      <EuiTitle>
+        <h1>{title}</h1>
+      </EuiTitle>
+      <EuiSpacer size="m" />
       {showSearch && (
         <Fragment>
           <Hotkeys

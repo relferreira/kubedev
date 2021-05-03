@@ -1,0 +1,24 @@
+a {
+  color: inherit;
+}
+
+#app {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  min-height: calc(100vh - 49px);
+}
+
+.euiBody--headerIsFixed {
+  padding-top: 49px;
+}
+
+.euiBody--headerIsFixed .euiPageSideBar--sticky {
+  max-height: calc(100vh - 49px);
+  top: 49px;
+}
+
+.euiIcon--app .euiIcon__fillSecondary {
+  fill: #64b5f6;
+}
