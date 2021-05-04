@@ -27,13 +27,13 @@ This method requires that you have `kubectl` installed and configured
 ### Docker
 
 ```bash
-docker run --rm -it -v ~/.kube/:/root/.kube/ --net=host relferreira/kubedev:1.0.0
+docker run --rm -it -v ~/.kube/:/root/.kube/ --net=host relferreira/kubedev:2.0.0
 ```
 
 or for macOS (port-forward functionality doesn't work this way):
 
 ```bash
-docker run --rm -it -v ~/.kube/:/root/.kube/ -p 9898:9898 relferreira/kubedev:1.0.0
+docker run --rm -it -v ~/.kube/:/root/.kube/ -p 9898:9898 relferreira/kubedev:2.0.0
 ```
 
 ### Kubernetes Deploy
